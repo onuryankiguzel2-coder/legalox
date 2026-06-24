@@ -1185,7 +1185,7 @@ karar verilmesini saygıyla arz ederiz.
   </div><!-- /main-area -->
 
 <!-- MOBİL BOTTOM NAV -->
-<nav class="mobile-nav" id="mobile-nav">
+<nav class="mobile-nav" id="mobile-nav" style="display:none">
   <div class="mobile-nav-item act" id="mn-home" onclick="mobileNav('home')">
     <i class="ti ti-layout-dashboard"></i>
     <span>Ana Sayfa</span>
@@ -1235,19 +1235,26 @@ karar verilmesini saygıyla arz ederiz.
 <!-- MODAL -->
 <div class="movl" id="movl" onclick="closeModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
+    <div class="mtit" id="mtit"></div>
+    <div class="msub" id="msub"></div>
+    <div id="mbody"></div>
+    <div class="mfoot">
+      <button class="btns" onclick="closeModal()">İptal</button>
+      <button class="btnp" onclick="submitModal()"><i class="ti ti-check"></i>Kaydet</button>
+    </div>
   </div>
 </div>
 
 <script>
 const SB_URL='YOUR_SUPABASE_URL',SB_KEY='YOUR_SUPABASE_ANON_KEY';
 let sbClient=null,cRole='admin',cUser=null;
-const DEMO={
+var DEMO={
   admin:{ad:'Ahmet Kaya',ini:'AK',rol:'Yönetici',color:'var(--ac)',email:'admin@legalox.ai',pw:'admin123'},
   avukat:{ad:'Selin Erdoğan',ini:'SE',rol:'Avukat',color:'var(--bl)',email:'avukat@legalox.ai',pw:'avukat123'},
   sekreter:{ad:'Murat Yıldız',ini:'MY',rol:'Sekreter',color:'var(--am)',email:'sekreter@legalox.ai',pw:'sekreter123'},
   stajyer:{ad:'Elif Aydın',ini:'EA',rol:'Stajyer',color:'var(--pu)',email:'stajyer@legalox.ai',pw:'stajyer123'}
 };
-const NAVCFG={
+var NAVCFG={
   admin:[
     {p:'admin',         i:'ti-layout-dashboard', l:'Genel Bakış'},
     {div:1},{sec:'Yönetim'},
@@ -1295,11 +1302,11 @@ const NAVCFG={
     {p:'ayarlar',i:'ti-settings',l:'Ayarlar'}
   ]
 };
-const PTITLES={'admin-uyeler':'üyeler','admin-gelir':'ödemeler & gelir','admin-paket':'paket yönetimi','admin-ayarlar':'sistem ayarları','genelbakis':'genel bakış','sekreter-genelbakis':'genel bakış','stajyer-genelbakis':'genel bakış','admin':'yönetici paneli','muvekkililer':'müvekkiller','dosyalar':'dosyalar','dosyadetay':'dosya detay','takvim':'duruşmalar','gorevler':'görevler','muhasebe':'muhasebe','dilekce':'dilekçe üretici','emsal':'emsal kararlar','ekibim':'ekibim','rehber':'rehber','ayarlar':'ayarlar'};
+var PTITLES={'admin-uyeler':'üyeler','admin-gelir':'ödemeler & gelir','admin-paket':'paket yönetimi','admin-ayarlar':'sistem ayarları','genelbakis':'genel bakış','sekreter-genelbakis':'genel bakış','stajyer-genelbakis':'genel bakış','admin':'yönetici paneli','muvekkililer':'müvekkiller','dosyalar':'dosyalar','dosyadetay':'dosya detay','takvim':'duruşmalar','gorevler':'görevler','muhasebe':'muhasebe','dilekce':'dilekçe üretici','emsal':'emsal kararlar','ekibim':'ekibim','rehber':'rehber','ayarlar':'ayarlar'};
 const PBTN={'genelbakis':'Yeni Dosya','sekreter-genelbakis':'Yeni Müvekkil','stajyer-genelbakis':'','admin':'Avukat Ekle','muvekkililer':'Yeni Müvekkil','dosyalar':'Yeni Dosya','dosyadetay':'Dilekçe Üret','takvim':'Duruşma Ekle','gorevler':'Görev Ekle','muhasebe':'Ödeme Ekle','dilekce':'AI ile Üret','emsal':'Ara','ekibim':'Ekip Üyesi Ekle','rehber':'','ayarlar':'Kaydet'};
 // Rehber verisi GUIDE_DATA'da
 
-const MODALS={
+var MODALS={
   muvekkil:{t:'Yeni Müvekkil Ekle',s:'Müvekkil bilgilerini doldurun',b:`<div class="fg"><label class="fl">Ad Soyad</label><input class="fi" placeholder="Adı Soyadı"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Telefon</label><input class="fi" placeholder="0532 xxx xx xx"></div><div class="fg"><label class="fl">TC Kimlik No</label><input class="fi" placeholder="12345678901"></div></div><div class="fg"><label class="fl">E-posta</label><input class="fi" type="email" placeholder="ad@mail.com"></div><div class="fg"><label class="fl">Adres</label><input class="fi" placeholder="İl, İlçe, Adres"></div><div class="fg"><label class="fl">Notlar</label><textarea class="fi" style="height:70px;resize:none" placeholder="Özel notlar..."></textarea></div>`},
   dosya:{t:'Yeni Dosya Oluştur',s:'Dava bilgilerini girin',b:`<div class="fg"><label class="fl">Müvekkil</label><select class="fi"><option>Ayşe Yılmaz</option><option>Mehmet Arslan</option><option>Fatma Demir</option></select></div><div class="fg"><label class="fl">Dava Türü</label><select class="fi"><option>Aile Hukuku</option><option>İş Hukuku</option><option>Ticaret Hukuku</option><option>Medeni Hukuk</option><option>Ceza Hukuku</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Mahkeme</label><input class="fi" placeholder="İzmir 3. Aile Mah."></div><div class="fg"><label class="fl">Dosya No</label><input class="fi" placeholder="D-2024/xxxx"></div></div><div class="fg"><label class="fl">Atanan Avukat</label><select class="fi"><option>Av. Ahmet Kaya</option><option>Av. Selin Erdoğan</option></select></div>`},
   belge:{t:'Belge Yükle',s:'PDF, Word veya fotoğraf yükleyebilirsiniz. OCR otomatik çalışır.',b:`<div style="border:2px dashed var(--bd2);border-radius:var(--rlg);padding:30px;text-align:center;cursor:pointer;margin-bottom:14px"><i class="ti ti-cloud-upload" style="font-size:32px;color:var(--tx4);display:block;margin-bottom:10px"></i><div style="font-size:13px;color:var(--tx3)">Dosyayı buraya sürükle veya tıkla</div><div style="font-size:11px;color:var(--tx4);margin-top:4px">PDF, Word, JPEG, PNG · Max 50MB</div></div><div class="fg"><label class="fl">Belge Türü</label><select class="fi"><option>Dava Belgesi</option><option>Bilirkişi Raporu</option><option>Mahkeme Kararı</option><option>Sözleşme</option><option>Diğer</option></select></div>`},
@@ -1335,7 +1342,7 @@ function loginOK(k,u){
   showToast('Hoşgeldiniz, '+u.ad,'ok');
   // Mobil: bottom nav güncelle
   var mn=document.getElementById('mobile-nav');
-  if(mn) mn.style.display='';
+  if(mn) mn.style.display='flex';
   checkInstallPrompt();
 }
 function doLogout(){
@@ -1366,29 +1373,67 @@ function buildNav(role){
 }
 function nav(p){nav2(p);}
 function nav2(p){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
-  const pg=document.getElementById('page-'+p);if(pg)pg.classList.add('active');
-  const ni=document.querySelector(`.ni[data-page="${p}"]`);if(ni)ni.classList.add('active');
-  document.getElementById('tbpage').textContent=PTITLES[p]||p;
-  document.getElementById('tbbtext').textContent=PBTN[p]||'';
-  if(p==='rehber')buildGuide();
+  currentPage=p;
+  document.querySelectorAll('.page').forEach(function(x){x.classList.remove('act');x.classList.remove('active');});
+  document.querySelectorAll('.ni').forEach(function(x){x.classList.remove('act');});
+  var pg=document.getElementById('page-'+p);
+  if(pg){pg.classList.add('act');pg.classList.add('active');}
+  var ni=document.querySelector('.ni[data-p="'+p+'"]');
+  if(ni) ni.classList.add('act');
+  var tbpg=document.getElementById('tbpg');
+  if(tbpg) tbpg.textContent=PTITLES[p]||p;
+  // Topbar buton metni güncelle
+  var btnMap={
+    'genelbakis':'Yeni Dosya','sekreter-genelbakis':'Yeni Müvekkil','stajyer-genelbakis':'',
+    'admin':'Avukat Ekle','admin-uyeler':'Davet Gönder','admin-gelir':'Rapor İndir',
+    'admin-paket':'Yeni Paket','admin-ayarlar':'Kaydet',
+    'muvekkililer':'Yeni Müvekkil','dosyalar':'Yeni Dosya','dosyadetay':'Dilekçe Üret',
+    'takvim':'Duruşma Ekle','gorevler':'Görev Ekle','muhasebe':'Ödeme Ekle',
+    'dilekce':'AI ile Üret','emsal':'Ara','ekibim':'Ekip Üyesi Ekle',
+    'rehber':'','ayarlar':'Kaydet'
+  };
+  var tbbtext=document.getElementById('tbbtext');
+  if(tbbtext) tbbtext.textContent=btnMap[p]||'Yeni';
+  if(p==='rehber') showG(cRole==='admin'?'avukat':cRole);
+  // Mobil bottom nav aktif state
+  var mobileMap={
+    'genelbakis':'home','sekreter-genelbakis':'home','stajyer-genelbakis':'home','admin':'home',
+    'dosyalar':'files','dosyadetay':'files','muvekkililer':'files',
+    'dilekce':'ai','emsal':'ai','admin-paket':'ai',
+    'takvim':'calendar','gorevler':'calendar','admin-gelir':'calendar',
+    'muhasebe':'menu','ekibim':'menu','rehber':'menu','ayarlar':'menu',
+    'admin-uyeler':'home','admin-ayarlar':'menu'
+  };
+  document.querySelectorAll('.mobile-nav-item').forEach(function(el){el.classList.remove('act');});
+  var activeSection=mobileMap[p]||'home';
+  var activeBtn=document.getElementById('mn-'+activeSection);
+  if(activeBtn) activeBtn.classList.add('act');
 }
 function tbAction(){
-  const active=document.querySelector('.page.active');if(!active)return;
-  const id=active.id.replace('page-','');
-  const mm={
-    genelbakis:'dosya','sekreter-genelbakis':'muvekkil','stajyer-genelbakis':'',
-    muvekkililer:'muvekkil',dosyalar:'dosya',dosyadetay:'belge',
-    takvim:'durusma',gorevler:'gorev',muhasebe:'odeme',
-    admin:'kullanici',ekibim:'ekipuye'
+  var active=document.querySelector('.page.act')||document.querySelector('.page.active');
+  if(!active) return;
+  var id=active.id.replace('page-','');
+  var mm={
+    'genelbakis':'dosya',
+    'sekreter-genelbakis':'muvekkil',
+    'stajyer-genelbakis':'',
+    'muvekkililer':'muvekkil',
+    'dosyalar':'dosya',
+    'dosyadetay':'belge',
+    'takvim':'durusma',
+    'gorevler':'gorev',
+    'muhasebe':'odeme',
+    'admin':'kullanici',
+    'admin-uyeler':'kullanici',
+    'ekibim':'ekipuye'
   };
   if(id==='dilekce'){genPetition();return;}
   if(id==='emsal'){showToast('Arama başlatılıyor...','info');return;}
-  if(id==='ayarlar'){showToast('Ayarlar kaydedildi','ok');return;}
-  if(id==='stajyer-genelbakis'){showToast('Görev eklemek için Görevler sayfasına gidin','info');return;}
-  if(id==='rehber')return;
-  if(mm[id])openModal(mm[id]);
+  if(id==='ayarlar'){showToast('Ayarlar kaydedildi ✓','ok');return;}
+  if(id==='rehber'||id==='stajyer-genelbakis'||id==='admin-gelir'||id==='admin-paket'||id==='admin-ayarlar') return;
+  var modalType=mm[id];
+  if(modalType) openModal(modalType);
+  else showToast('İşlem başlatılıyor...','info');
 }
 function switchTab(el,tabId){
   document.querySelectorAll('.dtab').forEach(t=>t.classList.remove('active'));
@@ -1640,7 +1685,7 @@ function openMobileMenu(){
   if(!overlay) return;
   // Nav items doldur
   var navEl=document.getElementById('mobile-menu-nav');
-  if(navEl && window.NAVCFG && cRole){
+  if(navEl && NAVCFG && cRole){
     navEl.innerHTML='';
     (NAVCFG[cRole]||[]).forEach(function(item){
       if(item.div){var d=document.createElement('div');d.style.cssText='height:1px;background:#1E1E1E;margin:4px 0';navEl.appendChild(d);return;}
