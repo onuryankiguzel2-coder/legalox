@@ -1,8 +1,8 @@
 // LegalOX.ai Service Worker v1
 const CACHE = 'legalox-v1';
 const ASSETS = [
-  './',
-  './index.html',
+  '/legalox/',
+  '/legalox/index.html',
   'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap',
   'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css',
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
@@ -12,7 +12,7 @@ self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE).then(c => {
       // Sadece yerel dosyaları cache'le, CDN'ler ağdan gelsin
-      return c.addAll(['./','./index.html']).catch(()=>{});
+      return c.addAll(['/legalox/','/legalox/index.html']).catch(()=>{});
     })
   );
   self.skipWaiting();
@@ -42,7 +42,7 @@ self.addEventListener('fetch', e => {
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return resp;
-      }).catch(() => caches.match('./index.html'));
+      }).catch(() => caches.match('/legalox/index.html'));
     })
   );
 });
