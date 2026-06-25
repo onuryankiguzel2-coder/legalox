@@ -1323,7 +1323,7 @@ async function doLogin(){
   const err=document.getElementById('lerr');
   err.style.display='none';
   for(const[k,u]of Object.entries(DEMO)){if(email===u.email&&pw===u.pw){loginOK(k,u);return;}}
-  if(sbClient){const{data,error}=await sbClient.auth.signInWithPassword({email,password:pw});if(error){err.style.display='block';return;}const m=data.user?.user_metadata||{};loginOK(m.rolKey||'avukat',{ad:m.ad||email,ini:(m.ad||email).substr(0,2).toUpperCase(),rol:m.rol||'Avukat',color:'var(--bl)'});return;}
+  if(sbClient){const{data,error}=await sbClient.auth.signInWithPassword({email,password:pw});if(error){err.style.display='block';return;}const m=data.user?.user_metadata||{};loginOK(m.rol||'avukat',{ad:m.ad||email,ini:(m.ad||email).substr(0,2).toUpperCase(),rol:m.rol==='admin'?'Yönetici':m.rol==='sekreter'?'Sekreter':m.rol==='stajyer'?'Stajyer':'Avukat',color:'var(--bl)'});return;}
   err.style.display='block';
 }
 function demoLogin(k){const u=DEMO[k];document.getElementById('lemail').value=u.email;document.getElementById('lpw').value=u.pw;loginOK(k,u);}
@@ -1458,7 +1458,7 @@ function genPetition(){
 }
 function buildGuide(){
   // Mevcut kullanıcı rolüne göre uygun rehberi göster
-  const roleMap = {avukat:'avukat', sekreter:'sekreter', stajyer:'stajyer', admin:'avukat'};
+  const roleMap = {avukat:'avukat', sekreter:'sekreter', stajyer:'stajyer', admin:'admin'};
   const guideRole = roleMap[cRole] || 'avukat';
   showGuide(guideRole);
 }
@@ -1478,7 +1478,8 @@ function saveSupabase(){
   else showToast('URL ve Key giriniz','err');
 }
 function showToast(msg,type='info'){
-  const w=document.getElementById('twrap');
+  let w=document.getElementById('twrap');
+  if(!w){w=document.createElement('div');w.id='twrap';w.style.cssText='position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none';document.body.appendChild(w);}
   const t=document.createElement('div');
   t.className='toast'+(type==='ok'?' ok':type==='err'?' err':'');
   const ic=type==='ok'?'ti-check':type==='err'?'ti-x':'ti-info-circle';
