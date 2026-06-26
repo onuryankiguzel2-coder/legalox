@@ -166,6 +166,7 @@ button{cursor:pointer}
 .aihd{display:flex;align-items:center;gap:8px;margin-bottom:14px}
 .aipulse{width:7px;height:7px;border-radius:50%;background:var(--ac);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
 .ailive{margin-left:auto;font-size:9px;background:var(--acd);color:var(--ac);border:1px solid var(--acb);border-radius:4px;padding:2px 8px}
 .ins{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rmd);padding:12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
 .ins:hover{border-color:var(--bd2)}
@@ -1007,68 +1008,188 @@ button{cursor:pointer}
 
 <!-- DİLEKÇE ÜRETİCİ -->
 <div class="page" id="page-dilekce">
-  <div class="phdr"><div><div class="ptitle">AI Dilekçe Üretici</div><div class="psub">Belge yükle → AI analiz eder → Emsal kararlarla dilekçe hazırlar → Sen onaylarsın</div></div></div>
-  <div class="ptlayout">
+  <div class="phdr"><div><div class="ptitle">AI Dilekçe Üretici</div><div class="psub">Müvekkil seç → Bilgiler otomatik gelir → AI adım adım yazar → Her bölümü onaylarsın</div></div></div>
+
+  <!-- SİZİ TANIYORUM -->
+  <div class="card" style="margin-bottom:14px;border-color:var(--acb);background:var(--acd)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,255,136,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-brain" style="color:var(--ac);font-size:16px"></i></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;color:var(--ac)">Sizi Tanıyorum <span id="style-active-badge" style="display:none;font-size:10px;background:var(--ac);color:#000;border-radius:4px;padding:2px 7px;margin-left:6px;font-weight:700">AKTİF</span></div>
+        <div style="font-size:11px;color:var(--tx3);margin-top:1px">Önceki dilekçelerinizi yükleyin, AI yazım üslubunuzu öğrenir</div>
+      </div>
+      <button class="btns" style="height:28px;font-size:11px;flex-shrink:0" onclick="document.getElementById('style-upload-input').click()"><i class="ti ti-upload" style="font-size:12px"></i>Referans Yükle</button>
+      <input type="file" id="style-upload-input" accept=".pdf,.doc,.docx,.txt" multiple style="display:none" onchange="analyzeStyleFiles(this.files)">
+    </div>
+    <div id="style-analyzing" style="display:none;align-items:center;gap:8px;font-size:12px;color:var(--tx3);margin-top:10px"><div style="width:14px;height:14px;border:2px solid var(--acb);border-top-color:var(--ac);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0"></div>Üslup analiz ediliyor...</div>
+    <div id="style-result" style="display:none;font-size:11.5px;color:var(--tx2);line-height:1.7;background:rgba(0,255,136,.04);border:1px solid var(--acb);border-radius:var(--rsm);padding:10px;margin-top:10px"></div>
+  </div>
+
+  <!-- ADIM GÖSTERGESİ -->
+  <div class="aiflow" style="margin-bottom:14px">
+    <div class="aistp" id="pstp-1" style="border-color:var(--acb);background:var(--acd)"><span class="aistpico" style="color:var(--ac)"><i class="ti ti-user-check"></i></span><div class="aistptit">1. Müvekkil & Bilgiler</div><div class="aistpdesc">Müvekkil seç, bilgiler otomatik gelir</div></div>
+    <div class="aiarr"><i class="ti ti-chevron-right"></i></div>
+    <div class="aistp" id="pstp-2"><span class="aistpico"><i class="ti ti-file-text"></i></span><div class="aistptit">2. Olay Örgüsü</div><div class="aistpdesc">Kronolojik, detaylı anlatım</div></div>
+    <div class="aiarr"><i class="ti ti-chevron-right"></i></div>
+    <div class="aistp" id="pstp-3"><span class="aistpico"><i class="ti ti-scale"></i></span><div class="aistptit">3. Hukuki Dayanak</div><div class="aistpdesc">Kanun maddeleri & emsal</div></div>
+    <div class="aiarr"><i class="ti ti-chevron-right"></i></div>
+    <div class="aistp" id="pstp-4"><span class="aistpico"><i class="ti ti-gavel"></i></span><div class="aistptit">4. Sonuç & Talep</div><div class="aistpdesc">Nihai talep & imza</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:280px 1fr;gap:14px">
+    <!-- SOL PANEL -->
     <div>
-      <div class="card" style="margin-bottom:12px"><div class="chd"><span class="ct">Dilekçe Türü</span></div>
+      <!-- MÜVEKKİL SEÇ -->
+      <div class="card" style="margin-bottom:12px">
+        <div class="chd"><span class="ct">Müvekkil Seç</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px" id="muvekkil-list">
+          <div class="muv-item" onclick="selectMuvekkil(this,'Ayşe Yılmaz','Aile — Boşanma','İzmir 3. Aile Mahkemesi','Hasan Yılmaz','Av. Ahmet Kaya','Evlilik 2018\u2019de başlamış, 2 müşterek çocuk mevcut. Davalı süregelen şiddet ve ekonomik baskı uygulamış, evlilik birliği temelinden sarsılmıştır. Müvekkil boşanma, müşterek çocukların velayeti ve maddi-manevi tazminat talep etmektedir.')" style="display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rsm);border:1px solid var(--acb);background:var(--acd);cursor:pointer">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#000;flex-shrink:0">AY</div>
+            <div><div style="font-size:12px;font-weight:500">Ayşe Yılmaz</div><div style="font-size:10.5px;color:var(--tx4)">Aile — Boşanma</div></div>
+            <i class="ti ti-check" style="color:var(--ac);margin-left:auto;font-size:14px" id="check-AY"></i>
+          </div>
+          <div class="muv-item" onclick="selectMuvekkil(this,'Mehmet Arslan','İş — İşe İade','İzmir 7. İş Mahkemesi','Metro Market A.Ş.','Av. Ahmet Kaya','Müvekkil 8 yıl çalıştığı işyerinden geçerli neden gösterilmeksizin iş sözleşmesi feshedilmiştir. Performans gerekçesi uydurma olup iş güvencesi kapsamındadır. İşe iade ve işe başlatmama tazminatı talep edilmektedir.')" style="display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rsm);border:1px solid var(--bd);background:var(--sf2);cursor:pointer">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--bl);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">MA</div>
+            <div><div style="font-size:12px;font-weight:500">Mehmet Arslan</div><div style="font-size:10.5px;color:var(--tx4)">İş — İşe İade</div></div>
+            <i class="ti ti-check" style="color:transparent;margin-left:auto;font-size:14px" id="check-MA"></i>
+          </div>
+          <div class="muv-item" onclick="selectMuvekkil(this,'Can Holding A.Ş.','Ticaret — Alacak','İzmir 2. Ticaret Mahkemesi','Alfa Tedarik Ltd.','Av. Selin Erdoğan','Davalı şirket, müvekkil ile imzalanan mal alım sözleşmesi kapsamında teslim edilen ürünlerin bedelini ödememektedir. Toplam alacak ₺80.000 olup ihtarnameye rağmen ödeme yapılmamıştır.')" style="display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rsm);border:1px solid var(--bd);background:var(--sf2);cursor:pointer">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--am);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#000;flex-shrink:0">CH</div>
+            <div><div style="font-size:12px;font-weight:500">Can Holding A.Ş.</div><div style="font-size:10.5px;color:var(--tx4)">Ticaret — Alacak</div></div>
+            <i class="ti ti-check" style="color:transparent;margin-left:auto;font-size:14px" id="check-CH"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- DİLEKÇE TÜRÜ -->
+      <div class="card" style="margin-bottom:12px">
+        <div class="chd"><span class="ct">Dilekçe Türü</span></div>
         <div style="display:flex;flex-direction:column;gap:4px" id="ptypes">
-          <div class="ptype" onclick="selPType(this)" style="padding:9px 11px;background:var(--acd);border:1px solid var(--acb);border-radius:var(--rsm);font-size:12px;color:var(--ac);cursor:pointer">Dava Dilekçesi</div>
-          <div class="ptype" onclick="selPType(this)" style="padding:9px 11px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);font-size:12px;color:var(--tx3);cursor:pointer">Cevap Dilekçesi</div>
-          <div class="ptype" onclick="selPType(this)" style="padding:9px 11px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);font-size:12px;color:var(--tx3);cursor:pointer">İstinaf Dilekçesi</div>
-          <div class="ptype" onclick="selPType(this)" style="padding:9px 11px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);font-size:12px;color:var(--tx3);cursor:pointer">Temyiz Dilekçesi</div>
-          <div class="ptype" onclick="selPType(this)" style="padding:9px 11px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);font-size:12px;color:var(--tx3);cursor:pointer">İhtarname</div>
-          <div class="ptype" onclick="selPType(this)" style="padding:9px 11px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);font-size:12px;color:var(--tx3);cursor:pointer">Arabuluculuk Başvurusu</div>
+          <div class="ptype" onclick="selPType(this,'Dava Dilekçesi')" style="padding:9px 11px;background:var(--acd);border:1px solid var(--acb);border-radius:var(--rsm);font-size:12px;color:var(--ac);cursor:pointer">Dava Dilekçesi</div>
+          <div class="ptype" onclick="selPType(this,'Cevap Dilekçesi')" style="padding:9px 11px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);font-size:12px;color:var(--tx3);cursor:pointer">Cevap Dilekçesi</div>
+          <div class="ptype" onclick="selPType(this,'İstinaf Dilekçesi')" style="padding:9px 11px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);font-size:12px;color:var(--tx3);cursor:pointer">İstinaf Dilekçesi</div>
+          <div class="ptype" onclick="selPType(this,'Temyiz Dilekçesi')" style="padding:9px 11px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);font-size:12px;color:var(--tx3);cursor:pointer">Temyiz Dilekçesi</div>
+          <div class="ptype" onclick="selPType(this,'İhtarname')" style="padding:9px 11px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);font-size:12px;color:var(--tx3);cursor:pointer">İhtarname</div>
+          <div class="ptype" onclick="selPType(this,'Arabuluculuk Başvurusu')" style="padding:9px 11px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);font-size:12px;color:var(--tx3);cursor:pointer">Arabuluculuk Başvurusu</div>
         </div>
       </div>
-      <div class="card"><div class="chd"><span class="ct">Dosya Seç</span></div>
-        <select class="fi" style="font-size:12px;margin-bottom:12px"><option>Ayşe Yılmaz — Boşanma</option><option>Mehmet Arslan — İşe İade</option><option>Can Holding — Alacak</option></select>
-        <button class="btnp" style="width:100%;justify-content:center;height:36px" onclick="genPetition()"><i class="ti ti-sparkles"></i>AI ile Üret</button>
-      </div>
-    </div>
-    <div class="pted">
-      <div class="pttop">
-        <span style="font-size:12px;color:var(--tx2);font-weight:500">Dava Dilekçesi — Yılmaz</span>
-        <div style="display:flex;gap:6px;margin-left:auto">
-          <button class="btns" style="height:26px;font-size:11px"><i class="ti ti-copy" style="font-size:12px"></i>Kopyala</button>
-          <button class="btns" style="height:26px;font-size:11px"><i class="ti ti-download" style="font-size:12px"></i>İndir</button>
-          <button class="btnp" style="height:26px;font-size:11px" onclick="showToast('Dilekçe onaylandı ve dosyaya eklendi','ok')"><i class="ti ti-check" style="font-size:12px"></i>Onayla</button>
+
+      <!-- SEÇİLEN MÜVEKKİL BİLGİLERİ -->
+      <div class="card" id="muv-bilgi-card" style="margin-bottom:12px">
+        <div class="chd"><span class="ct">Dava Bilgileri</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Mahkeme</label><input class="fi" id="pet-mahkeme" placeholder="Müvekkil seçince otomatik gelir" style="font-size:12px;height:32px"></div>
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Davacı (Müvekkil)</label><input class="fi" id="pet-davaci" placeholder="Müvekkil seçince otomatik gelir" style="font-size:12px;height:32px"></div>
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Davalı</label><input class="fi" id="pet-davali" placeholder="Müvekkil seçince otomatik gelir" style="font-size:12px;height:32px"></div>
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Avukat</label><input class="fi" id="pet-avukat" placeholder="Müvekkil seçince otomatik gelir" style="font-size:12px;height:32px"></div>
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Talep / Ek Bilgi</label><input class="fi" id="pet-tutar" placeholder="₺50.000 tazminat vb." style="font-size:12px;height:32px"></div>
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Olay Özeti <span style="color:var(--rd)">*</span></label><textarea class="fi" id="pet-ozet" rows="5" placeholder="Müvekkil seçince temel bilgi gelir, detay ekleyebilirsiniz..." style="font-size:12px;resize:vertical;min-height:90px;padding:8px;line-height:1.6"></textarea></div>
         </div>
       </div>
-      <div class="ptbody">
-        <textarea class="ptta">İZMİR 3. AİLE MAHKEMESİ'NE
 
-DAVACI   : Ayşe Yılmaz (TC: 12345678901)
-VEKİLİ  : Av. Ahmet Kaya (Baro No: 1234)
-DAVALI   : Hasan Yılmaz
-KONU     : Boşanma, velayet ve maddi-manevi tazminat
-
-AÇIKLAMALAR:
-
-1. Müvekkil ile davalı 15.03.2018 tarihinde evlenmiş, iki
-müşterek çocuk dünyaya gelmiştir.
-
-2. Davalının süregelen şiddet ve ekonomik baskı uygulamaları
-nedeniyle evlilik birliği temelinden sarsılmıştır. (TMK 166/I)
-
-3. Yargıtay 2. HD 2023/4421 sayılı karar uyarınca ekonomik
-şiddetin ispat yükü paylaşılmalıdır.
-
-SONUÇ VE TALEP:
-- Tarafların BOŞANMASINA,
-- Çocukların VELAYETİNİN müvekkile verilmesine,
-- ₺50.000 maddi, ₺30.000 manevi TAZMİNATA
-karar verilmesini saygıyla arz ederiz.
-
-                         Av. Ahmet Kaya
-                         İzmir Barosu No: 1234</textarea>
+      <!-- MANUEL EMSAL -->
+      <div class="card">
+        <div class="chd"><span class="ct">Manuel Emsal Ekle</span><button class="btns" style="height:22px;font-size:10px;margin-left:auto" onclick="addManualEmsal()"><i class="ti ti-plus" style="font-size:11px"></i>Ekle</button></div>
+        <div style="font-size:10.5px;color:var(--tx4);margin-bottom:8px;line-height:1.5">UYAP\u2019tan bulduğunuz kararları buraya ekleyin. AI dilekçeye dahil eder.</div>
+        <div id="manual-emsal-list" style="display:flex;flex-direction:column;gap:6px"></div>
+        <div id="emsal-add-form" style="display:none;margin-top:10px;border-top:1px solid var(--bd);padding-top:10px">
+          <input class="fi" id="emsal-no" placeholder="Yargıtay 9. HD — 2023/4421" style="font-size:11px;height:30px;margin-bottom:6px">
+          <input class="fi" id="emsal-baslik" placeholder="Karar başlığı" style="font-size:11px;height:30px;margin-bottom:6px">
+          <textarea class="fi" id="emsal-ozet" placeholder="Kısa özet..." rows="2" style="font-size:11px;resize:none;padding:8px"></textarea>
+          <div style="display:flex;gap:6px;margin-top:6px">
+            <button class="btnp" style="flex:1;height:28px;font-size:11px;justify-content:center" onclick="saveManualEmsal()"><i class="ti ti-check" style="font-size:11px"></i>Kaydet</button>
+            <button class="btns" style="height:28px;font-size:11px" onclick="document.getElementById('emsal-add-form').style.display='none'">İptal</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="srccard">
-      <div class="chd"><span class="ct">Kullanılan Kaynaklar</span></div>
-      <div class="srcitem"><div class="srcnum">Yargıtay 2. HD — 2023/4421</div><div class="srctit">Ekonomik şiddet ispat yükü</div><div class="srcdesc">Paylaşımlı ispat yüküne ilişkin içtihat.</div><div style="display:flex;gap:5px;margin-top:8px"><button class="btns" style="height:22px;font-size:10px">İncele</button><button class="btnd" style="height:22px;font-size:10px" onclick="showToast('Karar kaldırıldı','ok')">Kaldır</button></div></div>
-      <div class="srcitem"><div class="srcnum">Yargıtay 2. HD — 2022/8341</div><div class="srctit">Velayet kriterleri</div><div class="srcdesc">Çocuğun üstün yararı ilkesi esas alınır.</div><div style="display:flex;gap:5px;margin-top:8px"><button class="btns" style="height:22px;font-size:10px">İncele</button><button class="btnd" style="height:22px;font-size:10px" onclick="showToast('Karar kaldırıldı','ok')">Kaldır</button></div></div>
-      <div class="srcitem"><div class="srcnum">TMK Madde 166/I</div><div class="srctit">Evlilik birliğinin sarsılması</div><div class="srcdesc">Yasal dayanak.</div></div>
-      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);font-size:10.5px;color:var(--tx4)">Karar bulunamazsa: <span style="color:var(--rd)">"Doğrulanmış emsal bulunamadı"</span> mesajı gösterilir.</div>
+
+    <!-- SAĞ PANEL -->
+    <div>
+      <!-- BAŞLAT -->
+      <div id="petition-start-screen" class="card" style="text-align:center;padding:40px 20px">
+        <i class="ti ti-sparkles" style="font-size:36px;color:var(--ac);display:block;margin-bottom:14px"></i>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px">Dilekçeyi Oluşturmaya Hazır</div>
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:20px;line-height:1.7;max-width:420px;margin-left:auto;margin-right:auto">Sol panelden müvekkili seçin. Dava bilgileri otomatik gelecek. AI her bölümü ayrı yazar, siz onaylarsınız. Uzun, ikna edici ve profesyonel hukuki Türkçe kullanılır.</div>
+        <button class="btnp" style="height:40px;font-size:13px;padding:0 28px" onclick="startPetitionFlow()"><i class="ti ti-sparkles"></i>AI ile Dilekçe Oluştur</button>
+      </div>
+
+      <!-- BÖLÜM 1 -->
+      <div id="pet-section-1" style="display:none">
+        <div class="card" style="margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <div style="width:24px;height:24px;border-radius:6px;background:var(--acd);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:11px;font-weight:700;color:var(--ac)">1</span></div>
+            <div style="font-size:13px;font-weight:600">Giriş & Olay Örgüsü</div>
+            <div id="sec1-status" style="margin-left:auto;font-size:10px"></div>
+          </div>
+          <div id="sec1-loading" style="display:none;align-items:center;gap:8px;padding:16px 0;font-size:12px;color:var(--tx3)"><div style="width:16px;height:16px;border:2px solid var(--acb);border-top-color:var(--ac);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0"></div>AI olay örgüsünü detaylı yazıyor...</div>
+          <textarea id="sec1-text" class="ptta" style="min-height:220px;display:none"></textarea>
+          <div id="sec1-actions" style="display:none;justify-content:flex-end;gap:6px;margin-top:10px">
+            <button class="btns" style="height:28px;font-size:11px" onclick="rewriteSection(1)"><i class="ti ti-refresh" style="font-size:11px"></i>Yeniden Yaz</button>
+            <button class="btnp" style="height:28px;font-size:11px" onclick="approveSection(1)"><i class="ti ti-check" style="font-size:11px"></i>Onayla → Devam</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÖLÜM 2 -->
+      <div id="pet-section-2" style="display:none">
+        <div class="card" style="margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <div style="width:24px;height:24px;border-radius:6px;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:11px;font-weight:700;color:var(--bl)">2</span></div>
+            <div style="font-size:13px;font-weight:600">Hukuki Dayanak & Emsal</div>
+            <div id="sec2-status" style="margin-left:auto;font-size:10px"></div>
+          </div>
+          <div id="sec2-loading" style="display:none;align-items:center;gap:8px;padding:16px 0;font-size:12px;color:var(--tx3)"><div style="width:16px;height:16px;border:2px solid var(--acb);border-top-color:var(--ac);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0"></div>AI hukuki dayanak ve emsal yazıyor...</div>
+          <textarea id="sec2-text" class="ptta" style="min-height:180px;display:none"></textarea>
+          <div id="sec2-actions" style="display:none;justify-content:flex-end;gap:6px;margin-top:10px">
+            <button class="btns" style="height:28px;font-size:11px" onclick="rewriteSection(2)"><i class="ti ti-refresh" style="font-size:11px"></i>Yeniden Yaz</button>
+            <button class="btnp" style="height:28px;font-size:11px" onclick="approveSection(2)"><i class="ti ti-check" style="font-size:11px"></i>Onayla → Devam</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÖLÜM 3 -->
+      <div id="pet-section-3" style="display:none">
+        <div class="card" style="margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <div style="width:24px;height:24px;border-radius:6px;background:rgba(239,159,39,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:11px;font-weight:700;color:var(--am)">3</span></div>
+            <div style="font-size:13px;font-weight:600">Sonuç & Talep</div>
+            <div id="sec3-status" style="margin-left:auto;font-size:10px"></div>
+          </div>
+          <div id="sec3-loading" style="display:none;align-items:center;gap:8px;padding:16px 0;font-size:12px;color:var(--tx3)"><div style="width:16px;height:16px;border:2px solid var(--acb);border-top-color:var(--ac);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0"></div>AI sonuç ve talep bölümünü yazıyor...</div>
+          <textarea id="sec3-text" class="ptta" style="min-height:140px;display:none"></textarea>
+          <div id="sec3-actions" style="display:none;justify-content:flex-end;gap:6px;margin-top:10px">
+            <button class="btns" style="height:28px;font-size:11px" onclick="rewriteSection(3)"><i class="ti ti-refresh" style="font-size:11px"></i>Yeniden Yaz</button>
+            <button class="btnp" style="height:28px;font-size:11px" onclick="approveSection(3)"><i class="ti ti-check" style="font-size:11px"></i>Onayla → Birleştir</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FİNAL -->
+      <div id="pet-section-final" style="display:none">
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <div style="width:24px;height:24px;border-radius:6px;background:var(--acd);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-check" style="font-size:13px;color:var(--ac)"></i></div>
+            <div style="font-size:13px;font-weight:600;color:var(--ac)">Dilekçe Hazır</div>
+            <div style="display:flex;gap:6px;margin-left:auto">
+              <button class="btns" style="height:26px;font-size:11px" onclick="copyPetition()"><i class="ti ti-copy" style="font-size:11px"></i>Kopyala</button>
+              <button class="btns" style="height:26px;font-size:11px" onclick="downloadPetition()"><i class="ti ti-download" style="font-size:11px"></i>İndir</button>
+              <button class="btnp" style="height:26px;font-size:11px" onclick="showToast('Dilekçe dosyaya eklendi \u2713','ok')"><i class="ti ti-check" style="font-size:11px"></i>Dosyaya Ekle</button>
+            </div>
+          </div>
+          <textarea id="final-petition-text" class="ptta" style="min-height:400px;font-size:12px;line-height:1.8"></textarea>
+          <!-- WEB EMSAL ARAMA -->
+          <div id="emsal-search-section" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <div style="font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px"><i class="ti ti-world-search" style="color:var(--bl)"></i>İnternetten Emsal Karar Ara</div>
+              <button class="btnp" style="height:28px;font-size:11px" id="emsal-search-btn" onclick="searchEmsalWeb()"><i class="ti ti-search" style="font-size:11px"></i>AI ile Ara</button>
+            </div>
+            <div id="emsal-search-loading" style="display:none;align-items:center;gap:8px;font-size:12px;color:var(--tx3);padding:10px 0"><div style="width:14px;height:14px;border:2px solid rgba(59,130,246,.3);border-top-color:var(--bl);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0"></div>Yargıtay kararları taranıyor...</div>
+            <div id="emsal-search-results" style="display:flex;flex-direction:column;gap:8px"></div>
+            <div style="font-size:10px;color:var(--tx4);margin-top:8px;padding:8px;background:rgba(239,159,39,.06);border-radius:var(--rsm);border:1px solid rgba(239,159,39,.15)"><i class="ti ti-info-circle" style="color:var(--am)"></i> AI internet araması yapar, bulduklarını önerir. UYAP\u2019tan doğrulayıp \u201cDilekçeye Ekle\u201d ile ekleyin.</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1448,13 +1569,259 @@ function toggleTask(el){
   el.innerHTML=el.classList.contains('done')?'<i class="ti ti-check" style="font-size:10px"></i>':'';
   if(el.classList.contains('done'))showToast('Görev tamamlandı','ok');
 }
-function selPType(el){
-  document.querySelectorAll('.ptype').forEach(p=>{p.style.background='var(--sf2)';p.style.borderColor='var(--bd)';p.style.color='var(--tx3)';});
+function selPType(el,tip){
+  document.querySelectorAll('.ptype').forEach(function(p){p.style.background='var(--sf2)';p.style.borderColor='var(--bd)';p.style.color='var(--tx3)';});
   el.style.background='var(--acd)';el.style.borderColor='var(--acb)';el.style.color='var(--ac)';
+  window.selectedPetitionType=tip||el.textContent.trim();
 }
-function genPetition(){
-  showToast('AI dilekçe hazırlıyor — emsal kararlar aranıyor...','info');
-  setTimeout(()=>showToast('Dilekçe oluşturuldu · 3 emsal karar eklendi','ok'),2000);
+
+// ── MÜVEKKİL SEÇİMİ ────────────────────────────────────────
+var selectedMuvekkil=null;
+var checkIds=['check-AY','check-MA','check-CH'];
+
+function selectMuvekkil(el,ad,davaTuru,mahkeme,davali,avukat,ozet){
+  // Seçim görünümü
+  document.querySelectorAll('.muv-item').forEach(function(m){
+    m.style.background='var(--sf2)';m.style.borderColor='var(--bd)';
+  });
+  checkIds.forEach(function(id){var c=document.getElementById(id);if(c)c.style.color='transparent';});
+  el.style.background='var(--acd)';el.style.borderColor='var(--acb)';
+  // Hangi check işareti
+  var ini=ad.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
+  var checkId='check-'+ini;
+  var chk=document.getElementById(checkId);
+  if(chk)chk.style.color='var(--ac)';
+  // Alanları doldur
+  document.getElementById('pet-mahkeme').value=mahkeme||'';
+  document.getElementById('pet-davaci').value=ad||'';
+  document.getElementById('pet-davali').value=davali||'';
+  document.getElementById('pet-avukat').value=avukat||'';
+  document.getElementById('pet-ozet').value=ozet||'';
+  selectedMuvekkil={ad,davaTuru,mahkeme,davali,avukat,ozet};
+  showToast(ad+' seçildi','ok');
+}
+
+// ── STİL PROFİLİ ───────────────────────────────────────────
+var styleProfile=localStorage.getItem('legalox_style_profile')||'';
+(function initStyleBadge(){
+  if(!styleProfile)return;
+  var init=function(){
+    var b=document.getElementById('style-active-badge');
+    var r=document.getElementById('style-result');
+    if(b)b.style.display='inline';
+    if(r){r.style.display='block';r.textContent=styleProfile;}
+  };
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
+})();
+
+async function analyzeStyleFiles(files){
+  if(!files||!files.length)return;
+  var analyzing=document.getElementById('style-analyzing');
+  var result=document.getElementById('style-result');
+  var badge=document.getElementById('style-active-badge');
+  analyzing.style.display='flex';result.style.display='none';
+  var texts=[];
+  for(var i=0;i<files.length;i++){var t=await readFileText(files[i]);if(t)texts.push(t.substring(0,2000));}
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:'Aşağıdaki Türk hukuk dilekçelerini analiz et ve avukatın yazım üslubunu çıkar. Cümle yapısı, resmiyet seviyesi, paragraf düzeni, sıkça kullandığı ifadeler, hitap biçimi, sonuç bölümü kalıplarını incele. Kısa ve net bir \u00fcslup profili yaz (maks. 150 kelime):\n\n'+texts.join('\n\n---\n\n')}]})});
+    var data=await resp.json();
+    styleProfile=data.content[0].text;
+    localStorage.setItem('legalox_style_profile',styleProfile);
+    analyzing.style.display='none';
+    result.style.display='block';result.textContent=styleProfile;
+    badge.style.display='inline';
+    showToast('Üslup profili oluşturuldu \u2713','ok');
+  }catch(e){analyzing.style.display='none';showToast('Analiz hatası','err');}
+}
+
+function readFileText(file){
+  return new Promise(function(resolve){
+    if(file.type==='application/pdf'){resolve('[PDF yüklendi: '+file.name+']');return;}
+    var r=new FileReader();
+    r.onload=function(e){resolve(e.target.result);};
+    r.onerror=function(){resolve('');};
+    r.readAsText(file,'UTF-8');
+  });
+}
+
+// ── MANUEL EMSAL ───────────────────────────────────────────
+var manualEmsaller=[];
+function addManualEmsal(){document.getElementById('emsal-add-form').style.display='block';}
+function saveManualEmsal(){
+  var no=document.getElementById('emsal-no').value.trim();
+  var baslik=document.getElementById('emsal-baslik').value.trim();
+  var ozet=document.getElementById('emsal-ozet').value.trim();
+  if(!no||!baslik){showToast('Karar no ve ba\u015fl\u0131k zorunlu','err');return;}
+  manualEmsaller.push({no,baslik,ozet});
+  renderManualEmsaller();
+  ['emsal-no','emsal-baslik','emsal-ozet'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('emsal-add-form').style.display='none';
+  showToast('Emsal karar eklendi \u2713','ok');
+}
+function renderManualEmsaller(){
+  var list=document.getElementById('manual-emsal-list');
+  if(!manualEmsaller.length){list.innerHTML='';return;}
+  list.innerHTML=manualEmsaller.map(function(e,i){
+    return '<div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);padding:8px 10px"><div style="font-size:11px;font-weight:600;color:var(--ac)">'+e.no+'</div><div style="font-size:11px;margin:2px 0">'+e.baslik+'</div>'+(e.ozet?'<div style="font-size:10.5px;color:var(--tx4);margin-top:3px">'+e.ozet+'</div>':'')+'<button onclick="manualEmsaller.splice('+i+',1);renderManualEmsaller()" style="margin-top:5px;font-size:10px;color:var(--rd);background:none;border:none;cursor:pointer;padding:0">Kald\u0131r</button></div>';
+  }).join('');
+}
+
+// ── DİLEKÇE AKIŞI ─────────────────────────────────────────
+var petSections={1:'',2:'',3:''};
+window.selectedPetitionType='Dava Dilekçesi';
+
+function genPetition(){startPetitionFlow();}
+
+function startPetitionFlow(){
+  var ozet=document.getElementById('pet-ozet').value.trim();
+  if(!ozet){showToast('Lütfen önce müvekkil seçin veya olay özetini girin','err');return;}
+  document.getElementById('petition-start-screen').style.display='none';
+  petSections={1:'',2:'',3:''};
+  ['pet-section-2','pet-section-3','pet-section-final'].forEach(function(id){document.getElementById(id).style.display='none';});
+  updateStepIndicator(1);
+  writeSection(1);
+}
+
+function updateStepIndicator(active){
+  for(var i=1;i<=4;i++){
+    var el=document.getElementById('pstp-'+i);
+    if(!el)continue;
+    el.style.boxShadow='';
+    if(i<active){el.style.background='var(--acd)';el.style.borderColor='var(--acb)';}
+    else if(i===active){el.style.background='var(--acd)';el.style.borderColor='var(--ac)';el.style.boxShadow='0 0 0 2px rgba(0,255,136,.2)';}
+    else{el.style.background='var(--sf2)';el.style.borderColor='var(--bd)';}
+  }
+}
+
+async function writeSection(num){
+  var mahkeme=document.getElementById('pet-mahkeme').value||'';
+  var davaci=document.getElementById('pet-davaci').value||'';
+  var davali=document.getElementById('pet-davali').value||'';
+  var avukat=document.getElementById('pet-avukat').value||'';
+  var tutar=document.getElementById('pet-tutar').value||'';
+  var ozet=document.getElementById('pet-ozet').value||'';
+  var tip=window.selectedPetitionType||'Dava Dilekçesi';
+  var emsalMetni=manualEmsaller.length?'\n\nAvukat tarafından eklenen doğrulanmış emsal kararlar (bunları dilekçede kullan):\n'+manualEmsaller.map(function(e){return'\u2022 '+e.no+': '+e.baslik+(e.ozet?' \u2014 '+e.ozet:'');}).join('\n'):'';
+  var stilMetni=styleProfile?'\n\nAvukatın yazım üslubu (kesinlikle bu üsluba uy):\n'+styleProfile:'';
+
+  var sec=document.getElementById('pet-section-'+num);
+  var loading=document.getElementById('sec'+num+'-loading');
+  var textArea=document.getElementById('sec'+num+'-text');
+  var actions=document.getElementById('sec'+num+'-actions');
+  sec.style.display='block';
+  loading.style.display='flex';textArea.style.display='none';actions.style.display='none';
+
+  var prompts={
+    1:'Sen 20 yıllık deneyimli bir Türk hukukçususun. Aşağıdaki '+tip+' için GİRİŞ VE OLAY ÖRGÜSÜ bölümünü yaz.\n\nBilgiler:\nMahkeme: '+(mahkeme||'[Mahkeme]')+'\nDavacı: '+(davaci||'[Davacı]')+'\nDavalı: '+(davali||'[Davalı]')+'\nVekil: '+(avukat||'[Avukat]')+'\nOlay: '+ozet+'\n'+emsalMetni+stilMetni+'\n\nBu bölümde:\n1. Resmi mahkeme başlığı: MAHKEME ADI\u2019NA başlığı, ardından DAVACI, VEKİLİ, DAVALI, KONU satırları\n2. "AÇIKLAMALAR:" başlığı altında kronolojik ve ÇOK DETAYLI olay anlatımı\n3. Her olayı tarih, yer, kişi bilgisiyle anlat\n4. Müvekkili güçlü destekleyen argümanlar öne çıkar\n5. Hukuki terminoloji kullan\n6. Minimum 500 kelime — kısa şablon dilekçe değil, gerçek ve ikna edici bir anlatım yaz\n7. Paragraflar numaralı olsun',
+
+    2:'Sen 20 yıllık deneyimli bir Türk hukukçususun. Bu '+tip+' için HUKUKİ DAYANAK VE GEREKÇE bölümünü yaz.\n\nDava: '+davaci+' vs '+davali+'\nKonu: '+ozet+'\n'+emsalMetni+stilMetni+'\n\nBu bölümde:\n1. "HUKUKİ SEBEPLER:" başlığı\n2. Davayla ilgili tüm kanun maddelerini numaralarıyla yaz (TMK, HMK, TBK, İş K., TTK vb.)\n3. Her maddenin bu davaya neden uygulandığını açıkla\n4. Yargıtay içtihadına şöyle atıf yap: "Yargıtay [Daire] yerleşik içtihadı uyarınca..." (numara uydurma, eğer avukat emsal eklediyse onu kullan)\n5. Avukat emsal eklediyse bunları öne çıkar\n6. Güçlü, ikna edici hukuki argüman — minimum 300 kelime',
+
+    3:'Sen 20 yıllık deneyimli bir Türk hukukçususun. Bu '+tip+' için SONUÇ VE TALEP bölümünü yaz.\n\nDavacı: '+davaci+'\nDavalı: '+davali+'\nVekil: '+avukat+'\n'+(tutar?'Talep: '+tutar:'')+'\n'+stilMetni+'\n\nBu bölümde:\n1. "SONUÇ VE TALEP:" başlığı\n2. Tüm talepler büyük harfle ve madde madde\n3. Yargılama giderleri ve vekalet ücreti\n4. "Saygılarımla arz ederim." kapanışı\n5. Tarih ve avukat imza bloğu\n6. Net, kararlı, kesin bir ton'
+  };
+
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompts[num]}]})});
+    var data=await resp.json();
+    var text=data.content[0].text;
+    petSections[num]=text;
+    loading.style.display='none';
+    textArea.style.display='block';textArea.value=text;
+    actions.style.display='flex';
+    var st=document.getElementById('sec'+num+'-status');
+    if(st)st.innerHTML='<span style="color:var(--am);font-size:10px">AI yazdı — düzenleyebilirsiniz</span>';
+  }catch(e){
+    loading.style.display='none';
+    showToast('Hata: '+e.message,'err');
+  }
+}
+
+async function rewriteSection(num){
+  var st=document.getElementById('sec'+num+'-status');
+  if(st)st.innerHTML='';
+  petSections[num]='';
+  await writeSection(num);
+}
+
+function approveSection(num){
+  var ta=document.getElementById('sec'+num+'-text');
+  petSections[num]=ta.value;
+  var st=document.getElementById('sec'+num+'-status');
+  if(st)st.innerHTML='<span style="color:var(--ac);font-size:10px">\u2713 Onaylandı</span>';
+  document.getElementById('sec'+num+'-actions').style.display='none';
+  showToast('Bölüm '+num+' onaylandı','ok');
+  if(num<3){updateStepIndicator(num+1);writeSection(num+1);}
+  else{updateStepIndicator(4);buildFinalPetition();}
+}
+
+function buildFinalPetition(){
+  var final=document.getElementById('pet-section-final');
+  final.style.display='block';
+  var txt=[petSections[1],petSections[2],petSections[3]].filter(Boolean).join('\n\n');
+  document.getElementById('final-petition-text').value=txt;
+  showToast('Dilekçe tamamlandı \u2713','ok');
+  final.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function copyPetition(){
+  var t=document.getElementById('final-petition-text');
+  if(t){navigator.clipboard.writeText(t.value).then(function(){showToast('Panoya kopyalandı \u2713','ok');});}
+}
+function downloadPetition(){
+  var t=document.getElementById('final-petition-text')?.value||'';
+  var b=new Blob([t],{type:'text/plain;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(b);
+  var muv=document.getElementById('pet-davaci')?.value||'dilekce';
+  a.download=muv.replace(/\s+/g,'_')+'_dilekce.txt';a.click();
+  showToast('İndirildi \u2713','ok');
+}
+
+// ── WEB EMSAL ARAMA ────────────────────────────────────────
+async function searchEmsalWeb(){
+  var btn=document.getElementById('emsal-search-btn');
+  var loading=document.getElementById('emsal-search-loading');
+  var results=document.getElementById('emsal-search-results');
+  var ozet=document.getElementById('pet-ozet')?.value||'';
+  var tip=window.selectedPetitionType||'Dava Dilekçesi';
+
+  btn.disabled=true;btn.style.opacity='0.5';
+  loading.style.display='flex';results.innerHTML='';
+
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku için emsal karar ara. Dava türü: '+tip+'. Konu: '+ozet+'\n\nkazanci.com, legalbank.net, hukukmedeniyeti.org veya karararama.yargitay.gov.tr sitelerinde ara. Bulduğun gerçek kararları şu JSON formatında döndür (sadece JSON, başka bir şey yazma):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN","baslik":"karar başlığı","ozet":"kısa özet","kaynak":"kaynak url veya site adı","tarih":"tarih"}]}\nEğer bulamazsan: {"kararlar":[]}\nMaksimum 4 karar.'}]})});
+    var data=await resp.json();
+    var fullText=data.content.map(function(c){return c.type==='text'?c.text:'';}).join('');
+    var clean=fullText.replace(/```json|```/g,'').trim();
+    // JSON bul
+    var jsonMatch=clean.match(/\{[\s\S]*\}/);
+    if(!jsonMatch)throw new Error('JSON bulunamadı');
+    var parsed=JSON.parse(jsonMatch[0]);
+
+    loading.style.display='none';
+    btn.disabled=false;btn.style.opacity='1';
+
+    if(!parsed.kararlar||!parsed.kararlar.length){
+      results.innerHTML='<div class="srcitem" style="background:var(--rdd);border-color:rgba(226,75,74,.15)"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-alert-triangle" style="color:var(--rd);font-size:16px"></i><div style="font-size:12px;color:var(--rd)">Bu konuda internet aramasında emsal karar bulunamadı. UYAP\u2019tan manuel araştırma yapınız.</div></div></div>';
+      return;
+    }
+
+    results.innerHTML=parsed.kararlar.map(function(k,i){
+      return '<div class="srcitem" style="cursor:default"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="flex:1"><div class="srcnum">'+k.no+(k.tarih?' · '+k.tarih:'')+'</div><div class="srctit" style="font-size:12.5px;margin:4px 0">'+k.baslik+'</div><div class="srcdesc">'+k.ozet+'</div>'+(k.kaynak?'<div style="font-size:10px;color:var(--tx4);margin-top:4px"><i class="ti ti-link" style="font-size:10px"></i> '+k.kaynak+'</div>':'')+'</div><div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0"><span class="bdg" style="background:rgba(59,130,246,.1);color:var(--bl);border-color:rgba(59,130,246,.2)">Web</span><button class="btnp" style="height:24px;font-size:10px;white-space:nowrap" onclick="addWebEmsalToManual('+i+')"><i class="ti ti-plus" style="font-size:10px"></i>Ekle</button></div></div></div>';
+    }).join('');
+
+    window._webEmsalResults=parsed.kararlar;
+  }catch(e){
+    loading.style.display='none';
+    btn.disabled=false;btn.style.opacity='1';
+    results.innerHTML='<div style="font-size:12px;color:var(--rd);padding:8px">Arama hatası: '+e.message+'</div>';
+  }
+}
+
+function addWebEmsalToManual(idx){
+  var k=window._webEmsalResults&&window._webEmsalResults[idx];
+  if(!k)return;
+  manualEmsaller.push({no:k.no,baslik:k.baslik,ozet:k.ozet});
+  renderManualEmsaller();
+  showToast(k.no+' eklendi \u2713','ok');
 }
 function buildGuide(){
   // Mevcut kullanıcı rolüne göre uygun rehberi göster
