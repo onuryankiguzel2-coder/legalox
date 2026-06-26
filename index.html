@@ -1623,7 +1623,7 @@ async function analyzeStyleFiles(files){
   var texts=[];
   for(var i=0;i<files.length;i++){var t=await readFileText(files[i]);if(t)texts.push(t.substring(0,2000));}
   try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:'Aşağıdaki Türk hukuk dilekçelerini analiz et ve avukatın yazım üslubunu çıkar. Cümle yapısı, resmiyet seviyesi, paragraf düzeni, sıkça kullandığı ifadeler, hitap biçimi, sonuç bölümü kalıplarını incele. Kısa ve net bir \u00fcslup profili yaz (maks. 150 kelime):\n\n'+texts.join('\n\n---\n\n')}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:'Aşağıdaki Türk hukuk dilekçelerini analiz et ve avukatın yazım üslubunu çıkar. Cümle yapısı, resmiyet seviyesi, paragraf düzeni, sıkça kullandığı ifadeler, hitap biçimi, sonuç bölümü kalıplarını incele. Kısa ve net bir \u00fcslup profili yaz (maks. 150 kelime):\n\n'+texts.join('\n\n---\n\n')}]})});
     var data=await resp.json();
     styleProfile=data.content[0].text;
     localStorage.setItem('legalox_style_profile',styleProfile);
@@ -1720,7 +1720,7 @@ async function writeSection(num){
   };
 
   try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompts[num]}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompts[num]}]})});
     var data=await resp.json();
     var text=data.content[0].text;
     petSections[num]=text;
@@ -1791,7 +1791,7 @@ async function searchEmsalWeb(){
   loading.style.display='flex';results.innerHTML='';
 
   try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nkazanci.com, legalbank.net, hukukmedeniyeti.org veya emsal.yargitay.gov.tr sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 4 karar. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nkazanci.com, legalbank.net, hukukmedeniyeti.org veya emsal.yargitay.gov.tr sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 4 karar. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
     var data=await resp.json();
     var fullText=data.content.map(function(c){return c.type==='text'?c.text:'';}).join('');
     var clean=fullText.replace(/```json|```/g,'').trim();
