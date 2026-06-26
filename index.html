@@ -1181,12 +1181,12 @@ button{cursor:pointer}
           <!-- WEB EMSAL ARAMA -->
           <div id="emsal-search-section" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-              <div style="font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px"><i class="ti ti-world-search" style="color:var(--bl)"></i>İnternetten Emsal Karar Ara</div>
-              <button class="btnp" style="height:28px;font-size:11px" id="emsal-search-btn" onclick="searchEmsalWeb()"><i class="ti ti-search" style="font-size:11px"></i>AI ile Ara</button>
+              <div style="font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px"><i class="ti ti-world-search" style="color:var(--bl)"></i>İlgili Emsal Kararlar <span id="emsal-auto-badge" style="font-size:10px;background:rgba(59,130,246,.1);color:var(--bl);border:1px solid rgba(59,130,246,.2);border-radius:4px;padding:2px 7px;font-weight:500">Otomatik</span></div>
+              <button class="btns" style="height:26px;font-size:11px" id="emsal-retry-btn" onclick="searchEmsalWeb()" style="display:none"><i class="ti ti-refresh" style="font-size:11px"></i>Yeniden Ara</button>
             </div>
-            <div id="emsal-search-loading" style="display:none;align-items:center;gap:8px;font-size:12px;color:var(--tx3);padding:10px 0"><div style="width:14px;height:14px;border:2px solid rgba(59,130,246,.3);border-top-color:var(--bl);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0"></div>Yargıtay kararları taranıyor...</div>
+            <div id="emsal-search-loading" style="display:none;align-items:center;gap:8px;font-size:12px;color:var(--tx3);padding:10px 0"><div style="width:14px;height:14px;border:2px solid rgba(59,130,246,.3);border-top-color:var(--bl);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0"></div>Dava konusuna göre Yargıtay kararları taranıyor...</div>
             <div id="emsal-search-results" style="display:flex;flex-direction:column;gap:8px"></div>
-            <div style="font-size:10px;color:var(--tx4);margin-top:8px;padding:8px;background:rgba(239,159,39,.06);border-radius:var(--rsm);border:1px solid rgba(239,159,39,.15)"><i class="ti ti-info-circle" style="color:var(--am)"></i> AI internet araması yapar, bulduklarını önerir. UYAP\u2019tan doğrulayıp \u201cDilekçeye Ekle\u201d ile ekleyin.</div>
+            <div style="font-size:10px;color:var(--tx4);margin-top:8px;padding:8px;background:rgba(239,159,39,.06);border-radius:var(--rsm);border:1px solid rgba(239,159,39,.15)"><i class="ti ti-info-circle" style="color:var(--am)"></i> AI dava konusunu analiz ederek internet araması yapar. UYAP\u2019tan doğrulayıp \u201cDilekçeye Ekle\u201d ile ekleyin.</div>
           </div>
         </div>
       </div>
@@ -1758,8 +1758,10 @@ function buildFinalPetition(){
   final.style.display='block';
   var txt=[petSections[1],petSections[2],petSections[3]].filter(Boolean).join('\n\n');
   document.getElementById('final-petition-text').value=txt;
-  showToast('Dilekçe tamamlandı \u2713','ok');
+  showToast('Dilekçe tamamlandı \u2713 — emsal kararlar aranıyor...','ok');
   final.scrollIntoView({behavior:'smooth',block:'start'});
+  // Otomatik emsal arama
+  setTimeout(function(){searchEmsalWeb();},600);
 }
 
 function copyPetition(){
@@ -1777,42 +1779,40 @@ function downloadPetition(){
 
 // ── WEB EMSAL ARAMA ────────────────────────────────────────
 async function searchEmsalWeb(){
-  var btn=document.getElementById('emsal-search-btn');
+  var retryBtn=document.getElementById('emsal-retry-btn');
   var loading=document.getElementById('emsal-search-loading');
   var results=document.getElementById('emsal-search-results');
   var ozet=document.getElementById('pet-ozet')?.value||'';
   var tip=window.selectedPetitionType||'Dava Dilekçesi';
+  var davaci=document.getElementById('pet-davaci')?.value||'';
+  var davali=document.getElementById('pet-davali')?.value||'';
 
-  btn.disabled=true;btn.style.opacity='0.5';
+  if(retryBtn)retryBtn.style.display='none';
   loading.style.display='flex';results.innerHTML='';
 
   try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku için emsal karar ara. Dava türü: '+tip+'. Konu: '+ozet+'\n\nkazanci.com, legalbank.net, hukukmedeniyeti.org veya karararama.yargitay.gov.tr sitelerinde ara. Bulduğun gerçek kararları şu JSON formatında döndür (sadece JSON, başka bir şey yazma):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN","baslik":"karar başlığı","ozet":"kısa özet","kaynak":"kaynak url veya site adı","tarih":"tarih"}]}\nEğer bulamazsan: {"kararlar":[]}\nMaksimum 4 karar.'}]})});
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nkazanci.com, legalbank.net, hukukmedeniyeti.org veya emsal.yargitay.gov.tr sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 4 karar. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
     var data=await resp.json();
     var fullText=data.content.map(function(c){return c.type==='text'?c.text:'';}).join('');
     var clean=fullText.replace(/```json|```/g,'').trim();
-    // JSON bul
     var jsonMatch=clean.match(/\{[\s\S]*\}/);
-    if(!jsonMatch)throw new Error('JSON bulunamadı');
+    if(!jsonMatch)throw new Error('Sonuç ayrıştırılamadı');
     var parsed=JSON.parse(jsonMatch[0]);
-
     loading.style.display='none';
-    btn.disabled=false;btn.style.opacity='1';
+    if(retryBtn)retryBtn.style.display='block';
 
     if(!parsed.kararlar||!parsed.kararlar.length){
       results.innerHTML='<div class="srcitem" style="background:var(--rdd);border-color:rgba(226,75,74,.15)"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-alert-triangle" style="color:var(--rd);font-size:16px"></i><div style="font-size:12px;color:var(--rd)">Bu konuda internet aramasında emsal karar bulunamadı. UYAP\u2019tan manuel araştırma yapınız.</div></div></div>';
       return;
     }
-
-    results.innerHTML=parsed.kararlar.map(function(k,i){
-      return '<div class="srcitem" style="cursor:default"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="flex:1"><div class="srcnum">'+k.no+(k.tarih?' · '+k.tarih:'')+'</div><div class="srctit" style="font-size:12.5px;margin:4px 0">'+k.baslik+'</div><div class="srcdesc">'+k.ozet+'</div>'+(k.kaynak?'<div style="font-size:10px;color:var(--tx4);margin-top:4px"><i class="ti ti-link" style="font-size:10px"></i> '+k.kaynak+'</div>':'')+'</div><div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0"><span class="bdg" style="background:rgba(59,130,246,.1);color:var(--bl);border-color:rgba(59,130,246,.2)">Web</span><button class="btnp" style="height:24px;font-size:10px;white-space:nowrap" onclick="addWebEmsalToManual('+i+')"><i class="ti ti-plus" style="font-size:10px"></i>Ekle</button></div></div></div>';
-    }).join('');
-
     window._webEmsalResults=parsed.kararlar;
+    results.innerHTML=parsed.kararlar.map(function(k,i){
+      return '<div class="srcitem"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="flex:1"><div class="srcnum">'+k.no+(k.tarih?' · '+k.tarih:'')+'</div><div class="srctit" style="font-size:12.5px;margin:4px 0">'+k.baslik+'</div><div class="srcdesc">'+k.ozet+'</div>'+(k.kaynak?'<div style="font-size:10px;color:var(--tx4);margin-top:4px"><i class="ti ti-link" style="font-size:10px"></i> '+k.kaynak+'</div>':'')+'</div><div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0"><span class="bdg" style="background:rgba(59,130,246,.1);color:var(--bl);border-color:rgba(59,130,246,.2)">Web</span><button class="btnp" style="height:24px;font-size:10px;white-space:nowrap" onclick="addWebEmsalToManual('+i+')"><i class="ti ti-plus" style="font-size:10px"></i>Ekle</button></div></div></div>';
+    }).join('');
   }catch(e){
     loading.style.display='none';
-    btn.disabled=false;btn.style.opacity='1';
-    results.innerHTML='<div style="font-size:12px;color:var(--rd);padding:8px">Arama hatası: '+e.message+'</div>';
+    if(retryBtn)retryBtn.style.display='block';
+    results.innerHTML='<div style="font-size:12px;color:var(--tx3);padding:8px;display:flex;align-items:center;gap:6px"><i class="ti ti-wifi-off" style="color:var(--am)"></i>Arama tamamlanamadı — "Yeniden Ara" ile tekrar deneyin.</div>';
   }
 }
 
