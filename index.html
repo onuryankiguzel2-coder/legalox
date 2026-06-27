@@ -2042,7 +2042,7 @@ async function kayitTamamla(){
   }
 
   // Buton durumu
-  var btn=document.querySelector('#kayit-step2 button:last-child');
+  var btn=document.getElementById('kayit-tamamla-btn');
   if(btn){btn.disabled=true;btn.textContent='Kaydediliyor...';}
   if(errEl)errEl.style.display='none';
 
@@ -2347,7 +2347,7 @@ window.addEventListener('beforeinstallprompt',function(e){
       </div>
       <div style="display:flex;gap:10px;justify-content:flex-end">
         <button onclick="kayitStep1()" style="padding:0 16px;height:38px;background:#141414;color:#888;border:1px solid #1E1E1E;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px"><i class="ti ti-arrow-left"></i>Geri</button>
-        <button onclick="kayitTamamla()" style="padding:0 20px;height:38px;background:#00FF88;color:#0A0A0A;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px"><i class="ti ti-send"></i>Talep Gönder</button>
+        <button id="kayit-tamamla-btn" onclick="kayitTamamla()" style="padding:0 20px;height:38px;background:#00FF88;color:#0A0A0A;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px"><i class="ti ti-send"></i>Talep Gönder</button>
       </div>
     </div>
 
