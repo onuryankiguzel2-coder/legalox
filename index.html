@@ -1944,7 +1944,8 @@ async function loadMuvekkililer(){
   if(tw)tw.style.display='table';
   tablo.innerHTML=data.map(function(m){
     var ini=(m.ad_soyad||'?').split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
-    return '<tr onclick="openMuvDetail(''+m.id+'')" style="cursor:pointer">'+
+    var mid=String(m.id||'');
+    return '<tr onclick="openMuvDetail(&quot;'+mid+'&quot;)" style="cursor:pointer">'+
       '<td class="tdp"><span class="mav">'+ini+'</span>'+escHtml(m.ad_soyad||'')+'</td>'+
       '<td style="font-size:11.5px;color:var(--tx3)">'+escHtml(m.telefon||'—')+'</td>'+
       '<td style="font-size:11px;color:var(--tx3)">'+escHtml(m.email||'—')+'</td>'+
@@ -1974,7 +1975,7 @@ async function loadDosyalar(){
   if(tw)tw.style.display='table';
   tablo.innerHTML=data.map(function(d){
     var durumBdg=d.durum==='Aktif'?'ba':d.durum==='Bekliyor'?'bb':'bk';
-    return '<tr onclick="nav('dosyadetay')" style="cursor:pointer">'+
+    return '<tr onclick="nav(\'dosyadetay\')" style="cursor:pointer">'+
       '<td class="tdp">'+escHtml(d.muvekkil_adi||'—')+'</td>'+
       '<td>'+escHtml(d.dava_turu||'—')+'</td>'+
       '<td><span class="bdg '+durumBdg+'"><span class="bdt"></span>'+escHtml(d.durum||'—')+'</span></td>'+
