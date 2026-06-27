@@ -396,12 +396,6 @@ button{cursor:pointer}
     <div class="fg"><label class="fl">Şifre</label><input class="fi" id="lpw" type="password" placeholder="••••••••"></div>
     <button class="lbtn" onclick="doLogin()">Giriş Yap</button>
     <button onclick="showKayit()" style="width:100%;background:transparent;color:#00FF88;border:1px solid rgba(0,255,136,.25);border-radius:8px;padding:10px;font-size:12px;font-weight:500;cursor:pointer;margin-top:8px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s" onmouseover="this.style.background='rgba(0,255,136,.06)'" onmouseout="this.style.background='transparent'"><i class="ti ti-user-plus"></i>Hukuk Bürosunu Kaydet — Üye Ol</button>
-    <div class="dgrid">
-      <button class="dbtn" onclick="demoLogin('admin')"><i class="ti ti-shield-check" style="color:var(--ac)"></i>Admin<div class="dlbl">Yönetici</div></button>
-      <button class="dbtn" onclick="demoLogin('avukat')"><i class="ti ti-briefcase" style="color:var(--bl)"></i>Avukat<div class="dlbl">Tam erişim</div></button>
-      <button class="dbtn" onclick="demoLogin('sekreter')"><i class="ti ti-user" style="color:var(--am)"></i>Sekreter<div class="dlbl">Kısıtlı</div></button>
-      <button class="dbtn" onclick="demoLogin('stajyer')"><i class="ti ti-school" style="color:var(--pu)"></i>Stajyer<div class="dlbl">Taslak</div></button>
-    </div>
   </div>
 </div>
 <div id="screen-app" class="screen">
@@ -1443,11 +1437,41 @@ async function doLogin(){
   const pw=document.getElementById('lpw').value;
   const err=document.getElementById('lerr');
   err.style.display='none';
-  for(const[k,u]of Object.entries(DEMO)){if(email===u.email&&pw===u.pw){loginOK(k,u);return;}}
-  if(sbClient){const{data,error}=await sbClient.auth.signInWithPassword({email,password:pw});if(error){err.style.display='block';return;}const m=data.user?.user_metadata||{};loginOK(m.rol||'avukat',{ad:m.ad||email,ini:(m.ad||email).substr(0,2).toUpperCase(),rol:m.rol==='admin'?'Yönetici':m.rol==='sekreter'?'Sekreter':m.rol==='stajyer'?'Stajyer':'Avukat',color:'var(--bl)'});return;}
-  err.style.display='block';
+  if(!email||!pw){err.style.display='block';return;}
+  if(!sbClient){err.style.display='block';return;}
+  const btn=document.querySelector('.lbtn');
+  if(btn){btn.disabled=true;btn.textContent='Giriş yapılıyor...';}
+  const{data,error}=await sbClient.auth.signInWithPassword({email,password:pw});
+  if(btn){btn.disabled=false;btn.textContent='Giriş Yap';}
+  if(error){err.style.display='block';return;}
+  const m=data.user?.user_metadata||{};
+  loginOK(m.rol||'avukat',{ad:m.ad||email,ini:(m.ad||email).substr(0,2).toUpperCase(),rol:m.rol==='admin'?'Yönetici':m.rol==='sekreter'?'Sekreter':m.rol==='stajyer'?'Stajyer':'Avukat',color:'var(--bl)'});
 }
-function demoLogin(k){const u=DEMO[k];document.getElementById('lemail').value=u.email;document.getElementById('lpw').value=u.pw;loginOK(k,u);}
+// Session restore — sayfa yenilenince oturumu koru
+if(sbClient){
+  sbClient.auth.onAuthStateChange(function(event,session){
+    if(event==='SIGNED_IN'&&session){
+      var m=session.user?.user_metadata||{};
+      var email=session.user?.email||'';
+      if(document.getElementById('screen-login')?.classList.contains('active')){
+        loginOK(m.rol||'avukat',{ad:m.ad||email,ini:(m.ad||email).substr(0,2).toUpperCase(),rol:m.rol==='admin'?'Yönetici':m.rol==='sekreter'?'Sekreter':m.rol==='stajyer'?'Stajyer':'Avukat',color:'var(--bl)'});
+      }
+    }
+    if(event==='SIGNED_OUT'){
+      document.getElementById('screen-app')?.classList.remove('active');
+      document.getElementById('screen-login')?.classList.add('active');
+    }
+  });
+  // İlk yüklemede mevcut session'ı kontrol et
+  sbClient.auth.getSession().then(function(res){
+    var session=res.data?.session;
+    if(session){
+      var m=session.user?.user_metadata||{};
+      var email=session.user?.email||'';
+      loginOK(m.rol||'avukat',{ad:m.ad||email,ini:(m.ad||email).substr(0,2).toUpperCase(),rol:m.rol==='admin'?'Yönetici':m.rol==='sekreter'?'Sekreter':m.rol==='stajyer'?'Stajyer':'Avukat',color:'var(--bl)'});
+    }
+  });
+}
 function loginOK(k,u){
   cRole=k;cUser=u;
   document.getElementById('uav').textContent=u.ini;
@@ -1996,7 +2020,46 @@ function kayitStep2(){
   document.getElementById('step-dot-2').style.color='#0A0A0A';
   document.getElementById('step-lbl-2').style.color='#00FF88';
 }
-function kayitTamamla(){
+async function kayitTamamla(){
+  var ad=document.getElementById('kayit-ad')?.value.trim();
+  var buro=document.getElementById('kayit-buro')?.value.trim();
+  var email=document.getElementById('kayit-email')?.value.trim();
+  var pw=document.getElementById('kayit-pw')?.value;
+  var baro=document.getElementById('kayit-baro')?.value.trim();
+  var errEl=document.getElementById('kayit-err');
+
+  if(!ad||!email||!pw){
+    if(errEl){errEl.style.display='block';errEl.textContent='Ad, e-posta ve şifre zorunludur.';}
+    return;
+  }
+  if(pw.length<8){
+    if(errEl){errEl.style.display='block';errEl.textContent='Şifre en az 8 karakter olmalıdır.';}
+    return;
+  }
+  if(!sbClient){
+    if(errEl){errEl.style.display='block';errEl.textContent='Sunucu bağlantısı kurulamadı.';}
+    return;
+  }
+
+  // Buton durumu
+  var btn=document.querySelector('#kayit-step2 button:last-child');
+  if(btn){btn.disabled=true;btn.textContent='Kaydediliyor...';}
+  if(errEl)errEl.style.display='none';
+
+  var{data,error}=await sbClient.auth.signUp({
+    email:email,
+    password:pw,
+    options:{data:{ad:ad,buro:buro||'',baro:baro||'',rol:'avukat',durum:'beklemede',paket:selectedPkg||'starter'}}
+  });
+
+  if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i>Talep Gönder';}
+
+  if(error){
+    if(errEl){errEl.style.display='block';errEl.textContent=error.message==='User already registered'?'Bu e-posta zaten kayıtlı.':error.message;}
+    return;
+  }
+
+  // Başarılı — adım 3'e geç
   document.getElementById('kayit-step2').style.display='none';
   document.getElementById('kayit-step3').style.display='block';
   document.getElementById('step-dot-3').style.background='#00FF88';
@@ -2200,27 +2263,28 @@ window.addEventListener('beforeinstallprompt',function(e){
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
         <div>
           <label style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px">Ad Soyad</label>
-          <input style="width:100%;background:#141414;border:1px solid #1E1E1E;border-radius:8px;padding:10px 13px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s" placeholder="Av. Adınız Soyadınız" onfocus="this.style.borderColor='#00FF88'" onblur="this.style.borderColor='#1E1E1E'">
+          <input id="kayit-ad" style="width:100%;background:#141414;border:1px solid #1E1E1E;border-radius:8px;padding:10px 13px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s" placeholder="Av. Adınız Soyadınız" onfocus="this.style.borderColor='#00FF88'" onblur="this.style.borderColor='#1E1E1E'">
         </div>
         <div>
           <label style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px">Büro Adı</label>
-          <input style="width:100%;background:#141414;border:1px solid #1E1E1E;border-radius:8px;padding:10px 13px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s" placeholder="Hukuk Bürosu Adı" onfocus="this.style.borderColor='#00FF88'" onblur="this.style.borderColor='#1E1E1E'">
+          <input id="kayit-buro" style="width:100%;background:#141414;border:1px solid #1E1E1E;border-radius:8px;padding:10px 13px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s" placeholder="Hukuk Bürosu Adı" onfocus="this.style.borderColor='#00FF88'" onblur="this.style.borderColor='#1E1E1E'">
         </div>
       </div>
       <div style="margin-bottom:12px">
         <label style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px">E-posta</label>
-        <input type="email" style="width:100%;background:#141414;border:1px solid #1E1E1E;border-radius:8px;padding:10px 13px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s" placeholder="avukat@buro.com" onfocus="this.style.borderColor='#00FF88'" onblur="this.style.borderColor='#1E1E1E'">
+        <input id="kayit-email" type="email" style="width:100%;background:#141414;border:1px solid #1E1E1E;border-radius:8px;padding:10px 13px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s" placeholder="avukat@buro.com" onfocus="this.style.borderColor='#00FF88'" onblur="this.style.borderColor='#1E1E1E'">
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
         <div>
           <label style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px">Şifre</label>
-          <input type="password" style="width:100%;background:#141414;border:1px solid #1E1E1E;border-radius:8px;padding:10px 13px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s" placeholder="En az 8 karakter" onfocus="this.style.borderColor='#00FF88'" onblur="this.style.borderColor='#1E1E1E'">
+          <input id="kayit-pw" type="password" style="width:100%;background:#141414;border:1px solid #1E1E1E;border-radius:8px;padding:10px 13px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s" placeholder="En az 8 karakter" onfocus="this.style.borderColor='#00FF88'" onblur="this.style.borderColor='#1E1E1E'">
         </div>
         <div>
           <label style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px">Baro Sicil No</label>
-          <input style="width:100%;background:#141414;border:1px solid #1E1E1E;border-radius:8px;padding:10px 13px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s" placeholder="12345" onfocus="this.style.borderColor='#00FF88'" onblur="this.style.borderColor='#1E1E1E'">
+          <input id="kayit-baro" style="width:100%;background:#141414;border:1px solid #1E1E1E;border-radius:8px;padding:10px 13px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s" placeholder="12345" onfocus="this.style.borderColor='#00FF88'" onblur="this.style.borderColor='#1E1E1E'">
         </div>
       </div>
+      <div id="kayit-err" style="display:none;font-size:12px;color:#ff4444;margin-bottom:10px;padding:8px 12px;background:rgba(255,68,68,.08);border-radius:6px;border:1px solid rgba(255,68,68,.2)"></div>
       <div style="display:flex;gap:10px;justify-content:flex-end">
         <button onclick="closeKayit()" style="padding:0 16px;height:38px;background:#141414;color:#888;border:1px solid #1E1E1E;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit">İptal</button>
         <button onclick="kayitStep2()" style="padding:0 20px;height:38px;background:#00FF88;color:#0A0A0A;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px"><i class="ti ti-arrow-right"></i>Paket Seç</button>
