@@ -673,9 +673,9 @@ button{cursor:pointer}
   <div class="phdr"><div><div class="ptitle">Üyeler</div><div class="psub" id="uye-psub">Sisteme kayıtlı tüm büro ve avukatlar</div></div><button class="btnp" onclick="davetLinkiKopyala()"><i class="ti ti-link"></i>Davet Linki Kopyala</button></div>
   <div class="kgrid" style="margin-bottom:16px">
     <div class="kcard"><div class="kln" style="background:var(--ac)"></div><div class="klbl">Toplam Üye</div><div class="kval" id="stat-toplam">—</div></div>
-    <div class="kcard"><div class="kln" style="background:var(--bl)"></div><div class="klbl">Aktif Abonelik</div><div class="kval" id="stat-aktif">—</div></div>
-    <div class="kcard"><div class="kln" style="background:var(--pu)"></div><div class="klbl">Deneme Süreci</div><div class="kval" id="stat-deneme">—</div></div>
-    <div class="kcard"><div class="kln" style="background:var(--am)"></div><div class="klbl">Bekleyen Talep</div><div class="kval" id="stat-bekleyen">—</div><div class="km">onay bekliyor</div></div>
+    <div class="kcard"><div class="kln" style="background:var(--bl)"></div><div class="klbl">Aktif</div><div class="kval" id="stat-aktif">—</div></div>
+    <div class="kcard"><div class="kln" style="background:var(--pu)"></div><div class="klbl">Deneme</div><div class="kval" id="stat-deneme">—</div></div>
+    <div class="kcard"><div class="kln" style="background:var(--am)"></div><div class="klbl">Bekleyen</div><div class="kval" id="stat-bekleyen">—</div></div>
   </div>
   <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
     <div class="filter-btn act" id="fbtn-hepsi" onclick="filterUye(this,'hepsi')">Hepsi</div>
@@ -688,16 +688,19 @@ button{cursor:pointer}
     <div id="bekleyen-liste" style="display:flex;flex-direction:column;gap:8px"></div>
   </div>
   <div class="tbl-wrap">
-    <div class="tbl-ctrl"><span class="ct">Tüm Üyeler</span><div style="display:flex;gap:8px"><div class="tbl-search"><i class="ti ti-search" style="font-size:12px;color:var(--tx4)"></i><input type="text" id="uye-arama" placeholder="Büro, avukat, e-posta..." oninput="araUye(this.value)"></div><button class="btn-secondary" style="height:28px;font-size:11px" onclick="showToast('CSV indirildi','ok')"><i class="ti ti-download" style="font-size:12px"></i>Dışa Aktar</button></div></div>
-    <div id="uye-yukleniyor" style="text-align:center;padding:32px;color:var(--tx3);font-size:12px"><i class="ti ti-loader" style="font-size:20px;display:block;margin-bottom:8px"></i>Üyeler yükleniyor...</div>
-    <table class="tbl" id="uye-tablo-wrap" style="display:none"><thead><tr><th style="width:25%">Ad / Büro</th><th style="width:13%">Paket</th><th style="width:12%">Durum</th><th style="width:13%">Kayıt Tarihi</th><th style="width:37%">İşlem</th></tr></thead><tbody id="uye-tablo"></tbody></table>
-    <div id="uye-bos" style="display:none;text-align:center;padding:32px;color:var(--tx3);font-size:12px"><i class="ti ti-users-off" style="font-size:24px;display:block;margin-bottom:8px;color:var(--tx4)"></i>Bu filtrede üye bulunamadı</div>
+    <div class="tbl-ctrl"><span class="ct">Tüm Üyeler</span><div class="tbl-search"><i class="ti ti-search" style="font-size:12px;color:var(--tx4)"></i><input type="text" id="uye-arama" placeholder="İsim, e-posta..." oninput="araUye(this.value)"></div></div>
+    <div id="uye-yukleniyor" style="text-align:center;padding:32px;color:var(--tx3);font-size:12px"><i class="ti ti-loader" style="font-size:20px;display:block;margin-bottom:8px"></i>Yükleniyor...</div>
+    <table class="tbl" id="uye-tablo-wrap" style="display:none"><thead><tr><th style="width:28%">Ad / E-posta</th><th style="width:13%">Paket</th><th style="width:12%">Durum</th><th style="width:13%">Kayıt</th><th style="width:34%">İşlem</th></tr></thead><tbody id="uye-tablo"></tbody></table>
+    <div id="uye-bos" style="display:none;text-align:center;padding:32px;color:var(--tx3);font-size:12px"><i class="ti ti-users-off" style="font-size:24px;display:block;margin-bottom:8px;color:var(--tx4)"></i>Üye bulunamadı</div>
   </div>
   <div id="uye-detay-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9000;align-items:center;justify-content:center;backdrop-filter:blur(4px)" onclick="if(event.target===this)this.style.display='none'">
-    <div style="background:var(--sf);border:1px solid var(--bd2);border-radius:var(--rxl);padding:24px;width:440px;max-width:95vw;max-height:85vh;overflow-y:auto" onclick="event.stopPropagation()">
+    <div style="background:var(--sf);border:1px solid var(--bd2);border-radius:var(--rxl);padding:24px;width:420px;max-width:95vw" onclick="event.stopPropagation()">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><div style="font-size:15px;font-weight:700" id="ud-baslik">Üye Detayı</div><button onclick="document.getElementById('uye-detay-modal').style.display='none'" style="background:none;border:none;color:var(--tx3);font-size:18px;cursor:pointer"><i class="ti ti-x"></i></button></div>
       <div id="ud-icerik"></div>
-      <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end"><button class="btn-danger" style="height:32px;font-size:11.5px" id="ud-dondur-btn"><i class="ti ti-snowflake" style="font-size:12px"></i>Dondur</button><button class="btn-primary" style="height:32px;font-size:11.5px" id="ud-jeton-btn"><i class="ti ti-coin" style="font-size:12px"></i>Jeton Ekle</button></div>
+      <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end">
+        <button class="btn-danger" style="height:32px;font-size:11.5px" id="ud-dondur-btn"><i class="ti ti-snowflake" style="font-size:12px"></i>Dondur</button>
+        <button class="btn-primary" style="height:32px;font-size:11.5px" onclick="showToast('Jeton ekleme yakında','info')"><i class="ti ti-coin" style="font-size:12px"></i>Jeton Ekle</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1423,7 +1426,7 @@ var MODALS={
   odeme:{t:'Ödeme Ekle',s:'Tahsilat kaydı oluştur',b:`<div class="fg"><label class="fl">Müvekkil</label><select class="fi"><option>Fatma Demir</option><option>Can Holding A.Ş.</option><option>Mehmet Arslan</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Tutar (₺)</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">Tarih</label><input class="fi" type="date"></div></div><div class="fg"><label class="fl">Açıklama</label><input class="fi" placeholder="Ödeme açıklaması"></div>`},
   kullanici:{t:'Avukat Ekle',s:'Sisteme yeni avukat davet et. Stajyer ve sekreteri avukat kendisi ekler.',b:`<div class="fg"><label class="fl">Ad Soyad</label><input class="fi" placeholder="Avukatın adı soyadı"></div><div class="fg"><label class="fl">E-posta</label><input class="fi" type="email" placeholder="avukat@buroadi.com"></div><div class="fg"><label class="fl">Baro No</label><input class="fi" placeholder="1234"></div><div style="background:var(--acd);border:1px solid var(--acb);border-radius:var(--rsm);padding:10px 12px;font-size:11.5px;color:var(--ac);margin-top:4px"><i class="ti ti-info-circle" style="margin-right:5px"></i>Avukat giriş yaptıktan sonra Ekibim sayfasından kendi sekreter ve stajyerini ekler.</div>`},
   ekipuye:{t:'Ekip Üyesi Ekle',s:'Kendi ekibine sekreter veya stajyer ekle',b:`<div class="fg"><label class="fl">Ad Soyad</label><input class="fi" placeholder="Adı Soyadı"></div><div class="fg"><label class="fl">E-posta</label><input class="fi" type="email" placeholder="kisi@mail.com"></div><div class="fg"><label class="fl">Rol</label><select class="fi"><option>Sekreter</option><option>Stajyer</option></select></div><div style="background:var(--bld);border:1px solid rgba(55,138,221,.15);border-radius:var(--rsm);padding:10px 12px;font-size:11.5px;color:var(--bl);margin-top:4px"><i class="ti ti-info-circle" style="margin-right:5px"></i>Bu kişi sadece senin dosyalarına erişebilir.</div>`},
-  yenipaket:{t:'Yeni Paket Oluştur',s:'Abonelik planı tanımlayın',b:`<div class="fg"><label class="fl">Paket Adı</label><input class="fi" placeholder="Örn: Pro Plus"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Aylık Fiyat (₺)</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">Jeton Limiti</label><input class="fi" type="number" placeholder="200"></div></div><div class="fg"><label class="fl">Max Avukat</label><input class="fi" type="number" placeholder="5"></div><div class="fg"><label class="fl">Açıklama</label><textarea class="fi" style="height:60px;resize:none" placeholder="Paket özellikleri..."></textarea></div>`}
+  yenipaket:{t:'Yeni Paket Oluştur',s:'Abonelik planı tanımlayın',b:`<div class="fg"><label class="fl">Paket Adı</label><input class="fi" placeholder="Örn: Pro Plus"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Aylık Fiyat (₺)</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">Jeton Limiti</label><input class="fi" type="number" placeholder="200"></div></div><div class="fg"><label class="fl">Açıklama</label><textarea class="fi" style="height:60px;resize:none" placeholder="Paket özellikleri..."></textarea></div>`}
 };
 function initSB(){try{if(SB_URL!=='YOUR_SUPABASE_URL')sbClient=supabase.createClient(SB_URL,SB_KEY)}catch(e){}}
 async function doLogin(){
@@ -1441,7 +1444,7 @@ async function doLogin(){
   const m=data.user?.user_metadata||{};
   loginOK(m.rol||'avukat',{ad:m.ad||email,ini:(m.ad||email).substr(0,2).toUpperCase(),rol:m.rol==='admin'?'Yönetici':m.rol==='sekreter'?'Sekreter':m.rol==='stajyer'?'Stajyer':'Avukat',color:'var(--bl)'});
 }
-// Session restore — initSB()'den sonra çağrılacak, aşağıya taşındı
+// Session restore aşağıda initSB()'den sonra
 function loginOK(k,u,isRestore){
   cRole=k;cUser=u;
   document.getElementById('uav').textContent=u.ini;
@@ -1547,7 +1550,7 @@ function tbAction(){
   if(id==='emsal'){showToast('Arama başlatılıyor...','info');return;}
   if(id==='ayarlar'){showToast('Ayarlar kaydedildi ✓','ok');return;}
   if(id==='admin-uyeler'){davetLinkiKopyala();return;}
-  if(id==='admin-gelir'){showToast('Rapor indirme yakında aktif olacak','info');return;}
+  if(id==='admin-gelir'){showToast('Rapor indirme yakında','info');return;}
   if(id==='admin-paket'){openModal('yenipaket');return;}
   if(id==='admin-ayarlar'){saveSupabase();return;}
   if(id==='rehber'||id==='stajyer-genelbakis') return;
@@ -1857,46 +1860,45 @@ function showToast(msg,type='info'){
 initSB();
 
 // ── SESSION RESTORE — initSB()'den sonra, sbClient hazır ────
-function buildUserFromMeta(m, email){
-  var rol=m.rol||'avukat';
-  var ad=m.ad||email||'';
-  return {
-    rol:rol,
-    info:{
-      ad:ad,
-      ini:ad.length>=2?ad.substr(0,2).toUpperCase():'??',
+(function(){
+  if(!sbClient) return;
+  function mkUser(m, email){
+    var rol=m.rol||'avukat';
+    var ad=m.ad_soyad||m.ad||email||'?';
+    return {rol:rol, info:{ad:ad, ini:ad.substr(0,2).toUpperCase(),
       rol:rol==='admin'?'Yönetici':rol==='sekreter'?'Sekreter':rol==='stajyer'?'Stajyer':'Avukat',
-      color:rol==='admin'?'var(--ac)':rol==='sekreter'?'var(--am)':rol==='stajyer'?'var(--pu)':'var(--bl)'
-    }
-  };
-}
-if(sbClient){
-  // Sayfa yenilenince mevcut oturumu hemen kontrol et
+      color:rol==='admin'?'var(--ac)':rol==='sekreter'?'var(--am)':rol==='stajyer'?'var(--pu)':'var(--bl)'}};
+  }
   sbClient.auth.getSession().then(function(res){
-    var session=res.data&&res.data.session;
-    if(session){
-      var m=session.user.user_metadata||{};
-      var u=buildUserFromMeta(m, session.user.email||'');
+    var s=res.data&&res.data.session;
+    if(!s) return;
+    // user_metadata'dan rol al, profiles'tan da kontrol et
+    var m=s.user.user_metadata||{};
+    var u=mkUser(m, s.user.email||'');
+    // profiles'tan güncel rol/durum çek
+    sbClient.from('profiles').select('rol,durum,ad_soyad,email').eq('id',s.user.id).single().then(function(r){
+      if(r.data&&r.data.rol) u.rol=r.data.rol;
+      if(r.data&&r.data.ad_soyad){u.info.ad=r.data.ad_soyad;u.info.ini=r.data.ad_soyad.substr(0,2).toUpperCase();}
+      u.info.rol=u.rol==='admin'?'Yönetici':u.rol==='sekreter'?'Sekreter':u.rol==='stajyer'?'Stajyer':'Avukat';
+      u.info.color=u.rol==='admin'?'var(--ac)':u.rol==='sekreter'?'var(--am)':u.rol==='stajyer'?'var(--pu)':'var(--bl)';
       loginOK(u.rol, u.info, true);
-    }
+    });
   });
-  sbClient.auth.onAuthStateChange(function(event,session){
-    if(event==='SIGNED_IN'&&session){
+  sbClient.auth.onAuthStateChange(function(ev,s){
+    if(ev==='SIGNED_IN'&&s){
       var sl=document.getElementById('screen-login');
       if(sl&&sl.classList.contains('active')){
-        var m=session.user.user_metadata||{};
-        var u=buildUserFromMeta(m, session.user.email||'');
-        loginOK(u.rol, u.info, false);
+        var m=s.user.user_metadata||{};
+        var u=mkUser(m,s.user.email||'');
+        loginOK(u.rol,u.info,false);
       }
     }
-    if(event==='SIGNED_OUT'){
-      var sa=document.getElementById('screen-app');
-      var sl2=document.getElementById('screen-login');
-      if(sa)sa.classList.remove('active');
-      if(sl2)sl2.classList.add('active');
+    if(ev==='SIGNED_OUT'){
+      var sa=document.getElementById('screen-app'),sl=document.getElementById('screen-login');
+      if(sa)sa.classList.remove('active');if(sl)sl.classList.add('active');
     }
   });
-}
+})();
 
 // ── MÜVEKKİL DETAY ──────────────────────────────────────────
 const MUVEKKILDATA = {
@@ -2066,7 +2068,7 @@ async function kayitTamamla(){
   var{data,error}=await sbClient.auth.signUp({
     email:email,
     password:pw,
-    options:{data:{ad:ad,buro:buro||'',baro:baro||'',rol:'avukat',durum:'beklemede',paket:selectedPkg||'starter'}}
+    options:{data:{ad_soyad:ad,buro_adi:buro||'',baro_no:baro||'',rol:'avukat',durum:'beklemede',paket:selectedPkg||'starter'}}
   });
 
   if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i>Talep Gönder';}
@@ -2076,17 +2078,19 @@ async function kayitTamamla(){
     return;
   }
 
-  // Profiles tablosuna doğrudan yaz (trigger olmasa bile çalışır)
+  // profiles tablosuna doğru kolon adlarıyla yaz
   if(data&&data.user){
     await sbClient.from('profiles').upsert({
-      id:data.user.id,
-      ad:ad,
-      buro:buro||'',
-      email:email,
-      baro:baro||'',
-      rol:'avukat',
-      durum:'beklemede',
-      paket:selectedPkg||'starter'
+      id:         data.user.id,
+      ad_soyad:   ad,
+      buro_adi:   buro||'',
+      baro_no:    baro||'',
+      email:      email,
+      rol:        'avukat',
+      durum:      'beklemede',
+      paket:      selectedPkg||'starter',
+      jeton_bakiye: 10,
+      jeton_limit:  10
     },{onConflict:'id'});
   }
 
@@ -2126,14 +2130,18 @@ async function loadAdminUyeler(){
   var yk=document.getElementById('uye-yukleniyor');
   var tw=document.getElementById('uye-tablo-wrap');
   var bos=document.getElementById('uye-bos');
+  var bb=document.getElementById('bekleyen-bolum');
   if(yk)yk.style.display='block';
   if(tw)tw.style.display='none';
   if(bos)bos.style.display='none';
-  document.getElementById('bekleyen-bolum').style.display='none';
+  if(bb)bb.style.display='none';
   if(!sbClient){if(yk)yk.innerHTML='<i class="ti ti-wifi-off" style="font-size:24px;display:block;margin-bottom:8px;color:var(--tx4)"></i>Supabase bağlantısı yok';return;}
-  var {data,error}=await sbClient.from('profiles').select('id,ad,buro,email,rol,durum,paket,created_at').order('created_at',{ascending:false});
+  var {data,error}=await sbClient
+    .from('profiles')
+    .select('id,ad_soyad,buro_adi,baro_no,email,rol,paket,durum,jeton_bakiye,jeton_limit,created_at')
+    .order('created_at',{ascending:false});
   if(yk)yk.style.display='none';
-  if(error){showToast('Üyeler yüklenemedi: '+error.message,'err');return;}
+  if(error){showToast('Yükleme hatası: '+error.message,'err');return;}
   _uyeCache=data||[];
   renderUyeler(_aktifFiltre);
   guncelleStat();
@@ -2145,45 +2153,44 @@ function guncelleStat(){
   var deneme=_uyeCache.filter(function(u){return u.durum==='deneme';}).length;
   var bekleyen=_uyeCache.filter(function(u){return u.durum==='beklemede';}).length;
   var se=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
-  se('stat-toplam',toplam); se('stat-aktif',aktif); se('stat-deneme',deneme); se('stat-bekleyen',bekleyen);
-  var fb=function(id,lbl){var e=document.getElementById(id);if(e)e.innerHTML=lbl;};
+  se('stat-toplam',toplam);se('stat-aktif',aktif);se('stat-deneme',deneme);se('stat-bekleyen',bekleyen);
+  var ps=document.getElementById('uye-psub');
+  if(ps)ps.textContent=toplam+' kayıtlı üye · '+bekleyen+' onay bekliyor';
+  var fb=function(id,html){var e=document.getElementById(id);if(e)e.innerHTML=html;};
   fb('fbtn-hepsi','Hepsi'+(toplam?' ('+toplam+')':''));
   fb('fbtn-aktif','Aktif'+(aktif?' ('+aktif+')':''));
   fb('fbtn-deneme','Deneme'+(deneme?' ('+deneme+')':''));
   fb('fbtn-beklemede','<i class="ti ti-clock" style="font-size:12px"></i> Üyelik Talebi'+(bekleyen?' ('+bekleyen+')':''));
-  var ps=document.getElementById('uye-psub');
-  if(ps)ps.textContent=toplam+' kayıtlı üye · '+bekleyen+' onay bekliyor';
 }
 
 function renderUyeler(filtre){
   _aktifFiltre=filtre;
   var bekleyenler=_uyeCache.filter(function(u){return u.durum==='beklemede';});
-  var bekBolum=document.getElementById('bekleyen-bolum');
-  var bekListe=document.getElementById('bekleyen-liste');
+  var bb=document.getElementById('bekleyen-bolum');
+  var bl=document.getElementById('bekleyen-liste');
   var tw=document.getElementById('uye-tablo-wrap');
   var tbody=document.getElementById('uye-tablo');
   var bos=document.getElementById('uye-bos');
-  if((filtre==='hepsi'||filtre==='beklemede')&&bekleyenler.length>0){
-    bekBolum.style.display='block';
-    bekListe.innerHTML=bekleyenler.map(function(u){
+  if((filtre==='hepsi'||filtre==='beklemede')&&bekleyenler.length){
+    bb.style.display='block';
+    bl.innerHTML=bekleyenler.map(function(u){
       var tarih=u.created_at?new Date(u.created_at).toLocaleDateString('tr-TR',{day:'numeric',month:'short',year:'numeric'}):'—';
-      var paketAd=(u.paket||'starter').charAt(0).toUpperCase()+(u.paket||'starter').slice(1);
+      var pkg=(u.paket||'starter');pkg=pkg.charAt(0).toUpperCase()+pkg.slice(1);
       return '<div style="background:var(--sf);border:1px solid var(--bd2);border-radius:var(--rlg);padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">'+
-        '<div style="min-width:0"><div style="font-size:13px;font-weight:500;color:var(--tx)">'+(u.ad||'—')+(u.buro?' — '+u.buro:'')+'</div>'+
-        '<div style="font-size:11px;color:var(--tx3);margin-top:2px">'+(u.email||'—')+' · '+paketAd+' paket · '+tarih+'</div></div>'+
+        '<div style="min-width:0"><div style="font-size:13px;font-weight:500;color:var(--tx)">'+(u.ad_soyad||'—')+(u.buro_adi?' — '+u.buro_adi:'')+'</div>'+
+        '<div style="font-size:11px;color:var(--tx3);margin-top:2px">'+(u.email||'—')+' · '+pkg+' paket · '+tarih+'</div></div>'+
         '<div style="display:flex;gap:8px;flex-shrink:0">'+
         '<button class="btn-secondary" style="height:28px;font-size:11px" onclick="reddetUye(\''+u.id+'\',this)"><i class="ti ti-x" style="font-size:12px"></i>Reddet</button>'+
         '<button class="btn-primary" style="height:28px;font-size:11px" onclick="onaylaUye(\''+u.id+'\',this)"><i class="ti ti-check" style="font-size:12px"></i>Onayla</button>'+
         '</div></div>';
     }).join('');
-  } else {bekBolum.style.display='none';}
-  var tablo=(filtre==='beklemede')?[]:_uyeCache.filter(function(u){return filtre==='hepsi'?u.durum!=='beklemede':u.durum===filtre;});
-  if(tablo.length===0){tw.style.display='none';bos.style.display='block';return;}
-  bos.style.display='none'; tw.style.display='table';
+  } else {bb.style.display='none';}
+  var tablo=filtre==='beklemede'?[]:_uyeCache.filter(function(u){return filtre==='hepsi'?u.durum!=='beklemede':u.durum===filtre;});
+  if(!tablo.length){tw.style.display='none';bos.style.display='block';return;}
+  bos.style.display='none';tw.style.display='table';
   var db=function(d){
     if(d==='aktif')return '<span class="badge b-aktif"><span class="bdot"></span>Aktif</span>';
     if(d==='deneme')return '<span class="badge b-bekle"><span class="bdot"></span>Deneme</span>';
-    if(d==='beklemede')return '<span class="badge b-acil"><span class="bdot"></span>Bekliyor</span>';
     if(d==='donduruldu')return '<span class="badge" style="background:var(--sf3);color:var(--tx3)">Donduruldu</span>';
     return '<span class="badge">'+d+'</span>';
   };
@@ -2194,93 +2201,84 @@ function renderUyeler(filtre){
   };
   tbody.innerHTML=tablo.map(function(u){
     var tarih=u.created_at?new Date(u.created_at).toLocaleDateString('tr-TR',{day:'numeric',month:'short',year:'numeric'}):'—';
-    var uid=u.id||'';
+    var jeton=u.jeton_bakiye!=null?(u.jeton_bakiye+'/'+(u.jeton_limit||'∞')):'—';
     return '<tr>'+
-      '<td class="td-p"><div>'+(u.ad||'—')+'</div><div style="font-size:9.5px;color:var(--tx4);font-weight:400">'+(u.email||u.buro||'—')+'</div></td>'+
+      '<td class="td-p"><div>'+(u.ad_soyad||'—')+'</div><div style="font-size:9.5px;color:var(--tx4);font-weight:400">'+(u.email||u.buro_adi||'—')+'</div></td>'+
       '<td>'+pb(u.paket)+'</td><td>'+db(u.durum)+'</td>'+
       '<td style="font-size:10.5px;color:var(--tx3)">'+tarih+'</td>'+
       '<td><div style="display:flex;gap:4px">'+
-      '<button class="btn-secondary" style="height:24px;font-size:10px" onclick="openUyeDetay(\''+uid+'\')">Detay</button>'+
-      '<button class="btn-secondary" style="height:24px;font-size:10px" onclick="showToast(\'Jeton ekleme yakında\',\'info\')"><i class="ti ti-coin" style="font-size:11px"></i>Jeton</button>'+
-      '<button class="btn-danger" style="height:24px;font-size:10px" onclick="dondurUye(\''+uid+'\',this)">'+(u.durum==='donduruldu'?'Aktifleştir':'Dondur')+'</button>'+
+      '<button class="btn-secondary" style="height:24px;font-size:10px" onclick="openUyeDetay(\''+u.id+'\')">Detay</button>'+
+      '<button class="btn-danger" style="height:24px;font-size:10px" onclick="dondurUye(\''+u.id+'\',this)">'+(u.durum==='donduruldu'?'Aktifleştir':'Dondur')+'</button>'+
       '</div></td></tr>';
   }).join('');
 }
 
 function araUye(q){
   var s=q.toLowerCase();
-  var filtreli=_uyeCache.filter(function(u){return ((u.ad||'')+(u.email||'')+(u.buro||'')).toLowerCase().indexOf(s)>-1;});
+  var f=_uyeCache.filter(function(u){return ((u.ad_soyad||'')+(u.email||'')+(u.buro_adi||'')).toLowerCase().indexOf(s)>-1;});
   var tw=document.getElementById('uye-tablo-wrap');
   var tbody=document.getElementById('uye-tablo');
   var bos=document.getElementById('uye-bos');
-  if(!filtreli.length){tw.style.display='none';bos.style.display='block';return;}
-  bos.style.display='none';tw.style.display='table';
-  var db=function(d){return d==='aktif'?'<span class="badge b-aktif"><span class="bdot"></span>Aktif</span>':d==='deneme'?'<span class="badge b-bekle"><span class="bdot"></span>Deneme</span>':'<span class="badge">'+d+'</span>';};
-  var pb=function(p){return p==='pro'?'<span class="badge b-aktif">Pro</span>':p==='enterprise'?'<span class="badge b-bekle">Enterprise</span>':'<span class="badge b-taslak">Starter</span>';};
-  tbody.innerHTML=filtreli.map(function(u){
-    var tarih=u.created_at?new Date(u.created_at).toLocaleDateString('tr-TR',{day:'numeric',month:'short',year:'numeric'}):'—';
-    return '<tr><td class="td-p"><div>'+(u.ad||'—')+'</div><div style="font-size:9.5px;color:var(--tx4);font-weight:400">'+(u.email||'—')+'</div></td><td>'+pb(u.paket)+'</td><td>'+db(u.durum)+'</td><td style="font-size:10.5px;color:var(--tx3)">'+tarih+'</td><td><button class="btn-secondary" style="height:24px;font-size:10px" onclick="openUyeDetay(\''+u.id+'\')">Detay</button></td></tr>';
-  }).join('');
+  if(!f.length){tw.style.display='none';bos.style.display='block';return;}
+  var orig=_uyeCache;_uyeCache=f;renderUyeler('hepsi');_uyeCache=orig;
 }
 
-// ── FİLTRE ──────────────────────────────────────────────────
-function filterUye(el,type){document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('act');});el.classList.add('act');renderUyeler(type);}
+function filterUye(el,type){
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('act');});
+  el.classList.add('act');renderUyeler(type);
+}
 
 async function onaylaUye(uid,btn){
-  if(!sbClient||!uid)return;
-  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i>';
+  btn.disabled=true;btn.innerHTML='...';
   var{error}=await sbClient.from('profiles').update({durum:'aktif'}).eq('id',uid);
-  if(error){showToast('Hata: '+error.message,'err');btn.disabled=false;return;}
-  showToast('Üyelik onaylandı ✓','ok');
-  await loadAdminUyeler();
+  if(error){showToast('Hata: '+error.message,'err');btn.disabled=false;btn.innerHTML='<i class="ti ti-check" style="font-size:12px"></i>Onayla';return;}
+  showToast('Üyelik onaylandı ✓','ok');await loadAdminUyeler();
 }
 
 async function reddetUye(uid,btn){
-  if(!sbClient||!uid)return;
-  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i>';
+  btn.disabled=true;btn.innerHTML='...';
   var{error}=await sbClient.from('profiles').update({durum:'reddedildi'}).eq('id',uid);
-  if(error){showToast('Hata: '+error.message,'err');btn.disabled=false;return;}
-  showToast('Talep reddedildi','ok');
-  await loadAdminUyeler();
+  if(error){showToast('Hata: '+error.message,'err');btn.disabled=false;btn.innerHTML='<i class="ti ti-x" style="font-size:12px"></i>Reddet';return;}
+  showToast('Talep reddedildi','ok');await loadAdminUyeler();
 }
 
 async function dondurUye(uid,btn){
-  if(!sbClient||!uid)return;
-  var uye=_uyeCache.find(function(u){return u.id===uid;});
-  var yeniDurum=(uye&&uye.durum==='donduruldu')?'aktif':'donduruldu';
+  var u=_uyeCache.find(function(x){return x.id===uid;});
+  var yeni=(u&&u.durum==='donduruldu')?'aktif':'donduruldu';
   btn.disabled=true;
-  var{error}=await sbClient.from('profiles').update({durum:yeniDurum}).eq('id',uid);
+  var{error}=await sbClient.from('profiles').update({durum:yeni}).eq('id',uid);
   if(error){showToast('Hata: '+error.message,'err');btn.disabled=false;return;}
-  showToast(yeniDurum==='aktif'?'Hesap aktifleştirildi ✓':'Hesap donduruldu','ok');
-  await loadAdminUyeler();
+  showToast(yeni==='aktif'?'Hesap aktifleştirildi ✓':'Hesap donduruldu','ok');await loadAdminUyeler();
 }
 
 function openUyeDetay(uid){
   var u=_uyeCache.find(function(x){return x.id===uid;});
   if(!u){showToast('Üye bulunamadı','err');return;}
   var modal=document.getElementById('uye-detay-modal');
-  document.getElementById('ud-baslik').textContent=u.ad||'Üye Detayı';
+  document.getElementById('ud-baslik').textContent=u.ad_soyad||'Üye Detayı';
   var tarih=u.created_at?new Date(u.created_at).toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'}):'—';
-  var paketAd=(u.paket||'starter').charAt(0).toUpperCase()+(u.paket||'starter').slice(1);
+  var paketAd=(u.paket||'starter');paketAd=paketAd.charAt(0).toUpperCase()+paketAd.slice(1);
+  var ini=(u.ad_soyad||'??').substr(0,2).toUpperCase();
   document.getElementById('ud-icerik').innerHTML=
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">'+
-    '<div style="width:48px;height:48px;border-radius:50%;background:var(--acd);border:1px solid var(--acb);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--ac)">'+(u.ad||'?').substr(0,2).toUpperCase()+'</div>'+
-    '<div><div style="font-size:15px;font-weight:600">'+(u.ad||'—')+'</div><div style="font-size:11px;color:var(--tx3)">'+(u.buro||'—')+'</div></div></div>'+
+    '<div style="width:48px;height:48px;border-radius:50%;background:var(--acd);border:1px solid var(--acb);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--ac)">'+ini+'</div>'+
+    '<div><div style="font-size:15px;font-weight:600">'+(u.ad_soyad||'—')+'</div><div style="font-size:11px;color:var(--tx3)">'+(u.buro_adi||'—')+'</div></div></div>'+
     '<div style="background:var(--sf2);border-radius:var(--rmd);padding:12px;display:grid;gap:8px">'+
     '<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">E-posta</span><span style="font-size:12px">'+(u.email||'—')+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Baro No</span><span style="font-size:12px">'+(u.baro_no||'—')+'</span></div>'+
     '<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Paket</span><span style="font-size:12px">'+paketAd+'</span></div>'+
     '<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Durum</span><span style="font-size:12px">'+(u.durum||'—')+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Jeton</span><span style="font-size:12px">'+(u.jeton_bakiye!=null?u.jeton_bakiye+'/'+(u.jeton_limit||'∞'):'—')+'</span></div>'+
     '<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Kayıt</span><span style="font-size:12px">'+tarih+'</span></div>'+
     '</div>';
   document.getElementById('ud-dondur-btn').onclick=function(){modal.style.display='none';dondurUye(uid,this);};
-  document.getElementById('ud-jeton-btn').onclick=function(){showToast('Jeton ekleme yakında aktif olacak','info');};
   modal.style.display='flex';
 }
 
 function davetLinkiKopyala(){
   var url=window.location.href.split('?')[0];
   if(navigator.clipboard){navigator.clipboard.writeText(url+'?kayit=1').then(function(){showToast('Davet linki kopyalandı ✓','ok');});}
-  else{showToast('Davet linki kopyalandı ✓','ok');}
+  else showToast('Davet linki kopyalandı ✓','ok');
 }
 
 
