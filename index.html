@@ -2133,72 +2133,82 @@ async function kayitTamamla(){
   var email=document.getElementById('kayit-email')?.value.trim();
   var pw=document.getElementById('kayit-pw')?.value;
   var baro=document.getElementById('kayit-baro')?.value.trim();
-  var errEl=document.getElementById('kayit-err');
 
-  if(!ad||!email||!pw){
-    if(errEl){errEl.style.display='block';errEl.textContent='Ad, e-posta ve şifre zorunludur.';}
-    return;
+  // Hata elementi — step2 içinde yok, step1 içinde; step2 için ayrı eleman oluştur
+  var errEl=document.getElementById('kayit-err2');
+  if(!errEl){
+    errEl=document.createElement('div');
+    errEl.id='kayit-err2';
+    errEl.style.cssText='display:none;font-size:12px;color:#ff4444;margin-bottom:10px;padding:8px 12px;background:rgba(255,68,68,.08);border-radius:6px;border:1px solid rgba(255,68,68,.2)';
+    var btn2=document.getElementById('kayit-tamamla-btn');
+    if(btn2&&btn2.parentNode) btn2.parentNode.insertBefore(errEl,btn2.parentNode.firstChild);
   }
-  if(pw.length<8){
-    if(errEl){errEl.style.display='block';errEl.textContent='Şifre en az 8 karakter olmalıdır.';}
-    return;
-  }
+
+  function showErr(msg){ errEl.style.display='block'; errEl.textContent=msg; }
+  errEl.style.display='none';
+
   if(!sbClient){
-    if(errEl){errEl.style.display='block';errEl.textContent='Sunucu bağlantısı kurulamadı.';}
+    showErr('Sunucu bağlantısı kurulamadı. Lütfen sayfayı yenileyip tekrar deneyin.');
     return;
   }
 
-  // Buton durumu
   var btn=document.getElementById('kayit-tamamla-btn');
-  if(btn){btn.disabled=true;btn.textContent='Kaydediliyor...';}
-  if(errEl)errEl.style.display='none';
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Kaydediliyor...';}
 
-  var{data,error}=await sbClient.auth.signUp({
-    email:email,
-    password:pw,
-    options:{data:{ad_soyad:ad,buro_adi:buro||'',baro_no:baro||'',rol:'avukat',durum:'beklemede',paket:selectedPkg||'starter'}}
-  });
+  try{
+    var res=await sbClient.auth.signUp({
+      email:email,
+      password:pw,
+      options:{data:{ad_soyad:ad,buro_adi:buro||'',baro_no:baro||'',rol:'avukat',durum:'beklemede',paket:selectedPkg||'starter'}}
+    });
 
-  if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i>Talep Gönder';}
+    if(res.error){
+      var msg=res.error.message||'';
+      if(msg==='User already registered'||msg.indexOf('already')>-1) msg='Bu e-posta zaten kayıtlı. Farklı bir e-posta deneyin.';
+      else if(msg.indexOf('invalid')>-1&&msg.indexOf('email')>-1) msg='Geçersiz e-posta adresi.';
+      else if(msg.indexOf('Password')>-1||msg.indexOf('weak')>-1) msg='Şifre çok zayıf. En az 8 karakter ve harf+rakam kullanın.';
+      else if(msg.indexOf('rate')>-1) msg='Çok fazla deneme. Lütfen birkaç dakika bekleyin.';
+      else msg='Hata: '+msg;
+      showErr(msg);
+      if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i>Talep Gönder';}
+      return;
+    }
 
-  if(error){
-    var errMsg=error.message;
-    if(errMsg==='User already registered') errMsg='Bu e-posta zaten kayıtlı.';
-    else if(errMsg.indexOf('email')>-1) errMsg='Geçersiz e-posta adresi.';
-    else if(errMsg.indexOf('Password')>-1||errMsg.indexOf('password')>-1) errMsg='Şifre en az 8 karakter olmalıdır.';
-    if(errEl){errEl.style.display='block';errEl.textContent=errMsg;}
-    return;
+    // Auth başarılı — user ID'yi al
+    // Email confirmation kapalıysa: res.data.user dolu
+    // Email confirmation açıksa: res.data.user dolu AMA session null
+    var userId=res.data&&res.data.user&&res.data.user.id;
+
+    if(userId){
+      // profiles tablosuna yaz
+      var upRes=await sbClient.from('profiles').upsert({
+        id:           userId,
+        ad_soyad:     ad,
+        buro_adi:     buro||'',
+        baro_no:      baro||'',
+        email:        email,
+        rol:          'avukat',
+        durum:        'beklemede',
+        paket:        selectedPkg||'starter',
+        jeton_bakiye: 10,
+        jeton_limit:  10
+      },{onConflict:'id'});
+      if(upRes.error) console.warn('Profile yazma hatası:',upRes.error.message);
+    }
+
+    // Her durumda adım 3'e geç (auth kaydı oluştu)
+    if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i>Talep Gönder';}
+    document.getElementById('kayit-step2').style.display='none';
+    document.getElementById('kayit-step3').style.display='block';
+    document.getElementById('step-dot-3').style.background='#00FF88';
+    document.getElementById('step-dot-3').style.color='#0A0A0A';
+    document.getElementById('step-lbl-3').style.color='#00FF88';
+
+  }catch(e){
+    console.error('kayitTamamla exception:',e);
+    showErr('Beklenmedik hata: '+(e.message||e));
+    if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i>Talep Gönder';}
   }
-
-  // Email confirmation açıksa data.user null gelebilir — identity'den al
-  var userId = (data&&data.user&&data.user.id) || (data&&data.session&&data.session.user&&data.session.user.id);
-
-  // profiles tablosuna doğru kolon adlarıyla yaz
-  if(userId){
-    var upRes=await sbClient.from('profiles').upsert({
-      id:           userId,
-      ad_soyad:     ad,
-      buro_adi:     buro||'',
-      baro_no:      baro||'',
-      email:        email,
-      rol:          'avukat',
-      durum:        'beklemede',
-      paket:        selectedPkg||'starter',
-      jeton_bakiye: 10,
-      jeton_limit:  10
-    },{onConflict:'id'});
-    if(upRes.error) console.warn('Profile upsert hatası:',upRes.error.message);
-  } else {
-    // Email confirmation gerekiyor — kayıt alındı, onay maili gönderildi
-    console.log('Üyelik talebi alındı — email onayı bekleniyor');
-  }
-
-  // Başarılı — adım 3'e geç
-  document.getElementById('kayit-step2').style.display='none';
-  document.getElementById('kayit-step3').style.display='block';
-  document.getElementById('step-dot-3').style.background='#00FF88';
-  document.getElementById('step-dot-3').style.color='#0A0A0A';
-  document.getElementById('step-lbl-3').style.color='#00FF88';
 }
 function selectPkg(pkg){
   selectedPkg=pkg;
