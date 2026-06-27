@@ -407,7 +407,7 @@ button{cursor:pointer}
     <div class="sb-logo"><div class="logo-wrap"><div class="logo-icon"><i class="ti ti-layout-grid"></i></div><div><div class="logo-name">Legal<span>OX</span>.ai</div><div class="logo-tag">Legal OS</div></div></div></div>
     <div class="role-pill"><div class="rdot" id="rdot" style="background:var(--ac)"></div><span class="rlbl" id="rlbl">Yönetici</span></div>
     <nav class="sb-nav" id="sb-nav"></nav>
-    <div class="sb-foot"><div class="urow"><div class="uav" id="uav">AK</div><div><div class="uname" id="uname">Ahmet Kaya</div><div class="urole" id="urole">Yönetici</div></div><i class="ti ti-logout logout" onclick="doLogout()" title="Çıkış"></i></div></div>
+    <div class="sb-foot"><div class="urow"><div class="uav" id="uav">AK</div><div><div class="uname" id="uname">—</div><div class="urole" id="urole">Yönetici</div></div><i class="ti ti-logout logout" onclick="doLogout()" title="Çıkış"></i></div></div>
   </aside>
   <div class="main-area">
     <div class="topbar">
@@ -442,17 +442,12 @@ button{cursor:pointer}
         <div class="cc">30</div>
       </div>
       <div style="border-top:1px solid var(--bd);padding-top:11px">
-        <div class="hrow"><div class="hdot" style="background:var(--ac)"></div><div class="hinfo"><div class="hname">Ayşe Yılmaz · Boşanma</div><div class="hsub">İzmir 3. Aile Mah.</div></div><div class="htime" style="color:var(--rd)">Bugün 09:30</div></div>
-        <div class="hrow"><div class="hdot" style="background:var(--bl)"></div><div class="hinfo"><div class="hname">Mehmet Arslan · İşe İade</div><div class="hsub">İzmir 7. İş Mah.</div></div><div class="htime" style="color:var(--am)">25 Haz 11:00</div></div>
-        <div class="hrow"><div class="hdot" style="background:var(--am)"></div><div class="hinfo"><div class="hname">Can Holding · Ticaret</div><div class="hsub">İzmir 2. Ticaret Mah.</div></div><div class="htime">27 Haz 14:15</div></div>
+        <div id="gb-durusma-liste" style="color:var(--tx4);font-size:12px;text-align:center;padding:10px 0">Yükleniyor...</div>
       </div>
     </div>
     <div class="card">
       <div class="aihd"><div class="aipulse"></div><span class="ct">AI İçgörüleri</span><span class="ailive">Canlı</span></div>
-      <div class="ins"><div class="instop"><div class="ii iir"><i class="ti ti-clock-exclamation"></i></div><div class="ibody"><div class="ititle">2 gün içinde süre dolumu</div><div class="idesc">Arslan v. Metro — cevap dilekçesi 26 Haz'da teslim edilmeli.</div><span class="itag tdl">Son Tarih</span></div></div></div>
-      <div class="ins"><div class="instop"><div class="ii iiw"><i class="ti ti-file-alert"></i></div><div class="ibody"><div class="ititle">3 eksik belge tespit edildi</div><div class="idesc">Yılmaz dosyasında nüfus cüzdanı, gelir belgesi ve tapu eksik.</div><span class="itag tex">Eksik Belge</span></div></div></div>
-      <div class="ins"><div class="instop"><div class="ii iig"><i class="ti ti-sparkles"></i></div><div class="ibody"><div class="ititle">4 emsal karar bulundu</div><div class="idesc">Yargıtay 9. HD 2023/4421 işe iade talebini destekliyor.</div><span class="itag tem">Emsal Karar</span></div></div></div>
-      <div class="ins"><div class="instop"><div class="ii iib"><i class="ti ti-send"></i></div><div class="ibody"><div class="ititle">İhtarname önerildi</div><div class="idesc">Demir bakiyesi ₺12.000 — 45 gün gecikmiş.</div><span class="itag tac">Aksiyon</span></div></div></div>
+      <div id="ai-icegoruleri-liste" style="color:var(--tx4);font-size:12px;text-align:center;padding:16px 0"><i class="ti ti-sparkles" style="display:block;font-size:22px;margin-bottom:6px;opacity:.4"></i>Dosyalarınız yüklendikçe AI içgörüleri burada görünecek</div>
     </div>
   </div>
   <div class="tw">
@@ -467,19 +462,16 @@ button{cursor:pointer}
 <!-- SEKRETER GENEL BAKIŞ -->
 <div class="page" id="page-sekreter-genelbakis">
   <div class="kgrid kg3">
-    <div class="kcard"><div class="kline" style="background:var(--bl)"></div><div class="klbl">Bugünkü Duruşma</div><div class="kval">3</div></div>
+    <div class="kcard"><div class="kline" style="background:var(--bl)"></div><div class="klbl">Bugünkü Duruşma</div><div class="kval" id="sek-kpi-durusma">—</div></div>
     <div class="kcard"><div class="kline" style="background:var(--am)"></div><div class="klbl">Bekleyen Görev</div><div class="kval" id="kpi-gorev">0</div><div class="kmeta">bekleyen görev</div></div>
-    <div class="kcard"><div class="kline" style="background:var(--ac)"></div><div class="klbl">Toplam Müvekkil</div><div class="kval">48</div></div>
+    <div class="kcard"><div class="kline" style="background:var(--ac)"></div><div class="klbl">Toplam Müvekkil</div><div class="kval" id="sek-kpi-muvekkil">—</div></div>
   </div>
   <div class="col2">
     <div class="card"><div class="chd"><span class="ct">Bugünün Görevleri</span></div>
-      <div class="trow"><div class="tck" onclick="toggleTask(this)"></div><div class="ttx">Nüfus kayıt örneği al — Yılmaz</div><span class="bdg bac">Bugün</span></div>
-      <div class="trow"><div class="tck done" onclick="toggleTask(this)"><i class="ti ti-check"></i></div><div class="ttx done">Müvekkil Demir'i ara</div><span class="bdg ba">Tamam</span></div>
-      <div class="trow"><div class="tck" onclick="toggleTask(this)"></div><div class="ttx">Mahkeme yazısı teslim et</div><span class="bdg bac">Gecikti</span></div>
+      <div id="sek-gorev-liste" style="color:var(--tx4);font-size:12px;text-align:center;padding:16px 0"><i class="ti ti-checkbox" style="display:block;font-size:20px;margin-bottom:6px;opacity:.4"></i>Bugün bekleyen görev yok</div>
     </div>
     <div class="card"><div class="chd"><span class="ct">Bugünkü Duruşmalar</span></div>
-      <div class="hrow"><div class="hdot" style="background:var(--ac)"></div><div class="hinfo"><div class="hname">Ayşe Yılmaz · Boşanma</div><div class="hsub">İzmir 3. Aile Mah.</div></div><div class="htime" style="color:var(--rd)">09:30</div></div>
-      <div class="hrow"><div class="hdot" style="background:var(--bl)"></div><div class="hinfo"><div class="hname">Mehmet Arslan · İşe İade</div><div class="hsub">İzmir 7. İş Mah.</div></div><div class="htime" style="color:var(--am)">25 Haz 11:00</div></div>
+      <div id="sek-durusma-liste" style="color:var(--tx4);font-size:12px;text-align:center;padding:10px 0">Bugün duruşma yok</div>
     </div>
   </div>
   <div class="card" style="background:rgba(239,159,39,.06);border-color:rgba(239,159,39,.2)">
@@ -490,19 +482,16 @@ button{cursor:pointer}
 <!-- STAJYER GENEL BAKIŞ -->
 <div class="page" id="page-stajyer-genelbakis">
   <div class="kgrid kg3">
-    <div class="kcard"><div class="kline" style="background:var(--pu)"></div><div class="klbl">Görüntüleyebildiğim Dosya</div><div class="kval">31</div></div>
-    <div class="kcard"><div class="kline" style="background:var(--am)"></div><div class="klbl">Atanan Görev</div><div class="kval">4</div></div>
-    <div class="kcard"><div class="kline" style="background:var(--bl)"></div><div class="klbl">Taslak Dilekçem</div><div class="kval">2</div></div>
+    <div class="kcard"><div class="kline" style="background:var(--pu)"></div><div class="klbl">Görüntüleyebildiğim Dosya</div><div class="kval" id="stj-kpi-dosya">—</div></div>
+    <div class="kcard"><div class="kline" style="background:var(--am)"></div><div class="klbl">Atanan Görev</div><div class="kval" id="stj-kpi-gorev">—</div></div>
+    <div class="kcard"><div class="kline" style="background:var(--bl)"></div><div class="klbl">Taslak Dilekçem</div><div class="kval" id="stj-kpi-dilekce">—</div></div>
   </div>
   <div class="col2">
     <div class="card"><div class="chd"><span class="ct">Bana Atanan Görevler</span></div>
-      <div class="trow"><div class="tck" onclick="toggleTask(this)"></div><div class="ttx">Bilirkişi raporunu özetle — Yılmaz</div><span class="bdg bac">Bugün</span></div>
-      <div class="trow"><div class="tck" onclick="toggleTask(this)"></div><div class="ttx">Cevap dilekçesi taslağı — Arslan</div><span class="bdg bb">Çarşamba</span></div>
-      <div class="trow"><div class="tck done" onclick="toggleTask(this)"><i class="ti ti-check"></i></div><div class="ttx done">Dosya özeti — Can Holding</div><span class="bdg ba">Tamam</span></div>
+      <div id="stj-gorev-liste" style="color:var(--tx4);font-size:12px;text-align:center;padding:16px 0"><i class="ti ti-checkbox" style="display:block;font-size:20px;margin-bottom:6px;opacity:.4"></i>Henüz atanmış görev yok</div>
     </div>
     <div class="card"><div class="chd"><span class="ct">Taslak Dilekçelerim</span></div>
-      <div class="drow"><div class="dico ddoc"><i class="ti ti-file-text"></i></div><div class="dinf"><div class="dname">Cevap Dilekçesi Taslağı — Arslan</div><div class="dmeta">Avukat onayı bekleniyor</div></div><span class="bdg btas">Onay Bekliyor</span></div>
-      <div class="drow"><div class="dico ddoc"><i class="ti ti-file-text"></i></div><div class="dinf"><div class="dname">Dava Özeti — Yılmaz</div><div class="dmeta">İncelemede</div></div><span class="bdg bk">İncelemede</span></div>
+      <div id="stj-dilekce-liste" style="color:var(--tx4);font-size:12px;text-align:center;padding:16px 0"><i class="ti ti-file-text" style="display:block;font-size:20px;margin-bottom:6px;opacity:.4"></i>Henüz taslak dilekçe yok</div>
     </div>
   </div>
   <div class="card" style="background:rgba(139,92,246,.06);border-color:rgba(139,92,246,.2)">
@@ -535,7 +524,7 @@ button{cursor:pointer}
     <div class="card" style="margin-bottom:0;border-color:var(--bd2)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <div style="font-size:14px;font-weight:700;color:var(--tx)">Starter</div>
-        <span class="bdg bk">8 üye</span>
+        <span class="bdg bk" id="adm-starter-uye">—</span>
       </div>
       <div style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
       <div style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺2.990/yıl · %17 indirim</div>
@@ -545,13 +534,13 @@ button{cursor:pointer}
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Sınırsız müvekkil & dosya</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-x" style="color:var(--tx4);font-size:12px"></i>Ekip üyesi yok</div>
       </div>
-      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px" onclick="showToast('Starter paketi düzenleniyor...','info')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
+      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px" onclick="nav('admin-paket')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
     </div>
     <div class="card" style="margin-bottom:0;border-color:var(--acb);position:relative;overflow:visible">
       <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--ac);color:#0A0A0A;font-size:9px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px;white-space:nowrap">EN POPÜLER</div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <div style="font-size:14px;font-weight:700;color:var(--ac)">Pro</div>
-        <span class="bdg ba">12 üye</span>
+        <span class="bdg ba" id="adm-pro-uye">—</span>
       </div>
       <div style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺599<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
       <div style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺5.990/yıl · %17 indirim</div>
@@ -561,12 +550,12 @@ button{cursor:pointer}
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Sınırsız müvekkil & dosya</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Sekreter & stajyer ekibi</div>
       </div>
-      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px;border-color:var(--acb);color:var(--ac)" onclick="showToast('Pro paketi düzenleniyor...','info')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
+      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px;border-color:var(--acb);color:var(--ac)" onclick="nav('admin-paket')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
     </div>
     <div class="card" style="margin-bottom:0;border-color:var(--bd2)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <div style="font-size:14px;font-weight:700;color:var(--tx)">Enterprise</div>
-        <span class="bdg bb">4 üye</span>
+        <span class="bdg bb" id="adm-enterprise-uye">—</span>
       </div>
       <div style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺1.299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
       <div style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺12.990/yıl · %17 indirim</div>
@@ -576,7 +565,7 @@ button{cursor:pointer}
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Öncelikli destek</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Özel entegrasyon</div>
       </div>
-      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px" onclick="showToast('Enterprise paketi düzenleniyor...','info')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
+      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px" onclick="nav('admin-paket')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
     </div>
   </div>
 
@@ -584,11 +573,11 @@ button{cursor:pointer}
   <div class="card" style="margin-bottom:16px;background:rgba(139,92,246,.06);border-color:rgba(139,92,246,.2)">
     <div class="chd"><span class="ct" style="color:var(--pu)">Deneme Süreci Ayarları</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-      <div><div class="mvd-label" style="margin-bottom:6px">Ücretsiz Deneme Jetonu</div><div style="display:flex;align-items:center;gap:8px"><input class="fi" style="width:80px;height:32px;font-size:13px;text-align:center" value="10"><span style="font-size:12px;color:var(--tx3)">jeton / yeni üye</span></div></div>
-      <div><div class="mvd-label" style="margin-bottom:6px">Deneme Süresi</div><div style="display:flex;align-items:center;gap:8px"><input class="fi" style="width:60px;height:32px;font-size:13px;text-align:center" value="30"><span style="font-size:12px;color:var(--tx3)">gün</span></div></div>
-      <div><div class="mvd-label" style="margin-bottom:6px">Süre Dolunca</div><select class="fi" style="height:32px;font-size:12px"><option>Hesap dondurulur</option><option>Sadece görüntüleme</option><option>Uyarı verilir devam eder</option></select></div>
+      <div><div class="mvd-label" style="margin-bottom:6px">Ücretsiz Deneme Jetonu</div><div style="display:flex;align-items:center;gap:8px"><input id="deneme-jeton" class="fi" style="width:80px;height:32px;font-size:13px;text-align:center" value="10"><span style="font-size:12px;color:var(--tx3)">jeton / yeni üye</span></div></div>
+      <div><div class="mvd-label" style="margin-bottom:6px">Deneme Süresi</div><div style="display:flex;align-items:center;gap:8px"><input id="deneme-sure" class="fi" style="width:60px;height:32px;font-size:13px;text-align:center" value="30"><span style="font-size:12px;color:var(--tx3)">gün</span></div></div>
+      <div><div class="mvd-label" style="margin-bottom:6px">Süre Dolunca</div><select id="deneme-sonrasi" class="fi" style="height:32px;font-size:12px"><option>Hesap dondurulur</option><option>Sadece görüntüleme</option><option>Uyarı verilir devam eder</option></select></div>
     </div>
-    <div style="margin-top:12px"><button class="btnp" style="height:28px;font-size:11px" onclick="showToast('Deneme ayarları kaydedildi','ok')"><i class="ti ti-check" style="font-size:12px"></i>Kaydet</button></div>
+    <div style="margin-top:12px"><button class="btnp" style="height:28px;font-size:11px" onclick="saveDenemeAyarlari(this)"><i class="ti ti-check" style="font-size:12px"></i>Kaydet</button></div>
   </div>
 
   <!-- ÜYELER TABLOSU -->
@@ -833,8 +822,8 @@ button{cursor:pointer}
   <div class="phdr">
     <div>
       <div style="font-size:11px;color:var(--tx4);margin-bottom:5px;cursor:pointer" onclick="nav('dosyalar')"><i class="ti ti-arrow-left" style="font-size:11px"></i> Dosyalara Dön</div>
-      <div class="ptitle">Ayşe Yılmaz — Boşanma Davası</div>
-      <div class="psub">D-2024/1847 · İzmir 3. Aile Mahkemesi · Av. Ahmet Kaya</div>
+      <div class="ptitle" id="dd-baslik">Dosya Detay</div>
+      <div class="psub" id="dd-meta">—</div>
     </div>
     <div class="pact"><button class="btns" onclick="openModal('belge')"><i class="ti ti-upload"></i>Belge Yükle</button><button class="btnp" onclick="nav('dilekce')"><i class="ti ti-sparkles"></i>AI Dilekçe Üret</button></div>
   </div>
@@ -849,9 +838,7 @@ button{cursor:pointer}
   <div id="dtb-bel">
     <div class="card">
       <div class="chd"><span class="ct">Yüklü Belgeler</span><button class="btns" style="height:26px;font-size:11px" onclick="openModal('belge')"><i class="ti ti-upload" style="font-size:12px"></i>Yükle</button></div>
-      <div class="drow"><div class="dico dpdf"><i class="ti ti-file-type-pdf"></i></div><div class="dinf"><div class="dname">Bilirkişi Raporu 2024</div><div class="dmeta">PDF · 2.4 MB · 2 saat önce · OCR tamamlandı</div></div><div style="display:flex;gap:6px;flex-shrink:0"><span class="bdg ba">OCR Hazır</span><button class="btns" style="height:24px;font-size:10px" onclick="nav('dilekce');showToast('Belge AI analizine gönderildi','info')"><i class="ti ti-sparkles" style="font-size:11px"></i>AI Analiz</button></div></div>
-      <div class="drow"><div class="dico ddoc"><i class="ti ti-file-type-doc"></i></div><div class="dinf"><div class="dname">Cevap Dilekçesi Taslağı</div><div class="dmeta">Word · 145 KB · Dün</div></div><span class="bdg btas">Taslak</span></div>
-      <div class="drow"><div class="dico dimg"><i class="ti ti-photo"></i></div><div class="dinf"><div class="dname">Evlilik Cüzdanı Fotokopisi</div><div class="dmeta">JPEG · 890 KB · 3 gün önce</div></div><span class="bdg ba">Doğrulandı</span></div>
+      <div id="dd-belge-liste" style="color:var(--tx4);font-size:12px;text-align:center;padding:24px 0"><i class="ti ti-files" style="display:block;font-size:24px;margin-bottom:6px;opacity:.4"></i>Henüz belge yüklenmedi</div>
       <div class="drow" style="border:1.5px dashed var(--bd2);border-radius:var(--rmd);justify-content:center;padding:20px;cursor:pointer;margin-top:6px" onclick="openModal('belge')">
         <i class="ti ti-cloud-upload" style="font-size:20px;color:var(--tx4);margin-right:10px"></i>
         <span style="color:var(--tx4);font-size:12px">PDF, Word veya fotoğraf yükle · OCR otomatik çalışır</span>
@@ -906,10 +893,8 @@ button{cursor:pointer}
       </div>
     </div>
     <div class="card"><div class="chd"><span class="ct">Yaklaşan Duruşmalar</span></div>
-      <div class="hrow"><div class="hdot" style="background:var(--rd)"></div><div class="hinfo"><div class="hname">Ayşe Yılmaz · Boşanma</div><div class="hsub">İzmir 3. Aile Mah. · D-2024/1847</div></div><div class="htime" style="color:var(--rd)">Bugün 09:30</div></div>
-      <div class="hrow"><div class="hdot" style="background:var(--am)"></div><div class="hinfo"><div class="hname">Mehmet Arslan · İşe İade</div><div class="hsub">İzmir 7. İş Mah. · D-2024/2213</div></div><div class="htime" style="color:var(--am)">25 Haz 11:00</div></div>
-      <div class="hrow"><div class="hdot" style="background:var(--bl)"></div><div class="hinfo"><div class="hname">Can Holding · Ticaret</div><div class="hsub">İzmir 2. Ticaret Mah.</div></div><div class="htime">27 Haz 14:15</div></div>
-      <div class="hrow"><div class="hdot" style="background:var(--tx3)"></div><div class="hinfo"><div class="hname">Fatma Demir · Miras</div><div class="hsub">İzmir 1. Asliye Hukuk</div></div><div class="htime">10 Tem 10:00</div></div>
+      <div id="takvim-durusma-liste" style="color:var(--tx4);font-size:12px;text-align:center;padding:10px 0">Yaklaşan duruşma yok</div>
+
     </div>
   </div>
 </div>
@@ -921,7 +906,7 @@ button{cursor:pointer}
     <div class="card"><div class="chd"><span class="ct">Bugün & Acil</span></div>
       <div class="trow"><div class="tck" onclick="toggleTask(this)"></div><div class="ttx">Nüfus kayıt örneği al — Yılmaz</div><span class="bdg bac">Bugün</span></div>
       <div class="trow"><div class="tck" onclick="toggleTask(this)"></div><div class="ttx">Mahkeme yazısı teslim et</div><span class="bdg bac">Gecikti</span></div>
-      <div class="trow"><div class="tck done" onclick="toggleTask(this)"><i class="ti ti-check"></i></div><div class="ttx done">Fatma Demir'i ara</div><span class="bdg ba">Tamam</span></div>
+      
     </div>
     <div class="card"><div class="chd"><span class="ct">Bu Hafta</span></div>
       <div class="trow"><div class="tck" onclick="toggleTask(this)"></div><div class="ttx">Bilirkişi raporunu incele — Yılmaz</div><span class="bdg bb">Yarın</span></div>
@@ -944,11 +929,8 @@ button{cursor:pointer}
   <div class="tw">
     <div class="tctrl"><span class="ct">Cari Hesaplar</span></div>
     <table class="tbl"><thead><tr><th style="width:20%">Müvekkil</th><th style="width:20%">Dava</th><th style="width:15%">Toplam</th><th style="width:15%">Tahsilat</th><th style="width:13%">Kalan</th><th style="width:17%">Durum</th></tr></thead>
-    <tbody>
-      <tr><td class="tdp">Fatma Demir</td><td style="font-size:11.5px;color:var(--tx3)">Miras Davası</td><td style="font-size:12px;color:var(--tx2)">₺24.000</td><td style="font-size:12px;color:var(--tx2)">₺12.000</td><td style="font-size:12px;font-weight:600;color:var(--rd)">₺12.000</td><td><span class="bdg bac">45 gün gecikti</span></td></tr>
-      <tr><td class="tdp">Can Holding A.Ş.</td><td style="font-size:11.5px;color:var(--tx3)">Ticari Alacak</td><td style="font-size:12px;color:var(--tx2)">₺80.000</td><td style="font-size:12px;color:var(--tx2)">₺45.500</td><td style="font-size:12px;font-weight:600;color:var(--am)">₺34.500</td><td><span class="bdg bb">Son: 30 Haz</span></td></tr>
-      <tr><td class="tdp">Mehmet Arslan</td><td style="font-size:11.5px;color:var(--tx3)">İşe İade</td><td style="font-size:12px;color:var(--tx2)">₺18.000</td><td style="font-size:12px;color:var(--tx2)">₺9.100</td><td style="font-size:12px;font-weight:600;color:var(--am)">₺8.900</td><td><span class="bdg bb">Son: 15 Tem</span></td></tr>
-      <tr><td class="tdp">Ayşe Yılmaz</td><td style="font-size:11.5px;color:var(--tx3)">Boşanma</td><td style="font-size:12px;color:var(--tx2)">₺30.000</td><td style="font-size:12px;color:var(--tx2)">₺30.000</td><td style="font-size:12px;font-weight:600;color:var(--ac)">₺0</td><td><span class="bdg ba">Tamamlandı</span></td></tr>
+    <tbody id="muh-tablo">
+      <tr id="muh-bos-row"><td colspan="6" style="text-align:center;padding:24px;color:var(--tx3);font-size:12px"><i class="ti ti-receipt-off" style="display:block;font-size:22px;margin-bottom:6px;color:var(--tx4)"></i>Henüz cari kayıt yok</td></tr>
     </tbody></table>
   </div>
 </div>
@@ -990,21 +972,7 @@ button{cursor:pointer}
       <div class="card" style="margin-bottom:12px">
         <div class="chd"><span class="ct">Müvekkil Seç</span></div>
         <div style="display:flex;flex-direction:column;gap:6px" id="muvekkil-list">
-          <div class="muv-item" onclick="selectMuvekkil(this,'Ayşe Yılmaz','Aile — Boşanma','İzmir 3. Aile Mahkemesi','Hasan Yılmaz','Av. Ahmet Kaya','Evlilik 2018\u2019de başlamış, 2 müşterek çocuk mevcut. Davalı süregelen şiddet ve ekonomik baskı uygulamış, evlilik birliği temelinden sarsılmıştır. Müvekkil boşanma, müşterek çocukların velayeti ve maddi-manevi tazminat talep etmektedir.')" style="display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rsm);border:1px solid var(--acb);background:var(--acd);cursor:pointer">
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#000;flex-shrink:0">AY</div>
-            <div><div style="font-size:12px;font-weight:500">Ayşe Yılmaz</div><div style="font-size:10.5px;color:var(--tx4)">Aile — Boşanma</div></div>
-            <i class="ti ti-check" style="color:var(--ac);margin-left:auto;font-size:14px" id="check-AY"></i>
-          </div>
-          <div class="muv-item" onclick="selectMuvekkil(this,'Mehmet Arslan','İş — İşe İade','İzmir 7. İş Mahkemesi','Metro Market A.Ş.','Av. Ahmet Kaya','Müvekkil 8 yıl çalıştığı işyerinden geçerli neden gösterilmeksizin iş sözleşmesi feshedilmiştir. Performans gerekçesi uydurma olup iş güvencesi kapsamındadır. İşe iade ve işe başlatmama tazminatı talep edilmektedir.')" style="display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rsm);border:1px solid var(--bd);background:var(--sf2);cursor:pointer">
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--bl);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">MA</div>
-            <div><div style="font-size:12px;font-weight:500">Mehmet Arslan</div><div style="font-size:10.5px;color:var(--tx4)">İş — İşe İade</div></div>
-            <i class="ti ti-check" style="color:transparent;margin-left:auto;font-size:14px" id="check-MA"></i>
-          </div>
-          <div class="muv-item" onclick="selectMuvekkil(this,'Can Holding A.Ş.','Ticaret — Alacak','İzmir 2. Ticaret Mahkemesi','Alfa Tedarik Ltd.','Av. Selin Erdoğan','Davalı şirket, müvekkil ile imzalanan mal alım sözleşmesi kapsamında teslim edilen ürünlerin bedelini ödememektedir. Toplam alacak ₺80.000 olup ihtarnameye rağmen ödeme yapılmamıştır.')" style="display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rsm);border:1px solid var(--bd);background:var(--sf2);cursor:pointer">
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--am);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#000;flex-shrink:0">CH</div>
-            <div><div style="font-size:12px;font-weight:500">Can Holding A.Ş.</div><div style="font-size:10.5px;color:var(--tx4)">Ticaret — Alacak</div></div>
-            <i class="ti ti-check" style="color:transparent;margin-left:auto;font-size:14px" id="check-CH"></i>
-          </div>
+          <div id="muvekkil-list-bos" style="color:var(--tx4);font-size:12px;text-align:center;padding:16px 0"><i class="ti ti-users" style="display:block;font-size:20px;margin-bottom:6px;opacity:.4"></i>Yükleniyor...</div>
         </div>
       </div>
 
@@ -1166,9 +1134,8 @@ button{cursor:pointer}
   <div class="tw">
     <div class="tctrl"><span class="ct">Ekip Üyeleri</span></div>
     <table class="tbl"><thead><tr><th style="width:25%">Ad Soyad</th><th style="width:25%">E-posta</th><th style="width:15%">Rol</th><th style="width:15%">Son Giriş</th><th style="width:20%">İşlem</th></tr></thead>
-    <tbody>
-      <tr><td class="tdp"><span class="mav">EA</span>Elif Aydın</td><td style="font-size:11px;color:var(--tx3)">elif@legalox.ai</td><td><span class="bdg bb">Stajyer</span></td><td style="font-size:11px;color:var(--tx3)">Dün</td><td><div style="display:flex;gap:5px"><button class="btns" style="height:24px;font-size:10px">Düzenle</button><button class="btnd" style="height:24px;font-size:10px" onclick="showToast('Kullanıcı kaldırıldı','ok')">Kaldır</button></div></td></tr>
-      <tr><td class="tdp"><span class="mav">MY</span>Murat Yıldız</td><td style="font-size:11px;color:var(--tx3)">murat@legalox.ai</td><td><span class="bdg bkap">Sekreter</span></td><td style="font-size:11px;color:var(--tx3)">3 gün önce</td><td><div style="display:flex;gap:5px"><button class="btns" style="height:24px;font-size:10px">Düzenle</button><button class="btnd" style="height:24px;font-size:10px" onclick="showToast('Kullanıcı kaldırıldı','ok')">Kaldır</button></div></td></tr>
+    <tbody id="ekip-tablo">
+      <tr id="ekip-bos-row"><td colspan="5" style="text-align:center;padding:24px;color:var(--tx3);font-size:12px"><i class="ti ti-users-group" style="display:block;font-size:22px;margin-bottom:6px;color:var(--tx4)"></i>Henüz ekip üyesi yok</td></tr>
     </tbody></table>
   </div>
 </div>
@@ -1229,10 +1196,10 @@ button{cursor:pointer}
   <div class="phdr"><div><div class="ptitle">Ayarlar</div><div class="psub">Profil ve sistem tercihleri</div></div></div>
   <div class="ssec">
     <div class="stit">Profil Bilgileri</div>
-    <div class="srow"><div class="skey">Ad Soyad</div><input class="fi" style="width:200px;height:30px;font-size:12px" value="Ahmet Kaya"></div>
-    <div class="srow"><div class="skey">E-posta</div><input class="fi" style="width:200px;height:30px;font-size:12px" value="ahmet@legalox.ai"></div>
-    <div class="srow"><div class="skey">Baro No</div><input class="fi" style="width:200px;height:30px;font-size:12px" value="1234"></div>
-    <div style="margin-top:12px"><button class="btnp" onclick="showToast('Profil güncellendi','ok')"><i class="ti ti-check"></i>Kaydet</button></div>
+    <div class="srow"><div class="skey">Ad Soyad</div><input id="ayar-ad" class="fi" style="width:200px;height:30px;font-size:12px" placeholder="Ad Soyad"></div>
+    <div class="srow"><div class="skey">E-posta</div><input id="ayar-email" class="fi" style="width:200px;height:30px;font-size:12px" placeholder="e-posta"></div>
+    <div class="srow"><div class="skey">Baro No</div><input id="ayar-baro" class="fi" style="width:200px;height:30px;font-size:12px" placeholder="Baro numaranız"></div>
+    <div style="margin-top:12px"><button class="btnp" onclick="saveProfilAyarlari()"><i class="ti ti-check"></i>Kaydet</button></div>
   </div>
   <div class="ssec">
     <div class="stit">Bildirimler</div>
@@ -1292,7 +1259,7 @@ button{cursor:pointer}
   <div style="padding:16px 20px;border-top:1px solid #1E1E1E">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
       <div style="width:36px;height:36px;border-radius:50%;background:#1A1A1A;border:1px solid #262626;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#00FF88" id="mm-avatar">AK</div>
-      <div><div style="font-size:13px;font-weight:500;color:#ccc" id="mm-name">Ahmet Kaya</div><div style="font-size:11px;color:#444" id="mm-role">Yönetici</div></div>
+      <div><div style="font-size:13px;font-weight:500;color:#ccc" id="mm-name">—</div><div style="font-size:11px;color:#444" id="mm-role">—</div></div>
     </div>
     <button onclick="doLogout()" style="width:100%;background:#141414;border:1px solid #1E1E1E;border-radius:8px;padding:10px;color:#E24B4A;font-size:13px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px"><i class="ti ti-logout"></i>Çıkış Yap</button>
   </div>
@@ -1316,17 +1283,11 @@ button{cursor:pointer}
 <script>
 const SB_URL='https://licrpxhhwmesjexvwuov.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxpY3JweGhod21lc2pleHZ3dW92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzODAwNDgsImV4cCI6MjA5Nzk1NjA0OH0.fWu6lBRR9MjWAaCoi301X6JhoSi9tDkAej3dNfHvN2s';
 let sbClient=null,cRole='admin',cUser=null;
-var DEMO={
-  admin:{ad:'Ahmet Kaya',ini:'AK',rol:'Yönetici',color:'var(--ac)',email:'admin@legalox.ai',pw:'admin123'},
-  avukat:{ad:'Selin Erdoğan',ini:'SE',rol:'Avukat',color:'var(--bl)',email:'avukat@legalox.ai',pw:'avukat123'},
-  sekreter:{ad:'Murat Yıldız',ini:'MY',rol:'Sekreter',color:'var(--am)',email:'sekreter@legalox.ai',pw:'sekreter123'},
-  stajyer:{ad:'Elif Aydın',ini:'EA',rol:'Stajyer',color:'var(--pu)',email:'stajyer@legalox.ai',pw:'stajyer123'}
-};
 var NAVCFG={
   admin:[
     {p:'admin',         i:'ti-layout-dashboard', l:'Genel Bakış'},
     {div:1},{sec:'Yönetim'},
-    {p:'admin-uyeler',  i:'ti-users',            l:'Üyeler',           nb:'nb-g', nt:'24'},
+    {p:'admin-uyeler',  i:'ti-users',            l:'Üyeler'},
     {p:'admin-gelir',   i:'ti-receipt-2',         l:'Ödemeler & Gelir'},
     {p:'admin-paket',   i:'ti-package',           l:'Paket Yönetimi'},
     {div:1},{sec:'Sistem'},
@@ -1335,10 +1296,10 @@ var NAVCFG={
   avukat:[
     {p:'genelbakis',i:'ti-layout-dashboard',l:'Genel Bakış'},
     {div:1},{sec:'Müvekkil & Dosya'},
-    {p:'muvekkililer',i:'ti-users',l:'Müvekkiller',nb:'nb-gr',nt:'48'},
-    {p:'dosyalar',i:'ti-folder-open',l:'Dosyalar',nb:'nb-g',nt:'31'},
-    {p:'takvim',i:'ti-calendar-event',l:'Duruşmalar',nb:'nb-r',nt:'3'},
-    {p:'gorevler',i:'ti-checkbox',l:'Görevler',nb:'nb-r',nt:'7'},
+    {p:'muvekkililer',i:'ti-users',l:'Müvekkiller'},
+    {p:'dosyalar',i:'ti-folder-open',l:'Dosyalar'},
+    {p:'takvim',i:'ti-calendar-event',l:'Duruşmalar'},
+    {p:'gorevler',i:'ti-checkbox',l:'Görevler'},
     {p:'muhasebe',i:'ti-receipt-2',l:'Muhasebe'},
     {div:1},{sec:'Yapay Zekâ'},
     {p:'dilekce',i:'ti-edit',l:'Dilekçe Üretici'},
@@ -1352,9 +1313,9 @@ var NAVCFG={
   sekreter:[
     {p:'sekreter-genelbakis',i:'ti-layout-dashboard',l:'Genel Bakış'},
     {div:1},{sec:'İşlemler'},
-    {p:'muvekkililer',i:'ti-users',l:'Müvekkiller',nb:'nb-gr',nt:'48'},
-    {p:'takvim',i:'ti-calendar-event',l:'Duruşmalar',nb:'nb-r',nt:'3'},
-    {p:'gorevler',i:'ti-checkbox',l:'Görevler',nb:'nb-r',nt:'7'},
+    {p:'muvekkililer',i:'ti-users',l:'Müvekkiller'},
+    {p:'takvim',i:'ti-calendar-event',l:'Duruşmalar'},
+    {p:'gorevler',i:'ti-checkbox',l:'Görevler'},
     {div:1},
     {p:'rehber',i:'ti-help-circle',l:'Rehber'},
     {p:'ayarlar',i:'ti-settings',l:'Ayarlar'}
@@ -1376,11 +1337,11 @@ const PBTN={'genelbakis':'Yeni Dosya','sekreter-genelbakis':'Yeni Müvekkil','st
 
 var MODALS={
   muvekkil:{t:'Yeni Müvekkil Ekle',s:'Müvekkil bilgilerini doldurun',b:`<div class="fg"><label class="fl">Ad Soyad</label><input class="fi" placeholder="Adı Soyadı"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Telefon</label><input class="fi" placeholder="0532 xxx xx xx"></div><div class="fg"><label class="fl">TC Kimlik No</label><input class="fi" placeholder="12345678901"></div></div><div class="fg"><label class="fl">E-posta</label><input class="fi" type="email" placeholder="ad@mail.com"></div><div class="fg"><label class="fl">Adres</label><input class="fi" placeholder="İl, İlçe, Adres"></div><div class="fg"><label class="fl">Notlar</label><textarea class="fi" style="height:70px;resize:none" placeholder="Özel notlar..."></textarea></div>`},
-  dosya:{t:'Yeni Dosya Oluştur',s:'Dava bilgilerini girin',b:`<div class="fg"><label class="fl">Müvekkil</label><select class="fi"><option>Ayşe Yılmaz</option><option>Mehmet Arslan</option><option>Fatma Demir</option></select></div><div class="fg"><label class="fl">Dava Türü</label><select class="fi"><option>Aile Hukuku</option><option>İş Hukuku</option><option>Ticaret Hukuku</option><option>Medeni Hukuk</option><option>Ceza Hukuku</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Mahkeme</label><input class="fi" placeholder="İzmir 3. Aile Mah."></div><div class="fg"><label class="fl">Dosya No</label><input class="fi" placeholder="D-2024/xxxx"></div></div><div class="fg"><label class="fl">Atanan Avukat</label><select class="fi"><option>Av. Ahmet Kaya</option><option>Av. Selin Erdoğan</option></select></div>`},
+  dosya:{t:'Yeni Dosya Oluştur',s:'Dava bilgilerini girin',b:`<div class="fg"><label class="fl">Müvekkil</label><select class="fi" id="modal-muvekkil-sec"><option value="">— Müvekkil Seçin —</option></select></div><div class="fg"><label class="fl">Dava Türü</label><select class="fi"><option>Aile Hukuku</option><option>İş Hukuku</option><option>Ticaret Hukuku</option><option>Medeni Hukuk</option><option>Ceza Hukuku</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Mahkeme</label><input class="fi" placeholder="İzmir 3. Aile Mah."></div><div class="fg"><label class="fl">Dosya No</label><input class="fi" placeholder="D-2024/xxxx"></div></div><div class="fg"><label class="fl">Atanan Avukat</label><select class="fi" id="modal-avukat-sec"><option value="">— Avukat Seçin —</option></select></div>`},
   belge:{t:'Belge Yükle',s:'PDF, Word veya fotoğraf yükleyebilirsiniz. OCR otomatik çalışır.',b:`<div style="border:2px dashed var(--bd2);border-radius:var(--rlg);padding:30px;text-align:center;cursor:pointer;margin-bottom:14px"><i class="ti ti-cloud-upload" style="font-size:32px;color:var(--tx4);display:block;margin-bottom:10px"></i><div style="font-size:13px;color:var(--tx3)">Dosyayı buraya sürükle veya tıkla</div><div style="font-size:11px;color:var(--tx4);margin-top:4px">PDF, Word, JPEG, PNG · Max 50MB</div></div><div class="fg"><label class="fl">Belge Türü</label><select class="fi"><option>Dava Belgesi</option><option>Bilirkişi Raporu</option><option>Mahkeme Kararı</option><option>Sözleşme</option><option>Diğer</option></select></div>`},
-  durusma:{t:'Duruşma Ekle',s:'Duruşma bilgilerini girin',b:`<div class="fg"><label class="fl">İlgili Dosya</label><select class="fi"><option>Ayşe Yılmaz — Boşanma</option><option>Mehmet Arslan — İşe İade</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Tarih</label><input class="fi" type="date"></div><div class="fg"><label class="fl">Saat</label><input class="fi" type="time" value="09:30"></div></div><div class="fg"><label class="fl">Mahkeme</label><input class="fi" placeholder="İzmir 3. Aile Mah."></div>`},
-  gorev:{t:'Görev Ekle',s:'Yeni görev oluştur',b:`<div class="fg"><label class="fl">Görev Açıklaması</label><input class="fi" placeholder="Görevi tanımlayın..."></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Son Tarih</label><input class="fi" type="date"></div><div class="fg"><label class="fl">Atanan Kişi</label><select class="fi"><option>Av. Ahmet Kaya</option><option>Elif Aydın (Stajyer)</option><option>Murat Yıldız (Sekreter)</option></select></div></div><div class="fg"><label class="fl">İlgili Dosya</label><select class="fi"><option>—</option><option>Ayşe Yılmaz — Boşanma</option><option>Mehmet Arslan — İşe İade</option></select></div>`},
-  odeme:{t:'Ödeme Ekle',s:'Tahsilat kaydı oluştur',b:`<div class="fg"><label class="fl">Müvekkil</label><select class="fi"><option>Fatma Demir</option><option>Can Holding A.Ş.</option><option>Mehmet Arslan</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Tutar (₺)</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">Tarih</label><input class="fi" type="date"></div></div><div class="fg"><label class="fl">Açıklama</label><input class="fi" placeholder="Ödeme açıklaması"></div>`},
+  durusma:{t:'Duruşma Ekle',s:'Duruşma bilgilerini girin',b:`<div class="fg"><label class="fl">İlgili Dosya</label><select class="fi" id="modal-dosya-sec"><option value="">— Dosya Seçin —</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Tarih</label><input class="fi" type="date"></div><div class="fg"><label class="fl">Saat</label><input class="fi" type="time" value="09:30"></div></div><div class="fg"><label class="fl">Mahkeme</label><input class="fi" placeholder="İzmir 3. Aile Mah."></div>`},
+  gorev:{t:'Görev Ekle',s:'Yeni görev oluştur',b:`<div class="fg"><label class="fl">Görev Açıklaması</label><input class="fi" placeholder="Görevi tanımlayın..."></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Son Tarih</label><input class="fi" type="date"></div><div class="fg"><label class="fl">Atanan Kişi</label><select class="fi" id="modal-kisi-sec"><option value="">— Kişi Seçin —</option></select></div></div><div class="fg"><label class="fl">İlgili Dosya</label><select class="fi" id="modal-gorev-dosya-sec"><option value="">—</option></select></div>`},
+  odeme:{t:'Ödeme Ekle',s:'Tahsilat kaydı oluştur',b:`<div class="fg"><label class="fl">Müvekkil</label><select class="fi" id="modal-odeme-muvekkil-sec"><option value="">— Müvekkil Seçin —</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Tutar (₺)</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">Tarih</label><input class="fi" type="date"></div></div><div class="fg"><label class="fl">Açıklama</label><input class="fi" placeholder="Ödeme açıklaması"></div>`},
   kullanici:{t:'Avukat Ekle',s:'Sisteme yeni avukat davet et. Stajyer ve sekreteri avukat kendisi ekler.',b:`<div class="fg"><label class="fl">Ad Soyad</label><input class="fi" placeholder="Avukatın adı soyadı"></div><div class="fg"><label class="fl">E-posta</label><input class="fi" type="email" placeholder="avukat@buroadi.com"></div><div class="fg"><label class="fl">Baro No</label><input class="fi" placeholder="1234"></div><div style="background:var(--acd);border:1px solid var(--acb);border-radius:var(--rsm);padding:10px 12px;font-size:11.5px;color:var(--ac);margin-top:4px"><i class="ti ti-info-circle" style="margin-right:5px"></i>Avukat giriş yaptıktan sonra Ekibim sayfasından kendi sekreter ve stajyerini ekler.</div>`},
   ekipuye:{t:'Ekip Üyesi Ekle',s:'Kendi ekibine sekreter veya stajyer ekle',b:`<div class="fg"><label class="fl">Ad Soyad</label><input class="fi" placeholder="Adı Soyadı"></div><div class="fg"><label class="fl">E-posta</label><input class="fi" type="email" placeholder="kisi@mail.com"></div><div class="fg"><label class="fl">Rol</label><select class="fi"><option>Sekreter</option><option>Stajyer</option></select></div><div style="background:var(--bld);border:1px solid rgba(55,138,221,.15);border-radius:var(--rsm);padding:10px 12px;font-size:11.5px;color:var(--bl);margin-top:4px"><i class="ti ti-info-circle" style="margin-right:5px"></i>Bu kişi sadece senin dosyalarına erişebilir.</div>`},
   yenipaket:{t:'Yeni Paket Oluştur',s:'Abonelik planı tanımlayın',b:`<div class="fg"><label class="fl">Paket Adı</label><input class="fi" placeholder="Örn: Pro Plus"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Aylık Fiyat (₺)</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">Jeton Limiti</label><input class="fi" type="number" placeholder="200"></div></div><div class="fg"><label class="fl">Açıklama</label><textarea class="fi" style="height:60px;resize:none" placeholder="Paket özellikleri..."></textarea></div>`}
@@ -1473,6 +1434,8 @@ function nav2(p){
   if(p==='muvekkililer') loadMuvekkililer();
   if(p==='dosyalar') loadDosyalar();
   if(p==='admin') loadAdminGenelbakis();
+  if(p==='dilekce') loadDileckeMuvekkilList();
+  if(p==='ayarlar') loadProfilAyarlari();
   // Mobil bottom nav aktif state
   var mobileMap={
     'genelbakis':'home','sekreter-genelbakis':'home','stajyer-genelbakis':'home','admin':'home',
@@ -1987,6 +1950,38 @@ async function loadDosyalar(){
   }).join('');
 }
 
+async function loadDileckeMuvekkilList(){
+  var listEl=document.getElementById('muvekkil-list');
+  var bosEl=document.getElementById('muvekkil-list-bos');
+  if(!listEl) return;
+  if(!sbClient){
+    if(bosEl) bosEl.innerHTML='<i class="ti ti-wifi-off" style="display:block;font-size:20px;margin-bottom:6px;opacity:.4"></i>Bağlantı yok';
+    return;
+  }
+  var{data,error}=await sbClient.from('muvekkililer').select('id,ad_soyad,telefon').order('ad_soyad',{ascending:true});
+  if(error||!data||!data.length){
+    if(bosEl) bosEl.innerHTML='<i class="ti ti-users" style="display:block;font-size:20px;margin-bottom:6px;opacity:.4"></i>Henüz müvekkil eklenmedi';
+    return;
+  }
+  if(bosEl) bosEl.style.display='none';
+  // Mevcut dinamik eklenenler varsa temizle
+  listEl.querySelectorAll('.muv-item-dyn').forEach(function(el){el.remove();});
+  data.forEach(function(m){
+    var ini=(m.ad_soyad||'?').split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
+    var mid=String(m.id||'');
+    var div=document.createElement('div');
+    div.className='muv-item muv-item-dyn';
+    div.style.cssText='display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rsm);border:1px solid var(--bd);background:var(--sf2);cursor:pointer';
+    div.innerHTML='<div style="width:28px;height:28px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#000;flex-shrink:0">'+ini+'</div>'+
+      '<div><div style="font-size:12px;font-weight:500">'+escHtml(m.ad_soyad||'')+'</div><div style="font-size:10.5px;color:var(--tx4)">'+(m.telefon||'—')+'</div></div>'+
+      '<i class="ti ti-check" style="color:transparent;margin-left:auto;font-size:14px" id="check-'+mid+'"></i>';
+    div.onclick=(function(mv,el){
+      return function(){selectMuvekkil(el, mv.ad_soyad||'', '—', '—', '—', '—', '');};
+    })(m, div);
+    listEl.appendChild(div);
+  });
+}
+
 async function loadAdminGenelbakis(){
   if(!sbClient) return;
   // KPI'ları Supabase'den çek
@@ -2080,7 +2075,36 @@ async function saveDenemeAyarlari(btn) {
   if (btn) { btn.disabled=false; btn.innerHTML='<i class="ti ti-check"></i>Kaydet'; }
   showToast('Deneme ayarları kaydedildi ✓','ok');
 }
-function showToast(msg,type='info'){
+
+// ── PROFİL AYARLARI ────────────────────────────────────────
+async function loadProfilAyarlari() {
+  if (!sbClient || !cUser) return;
+  var {data, error} = await sbClient.from('profiles').select('ad_soyad, email, baro_no').eq('id', cUser.id).single();
+  if (error || !data) return;
+  var ad = document.getElementById('ayar-ad');
+  var email = document.getElementById('ayar-email');
+  var baro = document.getElementById('ayar-baro');
+  if (ad) ad.value = data.ad_soyad || '';
+  if (email) email.value = data.email || cUser.email || '';
+  if (baro) baro.value = data.baro_no || '';
+}
+
+async function saveProfilAyarlari() {
+  if (!sbClient || !cUser) { showToast('Oturum bulunamadı','err'); return; }
+  var ad = document.getElementById('ayar-ad')?.value?.trim();
+  var baro = document.getElementById('ayar-baro')?.value?.trim();
+  if (!ad) { showToast('Ad Soyad boş olamaz','err'); return; }
+  var {error} = await sbClient.from('profiles').update({ ad_soyad: ad, baro_no: baro }).eq('id', cUser.id);
+  if (error) { showToast('Kayıt hatası: ' + error.message, 'err'); return; }
+  // Sidebar güncelle
+  var uname = document.getElementById('uname');
+  if (uname) uname.textContent = ad;
+  var uav = document.getElementById('uav');
+  if (uav) uav.textContent = ad.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
+  showToast('Profil güncellendi ✓','ok');
+}
+
+
   let w=document.getElementById('twrap');
   if(!w){w=document.createElement('div');w.id='twrap';w.style.cssText='position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none';document.body.appendChild(w);}
   const t=document.createElement('div');
@@ -2135,47 +2159,46 @@ initSB();
 })();
 
 // ── MÜVEKKİL DETAY ──────────────────────────────────────────
-const MUVEKKILDATA = {
-  'Ayşe Yılmaz':    {tc:'12345678901', tel:'0532 111 22 33', email:'a.yilmaz@mail.com',   adres:'İzmir, Konak',    not:'Mesai saatleri dışında aranması tercih ediliyor.', dosyalar:[{ad:'Boşanma Davası',no:'D-2024/1847',durum:'Aktif'},{ad:'Nafaka Talebi',no:'D-2023/0441',durum:'Kapalı'}], toplam:'₺30.000', tahsilat:'₺30.000', kalan:'₺0', kalanRenk:'var(--ac)', kalanMesaj:'Hesap kapatılmış.'},
-  'Mehmet Arslan':   {tc:'98765432109', tel:'0542 333 44 55', email:'m.arslan@mail.com',   adres:'İzmir, Bornova',  not:'İş yeri kapandı, dava devam ediyor.',               dosyalar:[{ad:'İşe İade Davası',no:'D-2024/2213',durum:'Aktif'}],                             toplam:'₺18.000', tahsilat:'₺9.100',  kalan:'₺8.900', kalanRenk:'var(--am)', kalanMesaj:'Son ödeme: 15 Tem 2025'},
-  'Fatma Demir':     {tc:'11223344556', tel:'0555 666 77 88', email:'f.demir@mail.com',    adres:'İzmir, Karşıyaka', not:'Miras davası için tüm belgeler teslim edilmeli.', dosyalar:[{ad:'Miras Davası',no:'D-2024/3301',durum:'Bekliyor'}],                            toplam:'₺24.000', tahsilat:'₺12.000', kalan:'₺12.000', kalanRenk:'var(--rd)', kalanMesaj:'45 gün gecikti — ihtarname önerilir'},
-  'Can Holding A.Ş.':{tc:'9876543210',  tel:'0232 100 20 30', email:'info@canholding.com', adres:'İzmir, Çiğli',    not:'Kurumsal müvekkil, yazışmalar hukuk müşaviri üzerinden.',dosyalar:[{ad:'Ticari Alacak',no:'D-2024/0988',durum:'Keşif'}],                       toplam:'₺80.000', tahsilat:'₺45.500', kalan:'₺34.500', kalanRenk:'var(--am)', kalanMesaj:'Son ödeme: 30 Haz 2025'}
-};
 
-function openMuvDetail(ad) {
-  const d = MUVEKKILDATA[ad];
-  if (!d) { showToast('Müvekkil bilgisi bulunamadı','err'); return; }
-  document.getElementById('mvd-isim').textContent = ad;
-  document.getElementById('mvd-meta').textContent = 'TC: ' + d.tc + ' · ' + d.adres;
-  document.getElementById('mvd-ad').textContent   = ad;
-  document.getElementById('mvd-tc').textContent   = d.tc;
-  document.getElementById('mvd-tel').textContent  = d.tel;
-  document.getElementById('mvd-email').textContent = d.email;
-  document.getElementById('mvd-adres').textContent = d.adres;
-  document.getElementById('mvd-not').textContent  = d.not;
-  // Dosyalar
-  const dosyaDiv = document.getElementById('mvd-dosya');
-  dosyaDiv.innerHTML = d.dosyalar.map(f => `
-    <div class="drow">
-      <div class="dico ddoc"><i class="ti ti-folder"></i></div>
-      <div class="dinf"><div class="dname">${f.ad}</div><div class="dmeta">${f.no} · ${f.durum}</div></div>
-      <button class="btns" style="height:24px;font-size:10px" onclick="closeMuvModal();nav('dosyadetay')">Aç</button>
-    </div>`).join('');
-  // Cari
-  const cariDiv = document.getElementById('mvd-cari');
-  cariDiv.innerHTML = `
-    <div class="kgrid kg3" style="margin-bottom:12px">
-      <div class="kcard"><div class="kline" style="background:var(--bl)"></div><div class="klbl">Toplam Anlaşma</div><div class="kval" style="font-size:20px">${d.toplam}</div></div>
-      <div class="kcard"><div class="kline" style="background:var(--ac)"></div><div class="klbl">Tahsilat</div><div class="kval" style="font-size:20px">${d.tahsilat}</div></div>
-      <div class="kcard"><div class="kline" style="background:${d.kalanRenk}"></div><div class="klbl">Kalan</div><div class="kval" style="font-size:20px;color:${d.kalanRenk}">${d.kalan}</div></div>
-    </div>
-    <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rmd);padding:12px;font-size:12px;color:${d.kalanRenk}">${d.kalanMesaj}</div>`;
+async function openMuvDetail(id) {
+  if (!sbClient) { showToast('Bağlantı yok','err'); return; }
+  var {data:m, error} = await sbClient.from('muvekkililer').select('*').eq('id', id).single();
+  if (error || !m) { showToast('Müvekkil bilgisi yüklenemedi','err'); return; }
+  document.getElementById('mvd-isim').textContent = m.ad_soyad || '—';
+  document.getElementById('mvd-meta').textContent = 'TC: ' + (m.tc_kimlik||'—') + ' · ' + (m.adres||'—');
+  document.getElementById('mvd-ad').textContent   = m.ad_soyad || '—';
+  document.getElementById('mvd-tc').textContent   = m.tc_kimlik || '—';
+  document.getElementById('mvd-tel').textContent  = m.telefon || '—';
+  document.getElementById('mvd-email').textContent = m.email || '—';
+  document.getElementById('mvd-adres').textContent = m.adres || '—';
+  document.getElementById('mvd-not').textContent  = m.notlar || '—';
+  // Dosyalar - Supabase'den çek
+  var dosyaDiv = document.getElementById('mvd-dosya');
+  var {data:dosyalar} = await sbClient.from('dosyalar').select('id,dava_turu,dosya_no,durum').eq('muvekkil_id', id);
+  dosyaDiv.innerHTML = (dosyalar && dosyalar.length)
+    ? dosyalar.map(function(f){
+        return '<div class="drow"><div class="dico ddoc"><i class="ti ti-folder"></i></div><div class="dinf"><div class="dname">'+(f.dava_turu||'—')+'</div><div class="dmeta">'+(f.dosya_no||'—')+' · '+(f.durum||'—')+'</div></div><button class="btns" style="height:24px;font-size:10px" onclick="closeMuvModal();nav(\'dosyadetay\')">Aç</button></div>';
+      }).join('')
+    : '<div style="color:var(--tx4);font-size:12px;text-align:center;padding:16px 0">Bu müvekkile ait dosya yok</div>';
+  // Cari - basit gösterim
+  var {data:muh} = await sbClient.from('muhasebe').select('tutar,tür').eq('muvekkil_id', id);
+  var cariDiv = document.getElementById('mvd-cari');
+  var toplam = 0, tahsilat = 0;
+  if (muh) muh.forEach(function(r){ if(r.tür==='gelir') tahsilat += (parseFloat(r.tutar)||0); else toplam += (parseFloat(r.tutar)||0); });
+  var kalan = toplam - tahsilat;
+  cariDiv.innerHTML = '<div class="kgrid kg3" style="margin-bottom:12px">' +
+    '<div class="kcard"><div class="kline" style="background:var(--bl)"></div><div class="klbl">Toplam Anlaşma</div><div class="kval" style="font-size:20px">₺'+toplam.toLocaleString('tr-TR')+'</div></div>' +
+    '<div class="kcard"><div class="kline" style="background:var(--ac)"></div><div class="klbl">Tahsilat</div><div class="kval" style="font-size:20px">₺'+tahsilat.toLocaleString('tr-TR')+'</div></div>' +
+    '<div class="kcard"><div class="kline" style="background:'+(kalan>0?'var(--am)':'var(--ac)')+'"></div><div class="klbl">Kalan</div><div class="kval" style="font-size:20px;color:'+(kalan>0?'var(--am)':'var(--ac)')+'">₺'+Math.abs(kalan).toLocaleString('tr-TR')+'</div></div>' +
+    '</div>';
   // Notlar
-  document.querySelector('#mvd-notlar textarea').value = d.not;
+  var notTa = document.querySelector('#mvd-notlar textarea');
+  if (notTa) notTa.value = m.notlar || '';
   // İlk sekmeye dön
   mvdTab(document.querySelector('.mvd-tab'), 'mvd-genel');
   document.getElementById('movl-muvekkil').classList.add('open');
 }
+
 
 function closeMuvModal(e) {
   if (!e || e.target === document.getElementById('movl-muvekkil'))
@@ -2646,7 +2669,7 @@ window.addEventListener('beforeinstallprompt',function(e){
 <div class="movl" id="movl-muvekkil" onclick="closeMuvModal(event)">
   <div class="modal" style="width:560px;max-width:95vw" onclick="event.stopPropagation()">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-      <div class="mtit" id="mvd-isim">Ayşe Yılmaz</div>
+      <div class="mtit" id="mvd-isim">—</div>
       <div style="display:flex;gap:6px">
         <button class="btns" style="height:26px;font-size:11px" onclick="closeMuvModal();nav('dosyalar')"><i class="ti ti-folder-open" style="font-size:12px"></i>Dosyaları Gör</button>
         <button class="btnd" style="height:26px;font-size:11px" onclick="this.closest('.movl').classList.remove('open')"><i class="ti ti-x" style="font-size:12px"></i></button>
@@ -2661,7 +2684,7 @@ window.addEventListener('beforeinstallprompt',function(e){
     </div>
     <div id="mvd-genel">
       <div class="mvd-grid">
-        <div class="mvd-field"><div class="mvd-label">Ad Soyad</div><div class="mvd-value" id="mvd-ad">Ayşe Yılmaz</div></div>
+        <div class="mvd-field"><div class="mvd-label">Ad Soyad</div><div class="mvd-value" id="mvd-ad">—</div></div>
         <div class="mvd-field"><div class="mvd-label">TC Kimlik No</div><div class="mvd-value" id="mvd-tc">12345678901</div></div>
         <div class="mvd-field"><div class="mvd-label">Telefon</div><div class="mvd-value" id="mvd-tel">0532 111 22 33</div></div>
         <div class="mvd-field"><div class="mvd-label">E-posta</div><div class="mvd-value" id="mvd-email">a.yilmaz@mail.com</div></div>
