@@ -1263,7 +1263,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v2.2 — 02.07.2026';
+const APP_VERSION='v2.3 — 03.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1802,6 +1802,25 @@ function openModal(type){
   movl.classList.add('open');
 }
 function closeModal(e){if(!e||e.target===document.getElementById('movl'))document.getElementById('movl').classList.remove('open');}
+// Şema-uyumlu güvenli insert: tabloda olmayan bir sütun hatası gelirse
+// o sütunu payload'dan çıkarıp otomatik olarak tekrar dener.
+// "Could not find the 'X' column" hatalarını kalıcı olarak çözer.
+async function sbInsert(table, payload){
+  var p = Object.assign({}, payload);
+  for(var i=0; i<8; i++){
+    var r = await sbClient.from(table).insert(p);
+    if(!r.error) return r;
+    var m = /[Cc]ould not find the '([^']+)' column/.exec(r.error.message||'');
+    if(m && (m[1] in p)){
+      console.warn('sbInsert: "'+table+'" tablosunda "'+m[1]+'" sütunu yok, çıkarılıp tekrar deneniyor');
+      delete p[m[1]];
+      continue;
+    }
+    return r;
+  }
+  return { error:{ message:'Kayıt eklenemedi (çok fazla eksik sütun)' } };
+}
+
 async function submitModal(){
   var movl=document.getElementById('movl');
   var tip=movl.getAttribute('data-tip');
@@ -1819,7 +1838,7 @@ async function submitModal(){
       var adres=inputs[4]?.value.trim();
       var not_=inputs[5]?.value.trim();
       if(!ad){showToast('Ad Soyad zorunludur','err');if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i>Kaydet';}return;}
-      var{error}=await sbClient.from('muvekkililer').insert({
+      var{error}=await sbInsert('muvekkililer', {
         kullanici_id:cUser?.id||null, ad_soyad:ad, telefon:tel||null,
         tc_kimlik:tc||null, email:email||null, adres:adres||null, notlar:not_||null
       });
@@ -1833,7 +1852,7 @@ async function submitModal(){
       var mahkeme=(document.getElementById('dosya-mahkeme')?.value||'').trim();
       var dosyaNo=(document.getElementById('dosya-no')?.value||'').trim();
       if(!muvekkil){showToast('Müvekkil adı zorunludur','err');if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i>Kaydet';}return;}
-      var{error}=await sbClient.from('dosyalar').insert({
+      var{error}=await sbInsert('dosyalar', {
         kullanici_id:cUser?.id||null, muvekkil_adi:muvekkil,
         dava_turu:davaTuru, mahkeme:mahkeme||null,
         dosya_no:dosyaNo||null, durum:'Aktif'
@@ -1848,7 +1867,7 @@ async function submitModal(){
       var saat=document.getElementById('durusma-saat')?.value||'';
       var mahkeme=(document.getElementById('durusma-mahkeme')?.value||'').trim();
       if(!tarih){showToast('Tarih zorunludur','err');if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i>Kaydet';}return;}
-      var{error}=await sbClient.from('durusmalar').insert({
+      var{error}=await sbInsert('durusmalar', {
         kullanici_id:cUser?.id||null, dosya_adi:dosya||null,
         tarih:tarih, saat:saat||null, mahkeme:mahkeme||null
       });
@@ -1861,7 +1880,7 @@ async function submitModal(){
       var atanan=(document.getElementById('gorev-atanan')?.value||'').trim();
       var ilgiliDosya=(document.getElementById('gorev-dosya')?.value||'').trim();
       if(!aciklama){showToast('Görev açıklaması zorunludur','err');if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i>Kaydet';}return;}
-      var{error}=await sbClient.from('gorevler').insert({
+      var{error}=await sbInsert('gorevler', {
         kullanici_id:cUser?.id||null, aciklama:aciklama,
         son_tarih:sonTarih||null, atanan:atanan||null,
         ilgili_dosya:ilgiliDosya||null, durum:'bekliyor'
@@ -1875,7 +1894,7 @@ async function submitModal(){
       var tarih=document.getElementById('odeme-tarih')?.value||'';
       var aciklama=(document.getElementById('odeme-aciklama')?.value||'').trim();
       if(!muvekkil){showToast('Müvekkil adı zorunludur','err');if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i>Kaydet';}return;}
-      var{error}=await sbClient.from('muhasebe').insert({
+      var{error}=await sbInsert('muhasebe', {
         kullanici_id:cUser?.id||null, muvekkil_adi:muvekkil,
         tutar:tutar, tarih:tarih||null, aciklama:aciklama||null, durum:'odendi'
       });
