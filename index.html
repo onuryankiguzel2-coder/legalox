@@ -529,15 +529,15 @@ button{cursor:pointer}
         <div style="font-size:14px;font-weight:700;color:var(--tx)">Starter</div>
         <span class="bdg bk">8 üye</span>
       </div>
-      <div style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺2.990/yıl · %17 indirim</div>
+      <div id="ad-starter-fiyat" style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
+      <div id="ad-starter-yillik" style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺2.990/yıl · %17 indirim</div>
       <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>1 avukat hesabı</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>50 jeton/ay</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Sınırsız müvekkil & dosya</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-x" style="color:var(--tx4);font-size:12px"></i>Ekip üyesi yok</div>
       </div>
-      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px" onclick="showToast('Starter paketi düzenleniyor...','info')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
+      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px" onclick="nav('admin-paket')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
     </div>
     <div class="card" style="margin-bottom:0;border-color:var(--acb);position:relative;overflow:visible">
       <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--ac);color:#0A0A0A;font-size:9px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px;white-space:nowrap">EN POPÜLER</div>
@@ -545,30 +545,30 @@ button{cursor:pointer}
         <div style="font-size:14px;font-weight:700;color:var(--ac)">Pro</div>
         <span class="bdg ba">12 üye</span>
       </div>
-      <div style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺599<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺5.990/yıl · %17 indirim</div>
+      <div id="ad-pro-fiyat" style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺599<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
+      <div id="ad-pro-yillik" style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺5.990/yıl · %17 indirim</div>
       <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>3 avukat hesabı</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>200 jeton/ay</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Sınırsız müvekkil & dosya</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Sekreter & stajyer ekibi</div>
       </div>
-      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px;border-color:var(--acb);color:var(--ac)" onclick="showToast('Pro paketi düzenleniyor...','info')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
+      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px;border-color:var(--acb);color:var(--ac)" onclick="nav('admin-paket')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
     </div>
     <div class="card" style="margin-bottom:0;border-color:var(--bd2)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <div style="font-size:14px;font-weight:700;color:var(--tx)">Enterprise</div>
         <span class="bdg bb">4 üye</span>
       </div>
-      <div style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺1.299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺12.990/yıl · %17 indirim</div>
+      <div id="ad-enterprise-fiyat" style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺1.299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
+      <div id="ad-enterprise-yillik" style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺12.990/yıl · %17 indirim</div>
       <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Sınırsız avukat</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Sınırsız jeton</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Öncelikli destek</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Özel entegrasyon</div>
       </div>
-      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px" onclick="showToast('Enterprise paketi düzenleniyor...','info')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
+      <button class="btns" style="width:100%;justify-content:center;height:30px;font-size:11.5px" onclick="nav('admin-paket')"><i class="ti ti-edit" style="font-size:12px"></i>Düzenle</button>
     </div>
   </div>
 
@@ -701,8 +701,8 @@ button{cursor:pointer}
     <!-- Starter -->
     <div class="card" style="margin-bottom:0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="font-size:15px;font-weight:700;color:var(--tx)">Starter</div><span class="badge b-kesif">8 üye</span></div>
-      <div style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">₺2.990/yıl · %17 indirim</div>
+      <div id="pk-starter-goster" style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
+      <div id="pk-starter-goster-yillik" style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">₺2.990/yıl · %17 indirim</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Avukat hesabı</span><input id="pk-starter-avukat" style="width:50px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="1"></div>
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Jeton/ay</span><input id="pk-starter-jeton" style="width:50px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="50"></div>
@@ -716,8 +716,8 @@ button{cursor:pointer}
     <div class="card" style="margin-bottom:0;border-color:var(--accent-border);position:relative;overflow:visible">
       <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0A0A0A;font-size:9px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap">EN POPÜLER</div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="font-size:15px;font-weight:700;color:var(--accent)">Pro</div><span class="badge b-aktif">12 üye</span></div>
-      <div style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺599<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">₺5.990/yıl · %17 indirim</div>
+      <div id="pk-pro-goster" style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺599<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
+      <div id="pk-pro-goster-yillik" style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">₺5.990/yıl · %17 indirim</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Avukat hesabı</span><input id="pk-pro-avukat" style="width:50px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="3"></div>
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Jeton/ay</span><input id="pk-pro-jeton" style="width:50px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="200"></div>
@@ -730,8 +730,8 @@ button{cursor:pointer}
     <!-- Enterprise -->
     <div class="card" style="margin-bottom:0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="font-size:15px;font-weight:700;color:var(--tx)">Enterprise</div><span class="badge b-bekle">4 üye</span></div>
-      <div style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺1.299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">₺12.990/yıl · %17 indirim</div>
+      <div id="pk-enterprise-goster" style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺1.299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
+      <div id="pk-enterprise-goster-yillik" style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">₺12.990/yıl · %17 indirim</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Avukat hesabı</span><input id="pk-enterprise-avukat" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="Sınırsız"></div>
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Jeton/ay</span><input id="pk-enterprise-jeton" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="Sınırsız"></div>
@@ -1263,6 +1263,22 @@ button{cursor:pointer}
 </div>
 
 <script>
+const APP_VERSION='v2.2 — 02.07.2026';
+console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
+// GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
+window.addEventListener('error',function(e){
+  try{showToast('Hata: '+String(e.message||'bilinmeyen hata').substring(0,120),'err');}catch(_){}
+});
+window.addEventListener('unhandledrejection',function(e){
+  try{var m=e.reason&&(e.reason.message||e.reason);showToast('Hata: '+String(m||'bilinmeyen').substring(0,120),'err');}catch(_){}
+});
+// Versiyon damgası: sağ alt köşede küçük yazı — hangi versiyonun canlıda olduğunu anında gösterir
+document.addEventListener('DOMContentLoaded',function(){
+  var v=document.createElement('div');
+  v.textContent='LegalOX '+APP_VERSION;
+  v.style.cssText='position:fixed;bottom:4px;right:8px;font-size:9px;color:var(--tx4,#888);opacity:.55;z-index:9999;pointer-events:none;font-family:monospace';
+  document.body.appendChild(v);
+});
 const SB_URL='https://licrpxhhwmesjexvwuov.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxpY3JweGhod21lc2pleHZ3dW92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzODAwNDgsImV4cCI6MjA5Nzk1NjA0OH0.fWu6lBRR9MjWAaCoi301X6JhoSi9tDkAej3dNfHvN2s';
 let sbClient=null,cRole='admin',cUser=null;
 
@@ -1440,6 +1456,7 @@ function nav2(p){
   if(p==='rehber') showG(cRole==='admin'?'avukat':cRole);
   if(p==='admin-uyeler') loadAdminUyeler();
   if(p==='admin-paket') loadPaketAyarlari();
+  if(p==='admin') refreshPaketGosterimleri();
   if(p==='admin-gelir') loadAdminGelir();
   if(p==='muvekkililer') loadMuvekkililer();
   if(p==='dosyalar') loadDosyalar();
@@ -1860,6 +1877,14 @@ async function submitModal(){
       if(error)throw error;
       showToast('Ödeme kaydedildi ✓','ok');
 
+    } else if(tip==='ekipuye'||tip==='kullanici'){
+      var davetUrl=window.location.href.split('?')[0]+'?kayit=1';
+      if(navigator.clipboard)navigator.clipboard.writeText(davetUrl).catch(function(){});
+      showToast('Kayıt bağlantısı panoya kopyalandı — kişi bu bağlantıdan üye olduğunda listede görünecek','info');
+    } else if(tip==='yenipaket'){
+      showToast('Özel paket oluşturma yakında — şimdilik Starter/Pro/Enterprise paketlerini bu sayfadan düzenleyebilirsin','info');
+    } else if(tip==='belge'){
+      showToast('Belge yükleme için depolama alanı henüz aktif değil','info');
     } else {
       showToast('Kaydedildi ✓','ok');
     }
@@ -1893,7 +1918,28 @@ async function savePaket(tip, btn) {
     try { await sbClient.from('paketler').upsert({ id:tip, tip:tip, aylik_fiyat:parseFloat(aylik)||0, yillik_fiyat:parseFloat(yillik)||0, jeton_limit:parseInt(jeton)||0, avukat_limit:avukat, guncelleme:new Date().toISOString() }, {onConflict:'id'}); } catch(e) {}
   }
   if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-check"></i>Kaydet'; }
+  updatePaketGosterim(tip, aylik, yillik);
   showToast(tip.charAt(0).toUpperCase()+tip.slice(1)+' paketi güncellendi ✓', 'ok');
+}
+
+// Paket fiyat göstergelerini (büyük ₺ yazıları) güncelle — hem admin genelbakış hem paket sayfası
+function fmtTL(n){n=parseFloat(n)||0;return '₺'+n.toLocaleString('tr-TR');}
+function updatePaketGosterim(tip, aylik, yillik){
+  var ay=parseFloat(aylik)||0, yil=parseFloat(yillik)||0;
+  var pct=ay>0?Math.round((1-yil/(ay*12))*100):0;
+  var ayHtml=fmtTL(ay)+'<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span>';
+  var yilTxt=fmtTL(yil)+'/yıl'+(pct>0&&pct<100?' · %'+pct+' indirim':'');
+  var el;
+  if(el=document.getElementById('pk-'+tip+'-goster'))el.innerHTML=ayHtml;
+  if(el=document.getElementById('pk-'+tip+'-goster-yillik'))el.textContent=yilTxt;
+  if(el=document.getElementById('ad-'+tip+'-fiyat'))el.innerHTML=ayHtml;
+  if(el=document.getElementById('ad-'+tip+'-yillik'))el.textContent=yilTxt;
+}
+function refreshPaketGosterimleri(){
+  ['starter','pro','enterprise'].forEach(function(tip){
+    var s=localStorage.getItem('legalox_paket_'+tip); if(!s)return;
+    try{var d=JSON.parse(s); updatePaketGosterim(tip, d.aylik, d.yillik);}catch(e){}
+  });
 }
 
 // ── VERİ YÜKLEME FONKSİYONLARI ────────────────────────────────
@@ -2358,6 +2404,7 @@ async function loadPaketAyarlari() {
               var jeton=document.getElementById('pk-'+tip+'-jeton'),avukat=document.getElementById('pk-'+tip+'-avukat');
               if(aylik&&d.aylik)aylik.value=d.aylik; if(yillik&&d.yillik)yillik.value=d.yillik;
               if(jeton&&d.jeton)jeton.value=d.jeton; if(avukat&&d.avukat)avukat.value=d.avukat;
+              updatePaketGosterim(tip, d.aylik, d.yillik);
               localStorage.setItem('legalox_paket_'+tip,row.deger);
             }
           } catch(e) {}
@@ -2375,6 +2422,7 @@ async function loadPaketAyarlari() {
       var jeton=document.getElementById('pk-'+tip+'-jeton'),avukat=document.getElementById('pk-'+tip+'-avukat');
       if(aylik&&d.aylik)aylik.value=d.aylik; if(yillik&&d.yillik)yillik.value=d.yillik;
       if(jeton&&d.jeton)jeton.value=d.jeton; if(avukat&&d.avukat)avukat.value=d.avukat;
+      updatePaketGosterim(tip, d.aylik, d.yillik);
     } catch(e) {}
   });
   var deneme=localStorage.getItem('legalox_deneme_ayarlari');
