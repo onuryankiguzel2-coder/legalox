@@ -1373,8 +1373,13 @@ async function doLogin(){
     loginOK(rol,buildUserInfo(uid,ad,rol));
     return;
   }
-  if(prof.durum==='pasif'||prof.durum==='bekliyor'){
-    err.textContent='Hesabınız henüz onaylanmamış. Lütfen yöneticinizle iletişime geçin.';
+  // Onay gereksinimi kaldırıldı: bekleyen hesaplar girişte otomatik aktifleştirilir
+  if(prof.durum==='bekliyor'||prof.durum==='beklemede'){
+    try{ await sbClient.from('profiles').update({durum:'aktif'}).eq('id',uid); }catch(e){}
+  }
+  // Sadece admin tarafından bilerek kapatılan hesaplar engellenir
+  if(prof.durum==='pasif'||prof.durum==='reddedildi'){
+    err.textContent='Hesabınız devre dışı bırakılmış. Lütfen yöneticinizle iletişime geçin.';
     err.style.display='block';
     sbClient.auth.signOut();
     return;
