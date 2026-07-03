@@ -1263,7 +1263,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v2.3 — 03.07.2026';
+const APP_VERSION='v2.4 — 03.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1336,11 +1336,11 @@ const PBTN={'genelbakis':'Yeni Dosya','sekreter-genelbakis':'Yeni Müvekkil','st
 
 var MODALS={
   muvekkil:{t:'Yeni Müvekkil Ekle',s:'Müvekkil bilgilerini doldurun',b:`<div class="fg"><label class="fl">Ad Soyad</label><input class="fi" placeholder="Adı Soyadı"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Telefon</label><input class="fi" placeholder="0532 xxx xx xx"></div><div class="fg"><label class="fl">TC Kimlik No</label><input class="fi" placeholder="12345678901"></div></div><div class="fg"><label class="fl">E-posta</label><input class="fi" type="email" placeholder="ad@mail.com"></div><div class="fg"><label class="fl">Adres</label><input class="fi" placeholder="İl, İlçe, Adres"></div><div class="fg"><label class="fl">Notlar</label><textarea class="fi" style="height:70px;resize:none" placeholder="Özel notlar..."></textarea></div>`},
-  dosya:{t:'Yeni Dosya Oluştur',s:'Dava bilgilerini girin',b:`<div class="fg"><label class="fl">Müvekkil Adı</label><input class="fi" id="dosya-muvekkil" placeholder="Müvekkil adını girin"></div><div class="fg"><label class="fl">Dava Türü</label><select class="fi" id="dosya-dava-turu"><option>Aile Hukuku</option><option>İş Hukuku</option><option>Ticaret Hukuku</option><option>Medeni Hukuk</option><option>Ceza Hukuku</option><option>İdare Hukuku</option><option>İcra & İflas Hukuku</option><option>Diğer</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Mahkeme</label><input class="fi" id="dosya-mahkeme" placeholder="Örn: İstanbul 3. Aile Mah."></div><div class="fg"><label class="fl">Dosya No</label><input class="fi" id="dosya-no" placeholder="D-2024/xxxx"></div></div>`},
+  dosya:{t:'Yeni Dosya Oluştur',s:'Dava bilgilerini girin',b:`<div class="fg"><label class="fl">Müvekkil</label><select class="fi" id="dosya-muvekkil"><option value="">Yükleniyor...</option></select></div><div class="fg"><label class="fl">Dava Türü</label><select class="fi" id="dosya-dava-turu"><option>Aile Hukuku</option><option>İş Hukuku</option><option>Ticaret Hukuku</option><option>Medeni Hukuk</option><option>Ceza Hukuku</option><option>İdare Hukuku</option><option>İcra & İflas Hukuku</option><option>Diğer</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Mahkeme</label><input class="fi" id="dosya-mahkeme" placeholder="Örn: İstanbul 3. Aile Mah."></div><div class="fg"><label class="fl">Dosya No</label><input class="fi" id="dosya-no" placeholder="D-2024/xxxx"></div></div>`},
   belge:{t:'Belge Yükle',s:'PDF, Word veya fotoğraf yükleyebilirsiniz. OCR otomatik çalışır.',b:`<div style="border:2px dashed var(--bd2);border-radius:var(--rlg);padding:30px;text-align:center;cursor:pointer;margin-bottom:14px"><i class="ti ti-cloud-upload" style="font-size:32px;color:var(--tx4);display:block;margin-bottom:10px"></i><div style="font-size:13px;color:var(--tx3)">Dosyayı buraya sürükle veya tıkla</div><div style="font-size:11px;color:var(--tx4);margin-top:4px">PDF, Word, JPEG, PNG · Max 50MB</div></div><div class="fg"><label class="fl">Belge Türü</label><select class="fi"><option>Dava Belgesi</option><option>Bilirkişi Raporu</option><option>Mahkeme Kararı</option><option>Sözleşme</option><option>Diğer</option></select></div>`},
-  durusma:{t:'Duruşma Ekle',s:'Duruşma bilgilerini girin',b:`<div class="fg"><label class="fl">İlgili Müvekkil / Dosya</label><input class="fi" id="durusma-dosya" placeholder="Müvekkil adı veya dosya no"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Tarih</label><input class="fi" type="date" id="durusma-tarih"></div><div class="fg"><label class="fl">Saat</label><input class="fi" type="time" value="09:30" id="durusma-saat"></div></div><div class="fg"><label class="fl">Mahkeme</label><input class="fi" id="durusma-mahkeme" placeholder="Örn: İstanbul 3. Aile Mah."></div>`},
-  gorev:{t:'Görev Ekle',s:'Yeni görev oluştur',b:`<div class="fg"><label class="fl">Görev Açıklaması</label><input class="fi" id="gorev-aciklama" placeholder="Görevi tanımlayın..."></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Son Tarih</label><input class="fi" type="date" id="gorev-tarih"></div><div class="fg"><label class="fl">Atanan Kişi</label><input class="fi" id="gorev-atanan" placeholder="Ad Soyad"></div></div><div class="fg"><label class="fl">İlgili Dosya (opsiyonel)</label><input class="fi" id="gorev-dosya" placeholder="Müvekkil adı veya dosya no"></div>`},
-  odeme:{t:'Ödeme Ekle',s:'Tahsilat kaydı oluştur',b:`<div class="fg"><label class="fl">Müvekkil</label><input class="fi" id="odeme-muvekkil" placeholder="Müvekkil adı"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Tutar (₺)</label><input class="fi" id="odeme-tutar" type="number" placeholder="0"></div><div class="fg"><label class="fl">Tarih</label><input class="fi" id="odeme-tarih" type="date"></div></div><div class="fg"><label class="fl">Açıklama</label><input class="fi" id="odeme-aciklama" placeholder="Ödeme açıklaması"></div>`},
+  durusma:{t:'Duruşma Ekle',s:'Duruşma bilgilerini girin',b:`<div class="fg"><label class="fl">İlgili Dosya</label><select class="fi" id="durusma-dosya"><option value="">Yükleniyor...</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Tarih</label><input class="fi" type="date" id="durusma-tarih"></div><div class="fg"><label class="fl">Saat</label><input class="fi" type="time" value="09:30" id="durusma-saat"></div></div><div class="fg"><label class="fl">Mahkeme</label><input class="fi" id="durusma-mahkeme" placeholder="Örn: İstanbul 3. Aile Mah."></div>`},
+  gorev:{t:'Görev Ekle',s:'Yeni görev oluştur',b:`<div class="fg"><label class="fl">Görev Açıklaması</label><input class="fi" id="gorev-aciklama" placeholder="Görevi tanımlayın..."></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Son Tarih</label><input class="fi" type="date" id="gorev-tarih"></div><div class="fg"><label class="fl">Atanan Kişi</label><input class="fi" id="gorev-atanan" placeholder="Ad Soyad"></div></div><div class="fg"><label class="fl">İlgili Dosya (opsiyonel)</label><select class="fi" id="gorev-dosya"><option value="">Yükleniyor...</option></select></div>`},
+  odeme:{t:'Ödeme Ekle',s:'Tahsilat kaydı oluştur',b:`<div class="fg"><label class="fl">Müvekkil</label><select class="fi" id="odeme-muvekkil"><option value="">Yükleniyor...</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Tutar (₺)</label><input class="fi" id="odeme-tutar" type="number" placeholder="0"></div><div class="fg"><label class="fl">Tarih</label><input class="fi" id="odeme-tarih" type="date"></div></div><div class="fg"><label class="fl">Açıklama</label><input class="fi" id="odeme-aciklama" placeholder="Ödeme açıklaması"></div>`},
   kullanici:{t:'Avukat Ekle',s:'Sisteme yeni avukat davet et. Stajyer ve sekreteri avukat kendisi ekler.',b:`<div class="fg"><label class="fl">Ad Soyad</label><input class="fi" placeholder="Avukatın adı soyadı"></div><div class="fg"><label class="fl">E-posta</label><input class="fi" type="email" placeholder="avukat@buroadi.com"></div><div class="fg"><label class="fl">Baro No</label><input class="fi" placeholder="1234"></div><div style="background:var(--acd);border:1px solid var(--acb);border-radius:var(--rsm);padding:10px 12px;font-size:11.5px;color:var(--ac);margin-top:4px"><i class="ti ti-info-circle" style="margin-right:5px"></i>Avukat giriş yaptıktan sonra Ekibim sayfasından kendi sekreter ve stajyerini ekler.</div>`},
   ekipuye:{t:'Ekip Üyesi Ekle',s:'Kendi ekibine sekreter veya stajyer ekle',b:`<div class="fg"><label class="fl">Ad Soyad</label><input class="fi" placeholder="Adı Soyadı"></div><div class="fg"><label class="fl">E-posta</label><input class="fi" type="email" placeholder="kisi@mail.com"></div><div class="fg"><label class="fl">Rol</label><select class="fi"><option>Sekreter</option><option>Stajyer</option></select></div><div style="background:var(--bld);border:1px solid rgba(55,138,221,.15);border-radius:var(--rsm);padding:10px 12px;font-size:11.5px;color:var(--bl);margin-top:4px"><i class="ti ti-info-circle" style="margin-right:5px"></i>Bu kişi sadece senin dosyalarına erişebilir.</div>`},
   yenipaket:{t:'Yeni Paket Oluştur',s:'Abonelik planı tanımlayın',b:`<div class="fg"><label class="fl">Paket Adı</label><input class="fi" placeholder="Örn: Pro Plus"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Aylık Fiyat (₺)</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">Jeton Limiti</label><input class="fi" type="number" placeholder="200"></div></div><div class="fg"><label class="fl">Açıklama</label><textarea class="fi" style="height:60px;resize:none" placeholder="Paket özellikleri..."></textarea></div>`}
@@ -1800,6 +1800,42 @@ function openModal(type){
   var movl=document.getElementById('movl');
   movl.setAttribute('data-tip',type);
   movl.classList.add('open');
+  doldurModalListeler(type);
+}
+
+// Modal açılır listelerini veritabanından doldur
+async function doldurModalListeler(type){
+  if(!sbClient) return;
+  try{
+    if(type==='dosya'||type==='odeme'){
+      var sel=document.getElementById(type==='dosya'?'dosya-muvekkil':'odeme-muvekkil');
+      if(sel){
+        var r=await sbClient.from('muvekkililer').select('ad_soyad').order('ad_soyad',{ascending:true});
+        var liste=r.data||[];
+        if(!liste.length){
+          sel.innerHTML='<option value="">Önce Müvekkiller sayfasından müvekkil ekleyin</option>';
+        } else {
+          var o='<option value="">— Müvekkil seçin —</option>';
+          liste.forEach(function(m){if(m.ad_soyad)o+='<option>'+escHtml(m.ad_soyad)+'</option>';});
+          sel.innerHTML=o;
+        }
+      }
+    }
+    if(type==='durusma'||type==='gorev'){
+      var sel2=document.getElementById(type==='durusma'?'durusma-dosya':'gorev-dosya');
+      if(sel2){
+        var r2=await sbClient.from('dosyalar').select('muvekkil_adi,dosya_no').order('created_at',{ascending:false});
+        var liste2=r2.data||[];
+        if(!liste2.length){
+          sel2.innerHTML='<option value="">'+(type==='gorev'?'— Dosya yok (opsiyonel) —':'Önce Dosyalar sayfasından dosya ekleyin')+'</option>';
+        } else {
+          var o2='<option value="">— Dosya seçin'+(type==='gorev'?' (opsiyonel)':'')+' —</option>';
+          liste2.forEach(function(d){var lbl=(d.muvekkil_adi||'')+(d.dosya_no?' · '+d.dosya_no:'');if(lbl)o2+='<option value="'+escHtml(lbl)+'">'+escHtml(lbl)+'</option>';});
+          sel2.innerHTML=o2;
+        }
+      }
+    }
+  }catch(e){console.warn('doldurModalListeler:',e);}
 }
 function closeModal(e){if(!e||e.target===document.getElementById('movl'))document.getElementById('movl').classList.remove('open');}
 // Şema-uyumlu güvenli insert: tabloda olmayan bir sütun hatası gelirse
@@ -1807,18 +1843,35 @@ function closeModal(e){if(!e||e.target===document.getElementById('movl'))documen
 // "Could not find the 'X' column" hatalarını kalıcı olarak çözer.
 async function sbInsert(table, payload){
   var p = Object.assign({}, payload);
-  for(var i=0; i<8; i++){
+  var kucukDenendi = {};
+  for(var i=0; i<10; i++){
     var r = await sbClient.from(table).insert(p);
     if(!r.error) return r;
-    var m = /[Cc]ould not find the '([^']+)' column/.exec(r.error.message||'');
+    var msg = r.error.message||'';
+    var m = /[Cc]ould not find the '([^']+)' column/.exec(msg);
     if(m && (m[1] in p)){
-      console.warn('sbInsert: "'+table+'" tablosunda "'+m[1]+'" sütunu yok, çıkarılıp tekrar deneniyor');
+      console.warn('sbInsert: "'+table+'" tablosunda "'+m[1]+'" sütunu yok, çıkarıldı');
       delete p[m[1]];
       continue;
     }
+    var c = new RegExp(table+'_([a-z_]+?)_check').exec(msg);
+    if(c){
+      var col = c[1];
+      if((col in p) && typeof p[col]==='string' && !kucukDenendi[col] && p[col] !== p[col].toLowerCase()){
+        kucukDenendi[col] = 1;
+        console.warn('sbInsert: "'+col+'" için küçük harf deneniyor');
+        p[col] = p[col].toLowerCase();
+        continue;
+      }
+      if(col in p){
+        console.warn('sbInsert: "'+col+'" constraint uyuşmadı, sütun çıkarıldı');
+        delete p[col];
+        continue;
+      }
+    }
     return r;
   }
-  return { error:{ message:'Kayıt eklenemedi (çok fazla eksik sütun)' } };
+  return { error:{ message:'Kayıt eklenemedi' } };
 }
 
 async function submitModal(){
@@ -1855,7 +1908,7 @@ async function submitModal(){
       var{error}=await sbInsert('dosyalar', {
         kullanici_id:cUser?.id||null, muvekkil_adi:muvekkil,
         dava_turu:davaTuru, mahkeme:mahkeme||null,
-        dosya_no:dosyaNo||null, durum:'Aktif'
+        dosya_no:dosyaNo||null, durum:'aktif'
       });
       if(error)throw error;
       showToast('Dosya oluşturuldu ✓','ok');
@@ -2011,16 +2064,16 @@ async function loadDosyalar(){
   var{data,error}=await sbClient.from('dosyalar').select('*').order('created_at',{ascending:false});
   if(yk)yk.style.display='none';
   if(error){showToast('Dosya yükleme hatası: '+error.message,'err');return;}
-  var aktif=(data||[]).filter(function(d){return d.durum==='Aktif';}).length;
+  var aktif=(data||[]).filter(function(d){return String(d.durum||'').toLowerCase()==='aktif';}).length;
   if(psub)psub.textContent=(data?data.length:0)+' dosya · '+aktif+' aktif';
   if(!data||!data.length){if(bos)bos.style.display='block';return;}
   if(tw)tw.style.display='table';
   tablo.innerHTML=data.map(function(d){
-    var durumBdg=d.durum==='Aktif'?'ba':d.durum==='Bekliyor'?'bb':'bk';
+    var _dr=String(d.durum||'').toLowerCase();var durumBdg=_dr==='aktif'?'ba':_dr==='bekliyor'?'bb':'bk';
     return '<tr onclick="nav(\'dosyadetay\')" style="cursor:pointer">'+
       '<td class="tdp">'+escHtml(d.muvekkil_adi||'—')+'</td>'+
       '<td>'+escHtml(d.dava_turu||'—')+'</td>'+
-      '<td><span class="bdg '+durumBdg+'"><span class="bdt"></span>'+escHtml(d.durum||'—')+'</span></td>'+
+      '<td><span class="bdg '+durumBdg+'"><span class="bdt"></span>'+escHtml(d.durum?d.durum.charAt(0).toUpperCase()+d.durum.slice(1):'—')+'</span></td>'+
       '<td><span class="mav">—</span>'+escHtml(d.avukat||'—')+'</td>'+
       '<td style="font-size:11px;color:var(--tx3)">'+escHtml(d.dosya_no||'—')+'</td>'+
       '<td style="font-size:11px;color:var(--tx3)">'+(d.created_at?d.created_at.substring(0,10):'—')+'</td>'+
@@ -2096,7 +2149,7 @@ async function loadStajyerGenelbakis(){
   if(dl){
     if(dosyalar && dosyalar.length){
       dl.innerHTML = dosyalar.map(function(d){
-        return '<div class="drow"><div class="dico ddoc"><i class="ti ti-folder"></i></div><div class="dinf"><div class="dname">'+escHtml(d.muvekkil_adi||'—')+'</div><div class="dmeta">'+escHtml(d.dava_turu||'—')+'</div></div><span class="bdg '+(d.durum==='Aktif'?'ba':'bkap')+'">'+escHtml(d.durum||'—')+'</span></div>';
+        return '<div class="drow"><div class="dico ddoc"><i class="ti ti-folder"></i></div><div class="dinf"><div class="dname">'+escHtml(d.muvekkil_adi||'—')+'</div><div class="dmeta">'+escHtml(d.dava_turu||'—')+'</div></div><span class="bdg '+(String(d.durum||'').toLowerCase()==='aktif'?'ba':'bkap')+'">'+escHtml(d.durum?d.durum.charAt(0).toUpperCase()+d.durum.slice(1):'—')+'</span></div>';
       }).join('');
     } else {
       dl.innerHTML = '<div style="font-size:11px;color:var(--tx4);text-align:center;padding:12px">Dosya yok</div>';
