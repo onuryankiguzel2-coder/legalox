@@ -463,9 +463,9 @@ button{cursor:pointer}
 <!-- SEKRETER GENEL BAKIŞ -->
 <div class="page" id="page-sekreter-genelbakis">
   <div class="kgrid kg3">
-    <div class="kcard"><div class="kline" style="background:var(--bl)"></div><div class="klbl">Bugünkü Duruşma</div><div class="kval">3</div></div>
-    <div class="kcard"><div class="kline" style="background:var(--am)"></div><div class="klbl">Bekleyen Görev</div><div class="kval" id="kpi-gorev">0</div><div class="kmeta">bekleyen görev</div></div>
-    <div class="kcard"><div class="kline" style="background:var(--ac)"></div><div class="klbl">Toplam Müvekkil</div><div class="kval">48</div></div>
+    <div class="kcard"><div class="kline" style="background:var(--bl)"></div><div class="klbl">Bugünkü Duruşma</div><div class="kval" id="sek-kpi-durusma">0</div></div>
+    <div class="kcard"><div class="kline" style="background:var(--am)"></div><div class="klbl">Bekleyen Görev</div><div class="kval" id="sek-kpi-gorev">0</div><div class="kmeta">bekleyen görev</div></div>
+    <div class="kcard"><div class="kline" style="background:var(--ac)"></div><div class="klbl">Toplam Müvekkil</div><div class="kval" id="sek-kpi-muvekkil">0</div></div>
   </div>
   <div class="col2">
     <div class="card"><div class="chd"><span class="ct">Bugünün Görevleri</span></div>
@@ -918,7 +918,7 @@ button{cursor:pointer}
 
 <!-- DİLEKÇE ÜRETİCİ -->
 <div class="page" id="page-dilekce">
-  <div class="phdr"><div><div class="ptitle">AI Dilekçe Üretici</div><div class="psub">Müvekkil seç → Bilgiler otomatik gelir → AI adım adım yazar → Her bölümü onaylarsın</div></div></div>
+  <div class="phdr"><div><div class="ptitle">AI Dilekçe Üretici</div><div class="psub">Müvekkil seç → Dava bilgilerini doldur → AI adım adım yazar → Her bölümü onaylarsın</div></div></div>
 
   <!-- SİZİ TANIYORUM -->
   <div class="card" style="margin-bottom:14px;border-color:var(--acb);background:var(--acd)">
@@ -937,7 +937,7 @@ button{cursor:pointer}
 
   <!-- ADIM GÖSTERGESİ -->
   <div class="aiflow" style="margin-bottom:14px">
-    <div class="aistp" id="pstp-1" style="border-color:var(--acb);background:var(--acd)"><span class="aistpico" style="color:var(--ac)"><i class="ti ti-user-check"></i></span><div class="aistptit">1. Müvekkil & Bilgiler</div><div class="aistpdesc">Müvekkil seç, bilgiler otomatik gelir</div></div>
+    <div class="aistp" id="pstp-1" style="border-color:var(--acb);background:var(--acd)"><span class="aistpico" style="color:var(--ac)"><i class="ti ti-user-check"></i></span><div class="aistptit">1. Müvekkil & Bilgiler</div><div class="aistpdesc">Müvekkil seç, dava bilgilerini doldur</div></div>
     <div class="aiarr"><i class="ti ti-chevron-right"></i></div>
     <div class="aistp" id="pstp-2"><span class="aistpico"><i class="ti ti-file-text"></i></span><div class="aistptit">2. Olay Örgüsü</div><div class="aistpdesc">Kronolojik, detaylı anlatım</div></div>
     <div class="aiarr"><i class="ti ti-chevron-right"></i></div>
@@ -974,12 +974,12 @@ button{cursor:pointer}
       <div class="card" id="muv-bilgi-card" style="margin-bottom:12px">
         <div class="chd"><span class="ct">Dava Bilgileri</span></div>
         <div style="display:flex;flex-direction:column;gap:8px">
-          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Mahkeme</label><input class="fi" id="pet-mahkeme" placeholder="Müvekkil seçince otomatik gelir" style="font-size:12px;height:32px"></div>
-          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Davacı (Müvekkil)</label><input class="fi" id="pet-davaci" placeholder="Müvekkil seçince otomatik gelir" style="font-size:12px;height:32px"></div>
-          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Davalı</label><input class="fi" id="pet-davali" placeholder="Müvekkil seçince otomatik gelir" style="font-size:12px;height:32px"></div>
-          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Avukat</label><input class="fi" id="pet-avukat" placeholder="Müvekkil seçince otomatik gelir" style="font-size:12px;height:32px"></div>
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Mahkeme</label><input class="fi" id="pet-mahkeme" placeholder="Örn. İstanbul 5. İş Mahkemesi" style="font-size:12px;height:32px"></div>
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Davacı (Müvekkil)</label><input class="fi" id="pet-davaci" placeholder="Müvekkil adı (listeden seçince dolar)" style="font-size:12px;height:32px"></div>
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Davalı</label><input class="fi" id="pet-davali" placeholder="Karşı taraf adı / unvanı" style="font-size:12px;height:32px"></div>
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Avukat</label><input class="fi" id="pet-avukat" placeholder="Avukat adı (profilinizden dolar)" style="font-size:12px;height:32px"></div>
           <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Talep / Ek Bilgi</label><input class="fi" id="pet-tutar" placeholder="₺50.000 tazminat vb." style="font-size:12px;height:32px"></div>
-          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Olay Özeti <span style="color:var(--rd)">*</span></label><textarea class="fi" id="pet-ozet" rows="5" placeholder="Müvekkil seçince temel bilgi gelir, detay ekleyebilirsiniz..." style="font-size:12px;resize:vertical;min-height:90px;padding:8px;line-height:1.6"></textarea></div>
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Olay Özeti <span style="color:var(--rd)">*</span></label><textarea class="fi" id="pet-ozet" rows="5" placeholder="Olayı kısaca anlatın: ne oldu, ne zaman, talep nedir..." style="font-size:12px;resize:vertical;min-height:90px;padding:8px;line-height:1.6"></textarea></div>
         </div>
       </div>
 
@@ -1262,7 +1262,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v2.5 — 03.07.2026';
+const APP_VERSION='v2.6 — 03.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1405,6 +1405,7 @@ function loginOK(k,u,isRestore){
   const firstPageMap={admin:'admin',avukat:'genelbakis',sekreter:'sekreter-genelbakis',stajyer:'stajyer-genelbakis'};
   nav(firstPageMap[k]||'genelbakis');
   if(!isRestore) showToast('Hoşgeldiniz, '+u.ad,'ok');
+  guncelleSayilar();
   // Mobil: bottom nav güncelle
   // mobil nav CSS ile kontrol edilir
   checkInstallPrompt();
@@ -1428,11 +1429,36 @@ function buildNav(role){
     el.className='ni';
     el.setAttribute('data-p',item.p);
     let h=`<i class="ti ${item.i}"></i><span>${item.l}</span>`;
-    if(item.nb&&item.nt)h+=`<span class="nbadge ${item.nb}">${item.nt}</span>`;
+    if(item.nb)h+=`<span class="nbadge ${item.nb}" id="navcnt-${item.p}" style="display:none"></span>`;
     el.innerHTML=h;
     el.onclick=()=>nav2(item.p);
     nav.appendChild(el);
   });
+}
+
+// Kenar menü rozetlerini ve özet kartlarını gerçek veritabanı sayılarıyla doldur
+async function guncelleSayilar(){
+  if(!sbClient) return;
+  var tablolar = {muvekkililer:'muvekkililer', dosyalar:'dosyalar', takvim:'durusmalar', gorevler:'gorevler', 'admin-uyeler':'profiles'};
+  var bugun = new Date().toISOString().slice(0,10);
+  for(var p in tablolar){
+    var el = document.getElementById('navcnt-'+p);
+    if(!el) continue;
+    try{
+      var r = await sbClient.from(tablolar[p]).select('*',{count:'exact',head:true});
+      var n = r.count||0;
+      if(n>0){ el.textContent=n; el.style.display=''; } else { el.style.display='none'; }
+      if(p==='muvekkililer'){ var s=document.getElementById('sek-kpi-muvekkil'); if(s)s.textContent=n; }
+    }catch(e){}
+  }
+  try{
+    var d = await sbClient.from('durusmalar').select('*',{count:'exact',head:true}).eq('tarih',bugun);
+    var sd = document.getElementById('sek-kpi-durusma'); if(sd)sd.textContent=d.count||0;
+  }catch(e){}
+  try{
+    var g = await sbClient.from('gorevler').select('*',{count:'exact',head:true}).neq('durum','tamamlandi');
+    var sg = document.getElementById('sek-kpi-gorev'); if(sg)sg.textContent=g.count||0;
+  }catch(e){}
 }
 function nav(p){nav2(p);}
 function nav2(p){
@@ -1460,6 +1486,7 @@ function nav2(p){
   if(p==='rehber') showG(cRole==='admin'?'avukat':cRole);
   if(p==='admin-uyeler') loadAdminUyeler();
   if(p==='admin-paket') loadPaketAyarlari();
+  if(p==='dilekce'){var _pa=document.getElementById('pet-avukat');if(_pa&&!_pa.value&&cUser)_pa.value=cUser.ad||'';}
   if(p==='admin') refreshPaketGosterimleri();
   if(p==='admin-gelir') loadAdminGelir();
   if(p==='muvekkililer') loadMuvekkililer();
@@ -1585,7 +1612,7 @@ async function analyzeStyleFiles(files){
   var texts=[];
   for(var i=0;i<files.length;i++){var t=await readFileText(files[i]);if(t)texts.push(t.substring(0,2000));}
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:'Aşağıdaki Türk hukuk dilekçelerini analiz et ve avukatın yazım üslubunu çıkar. Cümle yapısı, resmiyet seviyesi, paragraf düzeni, sıkça kullandığı ifadeler, hitap biçimi, sonuç bölümü kalıplarını incele. Kısa ve net bir \u00fcslup profili yaz (maks. 150 kelime):\n\n'+texts.join('\n\n---\n\n')}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:'Aşağıdaki Türk hukuk dilekçelerini analiz et ve avukatın yazım üslubunu çıkar. Cümle yapısı, resmiyet seviyesi, paragraf düzeni, sıkça kullandığı ifadeler, hitap biçimi, sonuç bölümü kalıplarını incele. Kısa ve net bir \u00fcslup profili yaz (maks. 150 kelime):\n\n'+texts.join('\n\n---\n\n')}]})});
     var data=await resp.json();
     styleProfile=data.content[0].text;
     localStorage.setItem('legalox_style_profile',styleProfile);
@@ -1682,7 +1709,7 @@ async function writeSection(num){
   };
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompts[num]}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompts[num]}]})});
     var data=await resp.json();
     var text=data.content[0].text;
     petSections[num]=text;
@@ -1753,7 +1780,7 @@ async function searchEmsalWeb(){
   loading.style.display='flex';results.innerHTML='';
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nkazanci.com, legalbank.net, hukukmedeniyeti.org veya emsal.yargitay.gov.tr sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 4 karar. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nkazanci.com, legalbank.net, hukukmedeniyeti.org veya emsal.yargitay.gov.tr sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 4 karar. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
     var data=await resp.json();
     var fullText=data.content.map(function(c){return c.type==='text'?c.text:'';}).join('');
     var clean=fullText.replace(/```json|```/g,'').trim();
@@ -1965,6 +1992,7 @@ async function submitModal(){
       showToast('Kaydedildi ✓','ok');
     }
     movl.classList.remove('open');
+    guncelleSayilar();
   }catch(e){
     console.error('submitModal hata:',e);
     showToast('Hata: '+(e.message||e),'err');
