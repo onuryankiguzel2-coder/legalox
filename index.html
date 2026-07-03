@@ -1000,6 +1000,13 @@ button{cursor:pointer}
           </div>
         </div>
       </div>
+
+      <!-- KAYITLI DİLEKÇELER -->
+      <div class="card">
+        <div class="chd"><span class="ct">Kayıtlı Dilekçeler</span></div>
+        <div style="font-size:10.5px;color:var(--tx4);margin-bottom:8px;line-height:1.5">Kaydettiğin dilekçeler müvekkil adıyla burada saklanır.</div>
+        <div id="kayitli-dilekce-list" style="display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;color:var(--tx4);padding:6px">Yükleniyor...</div></div>
+      </div>
     </div>
 
     <!-- SAĞ PANEL -->
@@ -1072,7 +1079,7 @@ button{cursor:pointer}
             <div style="display:flex;gap:6px;margin-left:auto">
               <button class="btns" style="height:26px;font-size:11px" onclick="copyPetition()"><i class="ti ti-copy" style="font-size:11px"></i>Kopyala</button>
               <button class="btns" style="height:26px;font-size:11px" onclick="downloadPetition()"><i class="ti ti-download" style="font-size:11px"></i>İndir</button>
-              <button class="btnp" style="height:26px;font-size:11px" onclick="showToast('Dilekçe dosyaya eklendi \u2713','ok')"><i class="ti ti-check" style="font-size:11px"></i>Dosyaya Ekle</button>
+              <button class="btnp" style="height:26px;font-size:11px" onclick="dilekceyiKaydet()"><i class="ti ti-device-floppy" style="font-size:11px"></i>Kaydet</button>
             </div>
           </div>
           <textarea id="final-petition-text" class="ptta" style="min-height:400px;font-size:12px;line-height:1.8"></textarea>
@@ -1264,7 +1271,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v2.8 — 03.07.2026';
+const APP_VERSION='v3.0 — 03.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1489,6 +1496,7 @@ function nav2(p){
   if(p==='admin-uyeler') loadAdminUyeler();
   if(p==='admin-paket') loadPaketAyarlari();
   if(p==='dilekce'){
+    loadKayitliDilekceler();
     var _pa=document.getElementById('pet-avukat');if(_pa&&!_pa.value&&cUser)_pa.value=cUser.ad||'';
     if(sbClient&&cUser&&window._avukatBaro===undefined){
       window._avukatBaro='';
@@ -1773,6 +1781,58 @@ function buildFinalPetition(){
   setTimeout(function(){searchEmsalWeb();},600);
 }
 
+// Üretilen dilekçeyi emsalleriyle birlikte veritabanına kaydet
+async function dilekceyiKaydet(){
+  var icerik = document.getElementById('final-petition-text') ? document.getElementById('final-petition-text').value : '';
+  if(!icerik.trim()){ showToast('Kaydedilecek dilekçe yok — önce bölümleri üretin','err'); return; }
+  var muvAd = (window.selectedMuvekkil && selectedMuvekkil.ad) || (document.getElementById('pet-davaci')||{}).value || '';
+  var muvId = (window.selectedMuvekkil && selectedMuvekkil.id) || null;
+  var tip = window.selectedPetitionType || 'Dava Dilekçesi';
+  var davali = (document.getElementById('pet-davali')||{}).value || '';
+  var emsaller = (typeof manualEmsaller!=='undefined' && manualEmsaller.length) ? manualEmsaller.map(function(e){ return e.no+': '+e.baslik; }).join(' | ') : '';
+  var r = await sbInsert('dilekceler', { muvekkil_adi:muvAd, muvekkil_id:muvId, tip:tip, davali:davali, icerik:icerik, emsaller:emsaller, kullanici_id: cUser?cUser.id:null });
+  if(r.error){ showToast('Kaydedilemedi: '+(r.error.message||''),'err'); return; }
+  showToast('Dilekçe kaydedildi ✓','ok');
+  loadKayitliDilekceler();
+}
+
+async function loadKayitliDilekceler(){
+  var box = document.getElementById('kayitli-dilekce-list');
+  if(!box || !sbClient) return;
+  try{
+    var r = await sbClient.from('dilekceler').select('id,muvekkil_adi,tip,davali,icerik,emsaller,created_at').order('created_at',{ascending:false}).limit(20);
+    var d = r.data || [];
+    if(!d.length){ box.innerHTML='<div style="font-size:11px;color:var(--tx4);padding:6px">Henüz kayıtlı dilekçe yok</div>'; return; }
+    window._kayitliDilekceler = d;
+    box.innerHTML = d.map(function(x,i){
+      var t = (x.created_at||'').slice(0,10);
+      return '<div class="srcitem" style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escHtml(x.muvekkil_adi||'—')+' — '+escHtml(x.tip||'')+'</div><div style="font-size:10px;color:var(--tx4)">'+(x.davali?('Davalı: '+escHtml(x.davali)+' · '):'')+t+'</div></div><div style="display:flex;gap:5px;flex-shrink:0"><button class="btns" style="height:22px;font-size:10px" onclick="dilekceAc('+i+')"><i class="ti ti-eye" style="font-size:10px"></i>Aç</button><button class="btns" style="height:22px;font-size:10px;color:var(--rd)" onclick="dilekceSil('+i+')"><i class="ti ti-trash" style="font-size:10px"></i></button></div></div>';
+    }).join('');
+  }catch(e){}
+}
+
+function dilekceAc(i){
+  var x = (window._kayitliDilekceler||[])[i];
+  if(!x) return;
+  var f = document.getElementById('pet-section-final');
+  var ta = document.getElementById('final-petition-text');
+  if(f) f.style.display='block';
+  if(ta){ ta.value = x.icerik||''; if(ta.scrollIntoView) ta.scrollIntoView({behavior:'smooth'}); }
+  showToast('Dilekçe yüklendi — düzenleyip yeniden kaydedebilir veya indirebilirsin','ok');
+}
+
+async function dilekceSil(i){
+  var x = (window._kayitliDilekceler||[])[i];
+  if(!x) return;
+  if(!confirm('Bu dilekçe kalıcı olarak silinsin mi?')) return;
+  try{
+    var r = await sbClient.from('dilekceler').delete().eq('id',x.id);
+    if(r.error) throw r.error;
+    showToast('Dilekçe silindi','ok');
+    loadKayitliDilekceler();
+  }catch(e){ showToast('Silinemedi: '+(e.message||''),'err'); }
+}
+
 function copyPetition(){
   var t=document.getElementById('final-petition-text');
   if(t){navigator.clipboard.writeText(t.value).then(function(){showToast('Panoya kopyalandı \u2713','ok');});}
@@ -1841,7 +1901,7 @@ async function searchEmsalWeb(){
   loading.style.display='flex';results.innerHTML='';
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nÖNCELİKLE karararama.yargitay.gov.tr ve emsal.uyap.gov.tr (Yargıtay resmi karar arama siteleri) olmak üzere, ayrıca kazanci.com ve hukukmedeniyeti.org sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 4 karar. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nÖNCELİKLE karararama.yargitay.gov.tr ve emsal.uyap.gov.tr (Yargıtay resmi karar arama siteleri) olmak üzere, ayrıca kazanci.com ve hukukmedeniyeti.org sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","link":"kararı bulduğun sayfanın TAM URL adresi — arama sonucundaki gerçek linki yaz, asla uydurma","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 4 karar. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
     var data=await resp.json();
     if(data.error)throw new Error(data.error.message||'API hatası');
     var fullText=(data.content||[]).map(function(c){return c.type==='text'?c.text:'';}).join('');
@@ -1858,13 +1918,22 @@ async function searchEmsalWeb(){
     }
     window._webEmsalResults=parsed.kararlar;
     results.innerHTML=parsed.kararlar.map(function(k,i){
-      return '<div class="srcitem"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="flex:1"><div class="srcnum">'+k.no+(k.tarih?' · '+k.tarih:'')+'</div><div class="srctit" style="font-size:12.5px;margin:4px 0">'+k.baslik+'</div><div class="srcdesc">'+k.ozet+'</div>'+(k.kaynak?'<div style="font-size:10px;color:var(--tx4);margin-top:4px"><i class="ti ti-link" style="font-size:10px"></i> '+k.kaynak+'</div>':'')+'</div><div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0"><span class="bdg" style="background:rgba(59,130,246,.1);color:var(--bl);border-color:rgba(59,130,246,.2)">Web</span><button class="btnp" style="height:24px;font-size:10px;white-space:nowrap" onclick="addWebEmsalToManual('+i+')"><i class="ti ti-plus" style="font-size:10px"></i>Ekle</button></div></div></div>';
+      return '<div class="srcitem"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="flex:1"><div class="srcnum">'+k.no+(k.tarih?' · '+k.tarih:'')+'</div><div class="srctit" style="font-size:12.5px;margin:4px 0">'+k.baslik+'</div><div class="srcdesc">'+k.ozet+'</div>'+(k.kaynak?'<div style="font-size:10px;color:var(--tx4);margin-top:4px"><i class="ti ti-link" style="font-size:10px"></i> '+k.kaynak+'</div>':'')+'</div><div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0"><span class="bdg" style="background:rgba(59,130,246,.1);color:var(--bl);border-color:rgba(59,130,246,.2)">Web</span><button class="btnp" style="height:24px;font-size:10px;white-space:nowrap" onclick="addWebEmsalToManual('+i+')"><i class="ti ti-plus" style="font-size:10px"></i>Ekle</button><button class="btns" style="height:24px;font-size:10px;white-space:nowrap" onclick="webEmsalIncele('+i+')"><i class="ti ti-external-link" style="font-size:10px"></i>İncele</button></div></div></div>';
     }).join('');
   }catch(e){
     loading.style.display='none';
     if(retryBtn)retryBtn.style.display='block';
     results.innerHTML='<div style="font-size:12px;color:var(--tx3);padding:8px;display:flex;align-items:center;gap:6px"><i class="ti ti-wifi-off" style="color:var(--am)"></i>Arama tamamlanamadı — "Yeniden Ara" ile tekrar deneyin.</div>';
   }
+}
+
+// Emsal kararı kaynak sitesinde yeni sekmede aç; AI link vermediyse Yargıtay resmi aramasında karar no ile ara
+function webEmsalIncele(idx){
+  var k = (window._webEmsalResults||[])[idx];
+  if(!k) return;
+  var url = k.link && /^https?:\/\//.test(k.link) ? k.link
+          : 'https://karararama.yargitay.gov.tr/#arama:' + encodeURIComponent(k.no||'');
+  window.open(url, '_blank', 'noopener');
 }
 
 function addWebEmsalToManual(idx){
