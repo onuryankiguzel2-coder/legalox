@@ -1271,7 +1271,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v3.0 — 03.07.2026';
+const APP_VERSION='v3.1 — 03.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1733,11 +1733,11 @@ async function writeSection(num){
     3:'Sen 20 yıllık deneyimli bir Türk hukukçususun. Bu '+tip+' için SONUÇ VE TALEP bölümünü yaz.\n\nDavacı: '+davaci+'\nDavalı: '+davali+'\nVekil: '+avukat+'\n'+(tutar?'Talep: '+tutar:'')+'\n'+stilMetni+'\n\nBu bölümde:\n1. "SONUÇ VE TALEP:" başlığı\n2. Tüm talepler büyük harfle ve madde madde\n3. Yargılama giderleri ve vekalet ücreti\n4. "Saygılarımla arz ederim." kapanışı\n5. Tarih ve avukat imza bloğu\n6. Net, kararlı, kesin bir ton'
   };
   for(var pk in prompts){
-    prompts[pk]+='\n\nKESİN KURAL: Eksik veya bilinmeyen bilgi için ASLA "...." veya nokta nokta boşluk kullanma. Elindeki bilgileri (isim, T.C. no, adres, baro sicil no) aynen yaz; gerçekten bilinmeyen bir alan varsa o satırı tamamen atla veya [AVUKAT DOLDURACAK] şeklinde belirt.';
+    prompts[pk]+='\n\nKESİN KURALLAR:\n1. Eksik veya bilinmeyen bilgi için ASLA "...." veya nokta nokta boşluk kullanma. Elindeki bilgileri (isim, T.C. no, adres, baro sicil no) aynen yaz; gerçekten bilinmeyen bir alan varsa o satırı tamamen atla veya [AVUKAT DOLDURACAK] şeklinde belirt.\n2. Markdown biçimlendirme KULLANMA: **, ##, ###, * gibi işaretler yasak. Düz metin yaz; başlıkları BÜYÜK HARFLE yaz (örn. HUKUKİ SEBEPLER:).\n3. Bölümü mutlaka tam ve doğal bir cümleyle bitir; asla yarıda bırakma. Uzunluğu buna göre planla.';
   }
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2500,messages:[{role:'user',content:prompts[num]}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompts[num]}]})});
     var data=await resp.json();
     var text=data.content[0].text;
     petSections[num]=text;
@@ -1901,14 +1901,29 @@ async function searchEmsalWeb(){
   loading.style.display='flex';results.innerHTML='';
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nÖNCELİKLE karararama.yargitay.gov.tr ve emsal.uyap.gov.tr (Yargıtay resmi karar arama siteleri) olmak üzere, ayrıca kazanci.com ve hukukmedeniyeti.org sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","link":"kararı bulduğun sayfanın TAM URL adresi — arama sonucundaki gerçek linki yaz, asla uydurma","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 4 karar. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nÖNCELİKLE karararama.yargitay.gov.tr ve emsal.uyap.gov.tr (Yargıtay resmi karar arama siteleri) olmak üzere, ayrıca kazanci.com ve hukukmedeniyeti.org sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","link":"kararı bulduğun sayfanın TAM URL adresi — arama sonucundaki gerçek linki yaz, asla uydurma","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
     var data=await resp.json();
     if(data.error)throw new Error(data.error.message||'API hatası');
     var fullText=(data.content||[]).map(function(c){return c.type==='text'?c.text:'';}).join('');
     var clean=fullText.replace(/```json|```/g,'').trim();
     var jsonMatch=clean.match(/\{[\s\S]*\}/);
     if(!jsonMatch)throw new Error('Sonuç ayrıştırılamadı');
-    var parsed=JSON.parse(jsonMatch[0]);
+    var parsed;
+    try{
+      parsed=JSON.parse(jsonMatch[0]);
+    }catch(_pe){
+      // Cevap yarıda kesildiyse: son tamamlanmış karar nesnesine kadar kes ve kurtar
+      var ham=jsonMatch[0];
+      var son=ham.lastIndexOf('}',ham.length-2);
+      var kurtarilan=null;
+      while(son>0){
+        try{ kurtarilan=JSON.parse(ham.slice(0,son+1)+']}'); break; }catch(__){ }
+        try{ kurtarilan=JSON.parse(ham.slice(0,son+1)+'}]}'); break; }catch(__){ }
+        son=ham.lastIndexOf('}',son-1);
+      }
+      if(!kurtarilan)throw new Error('Sonuç ayrıştırılamadı');
+      parsed=kurtarilan;
+    }
     loading.style.display='none';
     if(retryBtn)retryBtn.style.display='block';
 
