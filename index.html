@@ -976,10 +976,12 @@ button{cursor:pointer}
         <div style="display:flex;flex-direction:column;gap:8px">
           <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Mahkeme</label><input class="fi" id="pet-mahkeme" placeholder="Örn. İstanbul 5. İş Mahkemesi" style="font-size:12px;height:32px"></div>
           <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Davacı (Müvekkil)</label><input class="fi" id="pet-davaci" placeholder="Müvekkil adı (listeden seçince dolar)" style="font-size:12px;height:32px"></div>
+          <div style="display:flex;gap:6px"><input class="fi" id="pet-davaci-tc" placeholder="Davacı T.C. No (kayıttan dolar)" style="font-size:12px;height:32px;flex:1"><input class="fi" id="pet-davaci-adres" placeholder="Davacı adresi (kayıttan dolar)" style="font-size:12px;height:32px;flex:1.4"></div>
           <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Davalı</label><input class="fi" id="pet-davali" placeholder="Karşı taraf adı / unvanı" style="font-size:12px;height:32px"></div>
+          <div style="display:flex;gap:6px"><input class="fi" id="pet-davali-tc" placeholder="Davalı T.C. / Vergi No" style="font-size:12px;height:32px;flex:1"><input class="fi" id="pet-davali-adres" placeholder="Davalı adresi" style="font-size:12px;height:32px;flex:1.4"></div>
           <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Avukat</label><input class="fi" id="pet-avukat" placeholder="Avukat adı (profilinizden dolar)" style="font-size:12px;height:32px"></div>
           <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Talep / Ek Bilgi</label><input class="fi" id="pet-tutar" placeholder="₺50.000 tazminat vb." style="font-size:12px;height:32px"></div>
-          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Olay Özeti <span style="color:var(--rd)">*</span></label><textarea class="fi" id="pet-ozet" rows="5" placeholder="Olayı kısaca anlatın: ne oldu, ne zaman, talep nedir..." style="font-size:12px;resize:vertical;min-height:90px;padding:8px;line-height:1.6"></textarea></div>
+          <div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><label style="font-size:10.5px;color:var(--tx4)">Olay Özeti <span style="color:var(--rd)">*</span></label><button class="btns" id="pet-dosya-btn" style="height:22px;font-size:10px" onclick="document.getElementById('pet-dosya-input').click()"><i class="ti ti-paperclip" style="font-size:11px"></i>PDF/Foto Yükle</button></div><input type="file" id="pet-dosya-input" accept="application/pdf,image/jpeg,image/png,image/webp" style="display:none" onchange="ozetDosyadanCikar(this)"><textarea class="fi" id="pet-ozet" rows="5" placeholder="Olayı kısaca anlatın — ya da müvekkilin gönderdiği PDF/fotoğrafı yükleyin, AI özeti çıkarsın..." style="font-size:12px;resize:vertical;min-height:90px;padding:8px;line-height:1.6"></textarea></div>
         </div>
       </div>
 
@@ -1262,7 +1264,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v2.7 — 03.07.2026';
+const APP_VERSION='v2.8 — 03.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1486,7 +1488,15 @@ function nav2(p){
   if(p==='rehber') showG(cRole==='admin'?'avukat':cRole);
   if(p==='admin-uyeler') loadAdminUyeler();
   if(p==='admin-paket') loadPaketAyarlari();
-  if(p==='dilekce'){var _pa=document.getElementById('pet-avukat');if(_pa&&!_pa.value&&cUser)_pa.value=cUser.ad||'';}
+  if(p==='dilekce'){
+    var _pa=document.getElementById('pet-avukat');if(_pa&&!_pa.value&&cUser)_pa.value=cUser.ad||'';
+    if(sbClient&&cUser&&window._avukatBaro===undefined){
+      window._avukatBaro='';
+      sbClient.from('profiles').select('baro_no').eq('id',cUser.id).single().then(function(r){
+        window._avukatBaro=(r.data&&r.data.baro_no)||'';
+      });
+    }
+  }
   if(p==='admin') refreshPaketGosterimleri();
   if(p==='admin-gelir') loadAdminGelir();
   if(p==='muvekkililer') loadMuvekkililer();
@@ -1692,6 +1702,13 @@ async function writeSection(num){
   var tip=window.selectedPetitionType||'Dava Dilekçesi';
   var emsalMetni=manualEmsaller.length?'\n\nAvukat tarafından eklenen doğrulanmış emsal kararlar (bunları dilekçede kullan):\n'+manualEmsaller.map(function(e){return'\u2022 '+e.no+': '+e.baslik+(e.ozet?' \u2014 '+e.ozet:'');}).join('\n'):'';
   var stilMetni=styleProfile?'\n\nAvukatın yazım üslubu (kesinlikle bu üsluba uy):\n'+styleProfile:'';
+  var dTc=(document.getElementById('pet-davaci-tc')||{}).value||'';
+  var dAdr=(document.getElementById('pet-davaci-adres')||{}).value||'';
+  var vTc=(document.getElementById('pet-davali-tc')||{}).value||'';
+  var vAdr=(document.getElementById('pet-davali-adres')||{}).value||'';
+  if(davaci&&(dTc||dAdr))davaci=davaci+(dTc?' (T.C. Kimlik No: '+dTc+')':'')+(dAdr?', Adres: '+dAdr:'');
+  if(davali&&(vTc||vAdr))davali=davali+(vTc?' (T.C./Vergi No: '+vTc+')':'')+(vAdr?', Adres: '+vAdr:'');
+  if(avukat&&window._avukatBaro)avukat=avukat+' (Baro Sicil No: '+window._avukatBaro+')';
 
   var sec=document.getElementById('pet-section-'+num);
   var loading=document.getElementById('sec'+num+'-loading');
@@ -1707,9 +1724,12 @@ async function writeSection(num){
 
     3:'Sen 20 yıllık deneyimli bir Türk hukukçususun. Bu '+tip+' için SONUÇ VE TALEP bölümünü yaz.\n\nDavacı: '+davaci+'\nDavalı: '+davali+'\nVekil: '+avukat+'\n'+(tutar?'Talep: '+tutar:'')+'\n'+stilMetni+'\n\nBu bölümde:\n1. "SONUÇ VE TALEP:" başlığı\n2. Tüm talepler büyük harfle ve madde madde\n3. Yargılama giderleri ve vekalet ücreti\n4. "Saygılarımla arz ederim." kapanışı\n5. Tarih ve avukat imza bloğu\n6. Net, kararlı, kesin bir ton'
   };
+  for(var pk in prompts){
+    prompts[pk]+='\n\nKESİN KURAL: Eksik veya bilinmeyen bilgi için ASLA "...." veya nokta nokta boşluk kullanma. Elindeki bilgileri (isim, T.C. no, adres, baro sicil no) aynen yaz; gerçekten bilinmeyen bir alan varsa o satırı tamamen atla veya [AVUKAT DOLDURACAK] şeklinde belirt.';
+  }
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompts[num]}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2500,messages:[{role:'user',content:prompts[num]}]})});
     var data=await resp.json();
     var text=data.content[0].text;
     petSections[num]=text;
@@ -1767,6 +1787,47 @@ function downloadPetition(){
 }
 
 // ── WEB EMSAL ARAMA ────────────────────────────────────────
+// Müvekkilin gönderdiği PDF/fotoğrafı AI'ya okutup olay özetini otomatik çıkar
+async function ozetDosyadanCikar(input){
+  var f = input.files && input.files[0];
+  if(!f) return;
+  input.value = '';
+  var izinli = ['application/pdf','image/jpeg','image/png','image/webp'];
+  if(izinli.indexOf(f.type) === -1){ showToast('Sadece PDF, JPG, PNG veya WebP yükleyebilirsiniz','err'); return; }
+  if(f.size > 8*1024*1024){ showToast('Dosya çok büyük — en fazla 8 MB','err'); return; }
+  var btn = document.getElementById('pet-dosya-btn');
+  var eskiHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader-2"></i>AI okuyor...';
+  try{
+    var b64 = await new Promise(function(res,rej){
+      var rd = new FileReader();
+      rd.onload = function(){ res(String(rd.result).split(',')[1]); };
+      rd.onerror = function(){ rej(new Error('Dosya okunamadı')); };
+      rd.readAsDataURL(f);
+    });
+    var blok = (f.type === 'application/pdf')
+      ? { type:'document', source:{ type:'base64', media_type:'application/pdf', data:b64 } }
+      : { type:'image', source:{ type:'base64', media_type:f.type, data:b64 } };
+    var resp = await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},
+      body:JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1200, messages:[{ role:'user', content:[ blok, { type:'text', text:'Bu belge, müvekkilin avukatına gönderdiği dava ile ilgili bir belgedir. İncele ve dava dilekçesinin OLAY ÖZETİ bölümünde kullanılmak üzere bir özet çıkar: ne olmuş, taraflar kim, önemli tarihler, tutarlar ve talepler neler. Türkçe, sade ve net yaz, 150-250 kelime. Sadece özeti yaz, başka hiçbir açıklama ekleme.' } ] }] })
+    });
+    var data = await resp.json();
+    if(data.error) throw new Error(data.error.message || 'API hatası');
+    var text = (data.content||[]).map(function(c){ return c.type==='text' ? c.text : ''; }).join('').trim();
+    if(!text) throw new Error('Özet alınamadı');
+    var ta = document.getElementById('pet-ozet');
+    ta.value = (ta.value ? ta.value + '\n\n' : '') + text;
+    showToast('Belge okundu, olay özeti eklendi ✓','ok');
+  }catch(e){
+    showToast('Belge okunamadı: '+(e.message||''),'err');
+  }
+  btn.disabled = false;
+  btn.innerHTML = eskiHtml;
+}
+
 async function searchEmsalWeb(){
   var retryBtn=document.getElementById('emsal-retry-btn');
   var loading=document.getElementById('emsal-search-loading');
@@ -1780,9 +1841,10 @@ async function searchEmsalWeb(){
   loading.style.display='flex';results.innerHTML='';
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nkazanci.com, legalbank.net, hukukmedeniyeti.org veya emsal.yargitay.gov.tr sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 4 karar. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nÖNCELİKLE karararama.yargitay.gov.tr ve emsal.uyap.gov.tr (Yargıtay resmi karar arama siteleri) olmak üzere, ayrıca kazanci.com ve hukukmedeniyeti.org sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 4 karar. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
     var data=await resp.json();
-    var fullText=data.content.map(function(c){return c.type==='text'?c.text:'';}).join('');
+    if(data.error)throw new Error(data.error.message||'API hatası');
+    var fullText=(data.content||[]).map(function(c){return c.type==='text'?c.text:'';}).join('');
     var clean=fullText.replace(/```json|```/g,'').trim();
     var jsonMatch=clean.match(/\{[\s\S]*\}/);
     if(!jsonMatch)throw new Error('Sonuç ayrıştırılamadı');
@@ -2360,6 +2422,14 @@ function selectMuvekkilDyn(el, ad, id){
   if(chk) chk.style.color='var(--ac)';
   document.getElementById('pet-davaci').value = ad||'';
   selectedMuvekkil = {ad:ad, id:id};
+  if(sbClient && id){
+    sbClient.from('muvekkililer').select('tc_kimlik,adres').eq('id',id).single().then(function(r){
+      if(!r.data) return;
+      var t=document.getElementById('pet-davaci-tc'), a=document.getElementById('pet-davaci-adres');
+      if(t && r.data.tc_kimlik) t.value=r.data.tc_kimlik;
+      if(a && r.data.adres) a.value=r.data.adres;
+    });
+  }
   showToast(ad+' seçildi','ok');
 }
 
