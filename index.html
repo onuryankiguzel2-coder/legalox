@@ -1260,7 +1260,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v3.4 — 04.07.2026';
+const APP_VERSION='v3.5 — 04.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1458,7 +1458,14 @@ async function guncelleSayilar(){
     var sg = document.getElementById('sek-kpi-gorev'); if(sg)sg.textContent=g.count||0;
   }catch(e){}
 }
-function nav(p){nav2(p);}
+function nav(p){
+  nav2(p);
+  try{ history.pushState({p:p}, '', '#'+p); }catch(e){}
+}
+// Tarayıcı geri/ileri tuşları artık uygulama içinde gezinir
+window.addEventListener('popstate', function(e){
+  if(e.state && e.state.p){ nav2(e.state.p); }
+});
 function nav2(p){
   currentPage=p;
   document.querySelectorAll('.page').forEach(function(x){x.classList.remove('act');x.classList.remove('active');});
@@ -1988,7 +1995,7 @@ async function emsalSayfaAra(){
     var resp = await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'ÖNCELİKLE karararama.yargitay.gov.tr ve emsal.uyap.gov.tr (Yargıtay resmi karar arama siteleri) olmak üzere, ayrıca kazanci.com ve hukukmedeniyeti.org sitelerinde şu konuyla ilgili Yargıtay kararlarını ara: "'+q+'". Cevabını SADECE şu JSON formatında ver (öncesinde veya sonrasında hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","link":"kararı bulduğun sayfanın TAM URL adresi — asla uydurma","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Web aramalarını \"site:karararama.yargitay.gov.tr\" ile sınırlayarak yap. SADECE karararama.yargitay.gov.tr (Yargıtay resmi karar arama sitesi) üzerinde şu konuyla ilgili Yargıtay kararlarını ara; başka hiçbir siteden karar alma. Her kararın link alanına bu sitedeki karar sayfasının gerçek URL adresini yaz. Konu: "'+q+'". Cevabını SADECE şu JSON formatında ver (öncesinde veya sonrasında hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","link":"kararı bulduğun sayfanın TAM URL adresi — asla uydurma","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})
     });
     var data = await resp.json();
     if(data.error) throw new Error(data.error.message||'API hatası');
@@ -2048,7 +2055,7 @@ async function searchEmsalWeb(){
   loading.style.display='flex';results.innerHTML='';
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nÖNCELİKLE karararama.yargitay.gov.tr ve emsal.uyap.gov.tr (Yargıtay resmi karar arama siteleri) olmak üzere, ayrıca kazanci.com ve hukukmedeniyeti.org sitelerinde bu konuyla ilgili Yargıtay kararlarını ara. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","link":"kararı bulduğun sayfanın TAM URL adresi — arama sonucundaki gerçek linki yaz, asla uydurma","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nWeb aramalarını \"site:karararama.yargitay.gov.tr\" ile sınırlayarak yap. SADECE karararama.yargitay.gov.tr (Yargıtay resmi karar arama sitesi) üzerinde bulunan bu konuyla ilgili Yargıtay kararlarını listele; başka hiçbir siteden karar alma. Her kararın link alanına bu sitedeki karar sayfasının gerçek URL adresini yaz. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","link":"kararı bulduğun sayfanın TAM URL adresi — arama sonucundaki gerçek linki yaz, asla uydurma","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})});
     var data=await resp.json();
     if(data.error)throw new Error(data.error.message||'API hatası');
     var fullText=(data.content||[]).map(function(c){return c.type==='text'?c.text:'';}).join('');
@@ -2946,25 +2953,76 @@ async function openMuvDetail(id) {
   // Dosyalar
   var dosyaDiv=document.getElementById('mvd-dosya');
   if(dosyaDiv){
-    var {data:dosyalar}=await sbClient.from('dosyalar').select('muvekkil_adi,dosya_no,durum,dava_turu').eq('muvekkil_adi',m.ad_soyad);
+    var {data:dosyalar}=await sbClient.from('dosyalar').select('muvekkil_adi,dosya_no,durum,dava_turu').ilike('muvekkil_adi',m.ad_soyad||'');
     if(dosyalar&&dosyalar.length){
       dosyaDiv.innerHTML=dosyalar.map(function(f){return '<div class="drow"><div class="dico ddoc"><i class="ti ti-folder"></i></div><div class="dinf"><div class="dname">'+(f.muvekkil_adi||'\u2014')+' \u2014 '+(f.dava_turu||'\u2014')+'</div><div class="dmeta">'+(f.dosya_no||'\u2014')+' \u00b7 '+(f.durum||'\u2014')+'</div></div><button class="btns" style="height:24px;font-size:10px" onclick="closeMuvModal();nav(\'dosyadetay\')">A\u00e7</button></div>';}).join('');
     } else {
       dosyaDiv.innerHTML='<div style="font-size:11.5px;color:var(--tx4);padding:8px">Dosya bulunamadı</div>';
     }
+    // Bu müvekkile ait kayıtlı dilekçeler
+    try{
+      var dl = await sbClient.from('dilekceler').select('id,tip,davali,icerik,created_at').or('muvekkil_id.eq.'+id+',muvekkil_adi.ilike.'+(m.ad_soyad||'')).order('created_at',{ascending:false}).limit(10);
+      var dler = dl.data||[];
+      if(dler.length){
+        window._mvdDilekceler = dler;
+        dosyaDiv.innerHTML += '<div style="font-size:10.5px;color:var(--tx4);margin:12px 0 6px;font-weight:700;letter-spacing:.5px">DİLEKÇELER</div>' + dler.map(function(x,i){
+          var t=(x.created_at||'').slice(0,10);
+          return '<div class="drow" style="cursor:pointer" onclick="muvDilekceAc('+i+')"><div class="dico dpdf"><i class="ti ti-file-text"></i></div><div class="dinf"><div class="dname">'+escHtml(x.tip||'Dilekçe')+(x.davali?' — Davalı: '+escHtml(x.davali):'')+'</div><div class="dmeta">'+t+' · aç ve düzenle</div></div></div>';
+        }).join('');
+      }
+    }catch(e){}
   }
   // Cari - muhasebe tablosundan
   var cariDiv=document.getElementById('mvd-cari');
   if(cariDiv){
-    var {data:odemeler}=await sbClient.from('muhasebe').select('tutar').eq('muvekkil_adi',m.ad_soyad);
+    var {data:odemeler}=await sbClient.from('muhasebe').select('tutar,aciklama,tarih').ilike('muvekkil_adi',m.ad_soyad||'');
     var toplam=(odemeler||[]).reduce(function(s,o){return s+(o.tutar||0);},0);
-    cariDiv.innerHTML='<div class="kgrid kg3" style="margin-bottom:12px"><div class="kcard"><div class="kline" style="background:var(--bl)"></div><div class="klbl">Toplam Tahsilat</div><div class="kval" style="font-size:20px">₺'+toplam.toLocaleString('tr-TR')+'</div></div></div>';
+    var sonOdemeler=(odemeler||[]).slice(0,5).map(function(o){
+      return '<div class="drow"><div class="dico ddoc"><i class="ti ti-cash"></i></div><div class="dinf"><div class="dname">₺'+(o.tutar||0).toLocaleString('tr-TR')+(o.aciklama?' — '+escHtml(o.aciklama):'')+'</div><div class="dmeta">'+(o.tarih||'')+'</div></div></div>';
+    }).join('');
+    cariDiv.innerHTML='<div class="kgrid kg3" style="margin-bottom:12px"><div class="kcard"><div class="kline" style="background:var(--bl)"></div><div class="klbl">Toplam Tahsilat</div><div class="kval" style="font-size:20px">₺'+toplam.toLocaleString('tr-TR')+'</div></div></div>'
+      + (sonOdemeler||'<div style="font-size:11.5px;color:var(--tx4);padding:8px">Henüz tahsilat kaydı yok</div>')
+      + '<div style="margin-top:10px"><button class="btnp" style="height:28px;font-size:11px" onclick="muvTahsilatEkle()"><i class="ti ti-plus" style="font-size:11px"></i>Tahsilat Ekle</button></div>';
   }
   // Not alanı
   var notTa=document.querySelector('#mvd-notlar textarea');
   if(notTa) notTa.value=m.notlar||'';
   mvdTab(document.querySelector('.mvd-tab'),'mvd-genel');
   document.getElementById('movl-muvekkil').classList.add('open');
+}
+
+// Müvekkil detayından dilekçeyi Dilekçe Üretici'de aç
+function muvDilekceAc(i){
+  var x = (window._mvdDilekceler||[])[i];
+  if(!x) return;
+  document.getElementById('movl-muvekkil').classList.remove('open');
+  nav('dilekce');
+  setTimeout(function(){
+    var f = document.getElementById('pet-section-final');
+    var ta = document.getElementById('final-petition-text');
+    if(f) f.style.display='block';
+    if(ta){ ta.value = x.icerik||''; if(ta.scrollIntoView) ta.scrollIntoView({behavior:'smooth'}); }
+    showToast('Dilekçe yüklendi','ok');
+  }, 300);
+}
+
+// Müvekkil detayından gerçek tahsilat kaydı
+async function muvTahsilatEkle(){
+  var id = window._acikMuvekkilId;
+  if(!id) return;
+  var tutarStr = prompt('Tahsilat tutarı (₺):');
+  if(tutarStr===null) return;
+  var tutar = parseFloat(String(tutarStr).replace(',','.'));
+  if(!tutar || tutar<=0){ showToast('Geçerli bir tutar gir','err'); return; }
+  var aciklama = prompt('Açıklama (opsiyonel):') || '';
+  var adEl = document.getElementById('mvd-ad');
+  var ad = adEl ? adEl.textContent : '';
+  var r = await sbInsert('muhasebe', { muvekkil_adi:ad, tutar:tutar, aciklama:aciklama, tarih:new Date().toISOString().slice(0,10), durum:'odendi', kullanici_id: cUser?cUser.id:null });
+  if(r.error){ showToast('Kaydedilemedi: '+(r.error.message||''),'err'); return; }
+  showToast('₺'+tutar.toLocaleString('tr-TR')+' tahsilat kaydedildi ✓','ok');
+  openMuvDetail(id);
+  if(typeof loadMuhasebe==='function') loadMuhasebe();
+  guncelleSayilar();
 }
 
 function closeMuvModal(e) {
