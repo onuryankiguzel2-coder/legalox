@@ -1260,7 +1260,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v3.2 — 04.07.2026';
+const APP_VERSION='v3.3 — 04.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1616,18 +1616,38 @@ async function analyzeStyleFiles(files){
   var result=document.getElementById('style-result');
   var badge=document.getElementById('style-active-badge');
   analyzing.style.display='flex';result.style.display='none';
-  var texts=[];
-  for(var i=0;i<files.length;i++){var t=await readFileText(files[i]);if(t)texts.push(t.substring(0,2000));}
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:'Aşağıdaki Türk hukuk dilekçelerini analiz et ve avukatın yazım üslubunu çıkar. Cümle yapısı, resmiyet seviyesi, paragraf düzeni, sıkça kullandığı ifadeler, hitap biçimi, sonuç bölümü kalıplarını incele. Kısa ve net bir \u00fcslup profili yaz (maks. 150 kelime):\n\n'+texts.join('\n\n---\n\n')}]})});
+    // İçerik blokları: PDF'ler gerçek belge olarak gönderilir, TXT metin olarak okunur
+    var bloklar=[];
+    var pdfSayisi=0;
+    for(var i=0;i<files.length && bloklar.length<4;i++){
+      var f=files[i];
+      if(f.type==='application/pdf'){
+        if(f.size>8*1024*1024){ showToast(f.name+' çok büyük (8 MB üstü), atlandı','err'); continue; }
+        var b64=await new Promise(function(res,rej){var rd=new FileReader();rd.onload=function(){res(String(rd.result).split(',')[1]);};rd.onerror=function(){rej(new Error('okunamadı'));};rd.readAsDataURL(f);});
+        bloklar.push({type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}});
+        pdfSayisi++;
+      } else if(f.type==='text/plain'){
+        var t=await readFileText(f);
+        if(t)bloklar.push({type:'text',text:'--- DİLEKÇE ('+f.name+') ---\n'+t.substring(0,4000)});
+      } else {
+        showToast(f.name+': Word dosyaları desteklenmiyor — PDF veya TXT yükleyin','err');
+      }
+    }
+    if(!bloklar.length){analyzing.style.display='none';showToast('Okunabilir dosya yok — PDF veya TXT yükleyin','err');return;}
+    bloklar.push({type:'text',text:'Yukarıdaki Türk hukuk dilekçelerini analiz et ve avukatın yazım üslubunu çıkar. Cümle yapısı, resmiyet seviyesi, paragraf düzeni, sıkça kullandığı ifadeler, hitap biçimi, sonuç bölümü kalıplarını incele. Kısa ve net bir üslup profili yaz (maks. 150 kelime). Sadece profili yaz, başka açıklama ekleme.'});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:bloklar}]})});
     var data=await resp.json();
-    styleProfile=data.content[0].text;
+    if(data.error)throw new Error(data.error.message||'API hatası');
+    var text=(data.content||[]).map(function(c){return c.type==='text'?c.text:'';}).join('').trim();
+    if(!text)throw new Error('Profil alınamadı');
+    styleProfile=text;
     localStorage.setItem('legalox_style_profile',styleProfile);
     analyzing.style.display='none';
     result.style.display='block';result.textContent=styleProfile;
     badge.style.display='inline';
-    showToast('Üslup profili oluşturuldu \u2713','ok');
-  }catch(e){analyzing.style.display='none';showToast('Analiz hatası','err');}
+    showToast('Üslup profili oluşturuldu ✓'+(pdfSayisi?' ('+pdfSayisi+' PDF okundu)':''),'ok');
+  }catch(e){analyzing.style.display='none';showToast('Analiz hatası: '+(e.message||''),'err');}
 }
 
 function readFileText(file){
