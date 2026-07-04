@@ -412,9 +412,9 @@ button{cursor:pointer}
   <div class="main-area">
     <div class="topbar">
       <div class="tbc">legalox / <span id="tbpage">genel bakış</span></div>
-      <div class="tbsearch"><i class="ti ti-search"></i><input type="text" placeholder="Müvekkil, dosya, belge ara..."><span class="tbkbd">⌘K</span></div>
+      <div class="tbsearch" style="position:relative"><i class="ti ti-search"></i><input type="text" id="tb-arama" onkeydown="if(event.key==='Enter')globalAra()" placeholder="Müvekkil veya dosya ara..."><span class="tbkbd">⌘K</span><div id="tb-arama-panel" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rmd);box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:200;max-height:280px;overflow:auto;padding:4px"></div></div>
       <div class="tbactions">
-        <div class="ibtn"><i class="ti ti-bell"></i><div class="ndot"></div></div>
+        <div class="ibtn" onclick="bildirimOzet()" style="cursor:pointer"><i class="ti ti-bell"></i><div class="ndot" id="bildirim-nokta"></div></div>
         <div class="ibtn" onclick="nav('rehber')"><i class="ti ti-help-circle"></i></div>
         <button class="btnp" onclick="tbAction()"><i class="ti ti-plus" id="tbbico"></i><span id="tbbtext">Yeni Dosya</span></button>
       </div>
@@ -580,7 +580,7 @@ button{cursor:pointer}
       <div><div class="mvd-label" style="margin-bottom:6px">Deneme Süresi</div><div style="display:flex;align-items:center;gap:8px"><input class="fi" style="width:60px;height:32px;font-size:13px;text-align:center" value="30"><span style="font-size:12px;color:var(--tx3)">gün</span></div></div>
       <div><div class="mvd-label" style="margin-bottom:6px">Süre Dolunca</div><select class="fi" style="height:32px;font-size:12px"><option>Hesap dondurulur</option><option>Sadece görüntüleme</option><option>Uyarı verilir devam eder</option></select></div>
     </div>
-    <div style="margin-top:12px"><button class="btnp" style="height:28px;font-size:11px" onclick="showToast('Deneme ayarları kaydedildi','ok')"><i class="ti ti-check" style="font-size:12px"></i>Kaydet</button></div>
+    <div style="margin-top:12px"><button class="btnp" style="height:28px;font-size:11px" onclick="nav('admin-paket')"><i class="ti ti-arrow-right" style="font-size:12px"></i>Paket Yönetiminde Düzenle</button></div>
   </div>
 
   <!-- ÜYELER TABLOSU -->
@@ -768,7 +768,7 @@ button{cursor:pointer}
     <div class="s-row"><div class="s-key">GitHub Pages URL</div><span style="font-size:12px;color:var(--accent)">kullanici.github.io/legalox</span></div>
     <div class="s-row"><div><div class="s-key">Özel Domain</div><div class="s-desc">CNAME kaydı gerektirir</div></div><input class="form-input" style="width:200px;height:30px;font-size:12px" placeholder="legalox.ai"></div>
     <div class="s-row"><div class="s-key">SSL Sertifikası</div><span class="badge b-aktif">Aktif — Let's Encrypt</span></div>
-    <div style="margin-top:12px"><button class="btn-primary" style="height:30px;font-size:11.5px" onclick="showToast('Domain ayarları kaydedildi ✓','ok')"><i class="ti ti-check"></i>Kaydet</button></div>
+    <div style="margin-top:12px"><button class="btn-primary" style="height:30px;font-size:11.5px" onclick="showToast('Domain yönetimi yakında eklenecek','info')"><i class="ti ti-check"></i>Kaydet</button></div>
   </div>
   <div class="settings-section">
     <div class="settings-title">Sistem Bildirimleri</div>
@@ -1190,8 +1190,8 @@ button{cursor:pointer}
   <div class="ssec">
     <div class="stit">Şifre Değiştir</div>
     <div class="srow"><div class="skey">Mevcut Şifre</div><input class="fi" type="password" style="width:200px;height:30px;font-size:12px" placeholder="••••••••"></div>
-    <div class="srow"><div class="skey">Yeni Şifre</div><input class="fi" type="password" style="width:200px;height:30px;font-size:12px" placeholder="••••••••"></div>
-    <div style="margin-top:12px"><button class="btnp" onclick="showToast('Şifre güncellendi','ok')"><i class="ti ti-lock"></i>Güncelle</button></div>
+    <div class="srow"><div class="skey">Yeni Şifre</div><input class="fi" id="sifre-yeni" type="password" style="width:200px;height:30px;font-size:12px" placeholder="En az 6 karakter"></div>
+    <div style="margin-top:12px"><button class="btnp" onclick="sifreGuncelle(this)"><i class="ti ti-lock"></i>Güncelle</button></div>
   </div>
 </div>
 
@@ -1260,7 +1260,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v3.3 — 04.07.2026';
+const APP_VERSION='v3.4 — 04.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1844,6 +1844,81 @@ async function dilekceSil(i){
     loadKayitliDilekceler();
   }catch(e){ showToast('Silinemedi: '+(e.message||''),'err'); }
 }
+
+// ── GERÇEK ŞİFRE DEĞİŞTİRME ──
+async function sifreGuncelle(btn){
+  var yeni = (document.getElementById('sifre-yeni')||{}).value||'';
+  if(yeni.length < 6){ showToast('Yeni şifre en az 6 karakter olmalı','err'); return; }
+  if(btn){ btn.disabled=true; }
+  try{
+    var r = await sbClient.auth.updateUser({ password: yeni });
+    if(r.error) throw r.error;
+    document.getElementById('sifre-yeni').value='';
+    showToast('Şifre güncellendi ✓ — bir sonraki girişte yeni şifreni kullan','ok');
+  }catch(e){ showToast('Şifre güncellenemedi: '+(e.message||''),'err'); }
+  if(btn){ btn.disabled=false; }
+}
+
+// ── GERÇEK MÜVEKKİL NOTU KAYDETME ──
+async function muvekkilNotKaydet(btn){
+  var id = window._acikMuvekkilId;
+  if(!id){ showToast('Müvekkil bulunamadı','err'); return; }
+  var ta = document.querySelector('#mvd-notlar textarea');
+  if(!ta) return;
+  if(btn) btn.disabled = true;
+  try{
+    var r = await sbClient.from('muvekkililer').update({ notlar: ta.value||'' }).eq('id', id).select('id');
+    if(r.error) throw r.error;
+    if(!r.data || !r.data.length) throw new Error('güncelleme izni yok');
+    showToast('Not kaydedildi ✓','ok');
+  }catch(e){ showToast('Not kaydedilemedi: '+(e.message||''),'err'); }
+  if(btn) btn.disabled = false;
+}
+
+// ── GERÇEK BİLDİRİM ÖZETİ ──
+async function bildirimOzet(){
+  if(!sbClient){ showToast('Bağlantı yok','err'); return; }
+  try{
+    var bugun = new Date().toISOString().slice(0,10);
+    var d = await sbClient.from('durusmalar').select('*',{count:'exact',head:true}).eq('tarih',bugun);
+    var g = await sbClient.from('gorevler').select('*',{count:'exact',head:true}).neq('durum','tamamlandi');
+    var dc = d.count||0, gc = g.count||0;
+    if(!dc && !gc){ showToast('Bugün duruşman yok, bekleyen görevin yok — her şey yolunda ✓','ok'); }
+    else { showToast('Bugün '+dc+' duruşma · '+gc+' bekleyen görev','info'); }
+    var nokta = document.getElementById('bildirim-nokta');
+    if(nokta) nokta.style.display = (dc||gc) ? '' : 'none';
+  }catch(e){ showToast('Bildirimler alınamadı','err'); }
+}
+
+// ── GERÇEK GLOBAL ARAMA ──
+async function globalAra(){
+  var q = ((document.getElementById('tb-arama')||{}).value||'').trim();
+  var panel = document.getElementById('tb-arama-panel');
+  if(!panel) return;
+  if(q.length < 2){ panel.style.display='none'; showToast('En az 2 karakter yaz','err'); return; }
+  panel.style.display='block';
+  panel.innerHTML = '<div style="font-size:11px;color:var(--tx4);padding:10px">Aranıyor...</div>';
+  try{
+    var mv = await sbClient.from('muvekkililer').select('id,ad_soyad,telefon').ilike('ad_soyad','%'+q+'%').limit(5);
+    var ds = await sbClient.from('dosyalar').select('muvekkil_adi,dava_turu,dosya_no').ilike('muvekkil_adi','%'+q+'%').limit(5);
+    var html = '';
+    (mv.data||[]).forEach(function(m){
+      html += '<div class="srcitem" style="cursor:pointer;padding:8px 10px;margin:2px 0" onclick="document.getElementById(\'tb-arama-panel\').style.display=\'none\';openMuvDetail(\''+m.id+'\')"><div style="font-size:12px;font-weight:600;color:var(--tx)"><i class="ti ti-user" style="font-size:11px;margin-right:6px;color:var(--ac)"></i>'+escHtml(m.ad_soyad||'')+'</div><div style="font-size:10px;color:var(--tx4);margin-left:19px">Müvekkil'+(m.telefon?' · '+escHtml(m.telefon):'')+'</div></div>';
+    });
+    (ds.data||[]).forEach(function(dd){
+      html += '<div class="srcitem" style="cursor:pointer;padding:8px 10px;margin:2px 0" onclick="document.getElementById(\'tb-arama-panel\').style.display=\'none\';nav(\'dosyalar\')"><div style="font-size:12px;font-weight:600;color:var(--tx)"><i class="ti ti-folder" style="font-size:11px;margin-right:6px;color:var(--bl)"></i>'+escHtml(dd.muvekkil_adi||'')+(dd.dosya_no?' · '+escHtml(dd.dosya_no):'')+'</div><div style="font-size:10px;color:var(--tx4);margin-left:19px">Dosya'+(dd.dava_turu?' · '+escHtml(dd.dava_turu):'')+'</div></div>';
+    });
+    panel.innerHTML = html || '<div style="font-size:11px;color:var(--tx4);padding:10px">"'+escHtml(q)+'" için sonuç bulunamadı</div>';
+  }catch(e){ panel.innerHTML = '<div style="font-size:11px;color:var(--rd);padding:10px">Arama hatası</div>'; }
+}
+// ⌘K / Ctrl+K kısayolu + dışarı tıklayınca paneli kapat
+document.addEventListener('keydown', function(e){
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); var a=document.getElementById('tb-arama'); if(a)a.focus(); }
+});
+document.addEventListener('click', function(e){
+  var p=document.getElementById('tb-arama-panel');
+  if(p && p.style.display!=='none' && !e.target.closest('.tbsearch')) p.style.display='none';
+});
 
 function copyPetition(){
   var t=document.getElementById('final-petition-text');
@@ -2855,6 +2930,7 @@ async function openMuvDetail(id) {
   var {data,error} = await sbClient.from('muvekkililer').select('*').eq('id',id).single();
   if(error||!data){showToast('Müvekkil bilgisi bulunamadı','err');return;}
   var m = data;
+  window._acikMuvekkilId = id;
   var adEl=document.getElementById('mvd-isim'),metaEl=document.getElementById('mvd-meta');
   var adEl2=document.getElementById('mvd-ad'),tcEl=document.getElementById('mvd-tc');
   var telEl=document.getElementById('mvd-tel'),emailEl=document.getElementById('mvd-email');
@@ -3401,8 +3477,8 @@ window.addEventListener('beforeinstallprompt',function(e){
       <div style="background:var(--acd);border:1px solid var(--acb);border-radius:var(--rmd);padding:12px;font-size:12px;color:var(--ac)"><i class="ti ti-check" style="margin-right:6px"></i>Hesap kapatılmış — tüm ödemeler tamamlandı.</div>
     </div>
     <div id="mvd-notlar" style="display:none">
-      <textarea class="ptta" style="min-height:140px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rmd);padding:13px;width:100%" placeholder="Müvekkil ile ilgili notlar...">Müvekkil zamanında ulaşılamıyor, mesai saatleri dışında aranması tercih ediliyor.</textarea>
-      <div style="margin-top:8px;text-align:right"><button class="btnp" style="height:28px;font-size:11px" onclick="showToast('Not kaydedildi','ok')"><i class="ti ti-check" style="font-size:12px"></i>Kaydet</button></div>
+      <textarea class="ptta" style="min-height:140px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rmd);padding:13px;width:100%" placeholder="Müvekkil ile ilgili notlar..."></textarea>
+      <div style="margin-top:8px;text-align:right"><button class="btnp" style="height:28px;font-size:11px" onclick="muvekkilNotKaydet(this)"><i class="ti ti-check" style="font-size:12px"></i>Kaydet</button></div>
     </div>
     <div class="mfoot">
       <button class="btns" onclick="closeMuvModal()">Kapat</button>
