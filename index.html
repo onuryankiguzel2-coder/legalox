@@ -824,9 +824,7 @@ button{cursor:pointer}
   <div id="dtb-bel">
     <div class="card">
       <div class="chd"><span class="ct">Yüklü Belgeler</span><button class="btns" style="height:26px;font-size:11px" onclick="openModal('belge')"><i class="ti ti-upload" style="font-size:12px"></i>Yükle</button></div>
-      <div class="drow"><div class="dico dpdf"><i class="ti ti-file-type-pdf"></i></div><div class="dinf"><div class="dname">Bilirkişi Raporu 2024</div><div class="dmeta">PDF · 2.4 MB · 2 saat önce · OCR tamamlandı</div></div><div style="display:flex;gap:6px;flex-shrink:0"><span class="bdg ba">OCR Hazır</span><button class="btns" style="height:24px;font-size:10px" onclick="nav('dilekce');showToast('Belge AI analizine gönderildi','info')"><i class="ti ti-sparkles" style="font-size:11px"></i>AI Analiz</button></div></div>
-      <div class="drow"><div class="dico ddoc"><i class="ti ti-file-type-doc"></i></div><div class="dinf"><div class="dname">Cevap Dilekçesi Taslağı</div><div class="dmeta">Word · 145 KB · Dün</div></div><span class="bdg btas">Taslak</span></div>
-      <div class="drow"><div class="dico dimg"><i class="ti ti-photo"></i></div><div class="dinf"><div class="dname">Evlilik Cüzdanı Fotokopisi</div><div class="dmeta">JPEG · 890 KB · 3 gün önce</div></div><span class="bdg ba">Doğrulandı</span></div>
+      <div style="font-size:11.5px;color:var(--tx4);padding:10px 4px">Bu dosyaya henüz belge yüklenmedi.</div>
       <div class="drow" style="border:1.5px dashed var(--bd2);border-radius:var(--rmd);justify-content:center;padding:20px;cursor:pointer;margin-top:6px" onclick="openModal('belge')">
         <i class="ti ti-cloud-upload" style="font-size:20px;color:var(--tx4);margin-right:10px"></i>
         <span style="color:var(--tx4);font-size:12px">PDF, Word veya fotoğraf yükle · OCR otomatik çalışır</span>
@@ -867,18 +865,10 @@ button{cursor:pointer}
 
 <!-- TAKVİM -->
 <div class="page" id="page-takvim">
-  <div class="phdr"><div><div class="ptitle">Duruşmalar & Takvim</div><div class="psub">Haziran 2025 · 12 duruşma</div></div><button class="btnp" onclick="openModal('durusma')"><i class="ti ti-plus"></i>Duruşma Ekle</button></div>
+  <div class="phdr"><div><div class="ptitle">Duruşmalar & Takvim</div><div class="psub" id="takvim-psub">Yükleniyor...</div></div><button class="btnp" onclick="openModal('durusma')"><i class="ti ti-plus"></i>Duruşma Ekle</button></div>
   <div class="col2">
-    <div class="card"><div class="chd"><span class="ct">Haziran 2025</span></div>
-      <div class="cgrid" style="margin-bottom:12px">
-        <div class="cdl">Pt</div><div class="cdl">Sa</div><div class="cdl">Ça</div><div class="cdl">Pe</div><div class="cdl">Cu</div><div class="cdl">Ct</div><div class="cdl">Pz</div>
-        <div class="cc mt">26</div><div class="cc mt">27</div><div class="cc mt">28</div><div class="cc mt">29</div><div class="cc mt">30</div><div class="cc mt">31</div><div class="cc">1</div>
-        <div class="cc">2</div><div class="cc">3</div><div class="cc hb">4</div><div class="cc">5</div><div class="cc hg">6</div><div class="cc">7</div><div class="cc">8</div>
-        <div class="cc">9</div><div class="cc hb">10</div><div class="cc">11</div><div class="cc">12</div><div class="cc">13</div><div class="cc">14</div><div class="cc">15</div>
-        <div class="cc">16</div><div class="cc">17</div><div class="cc hb">18</div><div class="cc">19</div><div class="cc">20</div><div class="cc">21</div><div class="cc">22</div>
-        <div class="cc">23</div><div class="cc today">24</div><div class="cc hb">25</div><div class="cc">26</div><div class="cc hg">27</div><div class="cc">28</div><div class="cc">29</div>
-        <div class="cc">30</div>
-      </div>
+    <div class="card"><div class="chd"><span class="ct" id="takvim-ay-baslik">Takvim</span></div>
+      <div class="cgrid" id="takvim-grid" style="margin-bottom:12px"></div>
     </div>
     <div class="card"><div class="chd"><span class="ct">Yaklaşan Duruşmalar</span></div>
       <div id="takvim-durusma-liste" style="font-size:11px;color:var(--tx4);text-align:center;padding:12px">Yükleniyor...</div>
@@ -975,6 +965,7 @@ button{cursor:pointer}
         <div class="chd"><span class="ct">Dava Bilgileri</span></div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Mahkeme</label><input class="fi" id="pet-mahkeme" placeholder="Örn. İstanbul 5. İş Mahkemesi" style="font-size:12px;height:32px"></div>
+          <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Dava Türü / Konusu</label><input class="fi" id="pet-davaturu" placeholder="Örn. Boşanma, İşe iade, Tazminat, Alacak" style="font-size:12px;height:32px"></div>
           <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Davacı (Müvekkil)</label><input class="fi" id="pet-davaci" placeholder="Müvekkil adı (listeden seçince dolar)" style="font-size:12px;height:32px"></div>
           <div style="display:flex;gap:6px"><input class="fi" id="pet-davaci-tc" placeholder="Davacı T.C. No (kayıttan dolar)" style="font-size:12px;height:32px;flex:1"><input class="fi" id="pet-davaci-adres" placeholder="Davacı adresi (kayıttan dolar)" style="font-size:12px;height:32px;flex:1.4"></div>
           <div><label style="font-size:10.5px;color:var(--tx4);margin-bottom:3px;display:block">Davalı</label><input class="fi" id="pet-davali" placeholder="Karşı taraf adı / unvanı" style="font-size:12px;height:32px"></div>
@@ -1104,14 +1095,12 @@ button{cursor:pointer}
   <div class="phdr"><div><div class="ptitle">Emsal Karar Motoru</div><div class="psub">Yargıtay ve içtihat veritabanı — yalnızca doğrulanmış kararlar</div></div></div>
   <div class="card" style="margin-bottom:14px">
     <div style="display:flex;gap:10px">
-      <div style="flex:1;display:flex;align-items:center;gap:10px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rmd);padding:0 14px;height:40px"><i class="ti ti-search" style="font-size:15px;color:var(--tx4)"></i><input type="text" placeholder="Dava türü, konu veya karar numarası..." style="background:none;border:none;outline:none;font-size:13px;color:var(--tx2);width:100%"></div>
-      <button class="btnp" style="height:40px" onclick="showToast('Emsal kararlar aranıyor...','info')"><i class="ti ti-search"></i>Ara</button>
+      <div style="flex:1;display:flex;align-items:center;gap:10px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rmd);padding:0 14px;height:40px"><i class="ti ti-search" style="font-size:15px;color:var(--tx4)"></i><input type="text" id="emsal-sayfa-q" onkeydown="if(event.key===\'Enter\')emsalSayfaAra()" placeholder="Dava türü, konu veya karar numarası..." style="background:none;border:none;outline:none;font-size:13px;color:var(--tx2);width:100%"></div>
+      <button class="btnp" style="height:40px" id="emsal-sayfa-btn" onclick="emsalSayfaAra()"><i class="ti ti-search"></i>Ara</button>
     </div>
   </div>
-  <div style="display:flex;flex-direction:column;gap:8px">
-    <div class="srcitem" style="cursor:pointer"><div style="display:flex;justify-content:space-between;gap:10px"><div><div class="srcnum">Yargıtay 9. HD — 2023/4421 E. · 15 Kasım 2023</div><div class="srctit" style="font-size:13px;margin:4px 0">İşe iade davası — feshin geçersizliği</div><div class="srcdesc">İş güvencesi kapsamındaki işçinin iş sözleşmesinin feshinde geçerli neden aranması zorunludur. İspat yükü işverene aittir.</div></div><div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0"><span class="bdg ba">Doğrulandı</span><button class="btns" style="height:24px;font-size:10px" onclick="showToast('Karar dosyaya eklendi','ok')">Ekle</button></div></div></div>
-    <div class="srcitem" style="cursor:pointer"><div style="display:flex;justify-content:space-between;gap:10px"><div><div class="srcnum">Yargıtay 2. HD — 2023/8812 E. · 02 Aralık 2023</div><div class="srctit" style="font-size:13px;margin:4px 0">Boşanmada mal rejiminin tasfiyesi</div><div class="srcdesc">Edinilmiş mallara katılma rejiminde katkı payı alacağının hesaplanmasında denkleştirme ilkesi esas alınır.</div></div><div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0"><span class="bdg ba">Doğrulandı</span><button class="btns" style="height:24px;font-size:10px" onclick="showToast('Karar dosyaya eklendi','ok')">Ekle</button></div></div></div>
-    <div class="srcitem" style="background:var(--rdd);border-color:rgba(226,75,74,.15)"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-alert-triangle" style="color:var(--rd);font-size:16px"></i><div style="font-size:12px;color:var(--rd)">Bu konuda doğrulanmış emsal karar bulunamadı. Lütfen manuel araştırma yapınız.</div></div></div>
+  <div id="emsal-sayfa-sonuc" style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-size:12px;color:var(--tx4);padding:12px;line-height:1.6">Aramak istediğin konuyu yukarı yaz — örn. <b>"işe iade ispat yükü"</b> veya <b>"boşanmada mal paylaşımı"</b> — ve Ara'ya bas. Yargıtay kararları web üzerinden taranır, kaynağında inceleyebilirsin.</div>
   </div>
 </div>
 
@@ -1271,7 +1260,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v3.1 — 03.07.2026';
+const APP_VERSION='v3.2 — 04.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1732,7 +1721,10 @@ async function writeSection(num){
 
     3:'Sen 20 yıllık deneyimli bir Türk hukukçususun. Bu '+tip+' için SONUÇ VE TALEP bölümünü yaz.\n\nDavacı: '+davaci+'\nDavalı: '+davali+'\nVekil: '+avukat+'\n'+(tutar?'Talep: '+tutar:'')+'\n'+stilMetni+'\n\nBu bölümde:\n1. "SONUÇ VE TALEP:" başlığı\n2. Tüm talepler büyük harfle ve madde madde\n3. Yargılama giderleri ve vekalet ücreti\n4. "Saygılarımla arz ederim." kapanışı\n5. Tarih ve avukat imza bloğu\n6. Net, kararlı, kesin bir ton'
   };
+  var _davaTuru=(document.getElementById('pet-davaturu')||{}).value||'';
+  var _dilekceTipi=window.selectedPetitionType||'Dava Dilekçesi';
   for(var pk in prompts){
+    prompts[pk]='BAĞLAM — DİLEKÇE TÜRÜ: '+_dilekceTipi+(_davaTuru?' | DAVA TÜRÜ/KONUSU: '+_davaTuru:'')+'\n\n'+prompts[pk];
     prompts[pk]+='\n\nKESİN KURALLAR:\n1. Eksik veya bilinmeyen bilgi için ASLA "...." veya nokta nokta boşluk kullanma. Elindeki bilgileri (isim, T.C. no, adres, baro sicil no) aynen yaz; gerçekten bilinmeyen bir alan varsa o satırı tamamen atla veya [AVUKAT DOLDURACAK] şeklinde belirt.\n2. Markdown biçimlendirme KULLANMA: **, ##, ###, * gibi işaretler yasak. Düz metin yaz; başlıkları BÜYÜK HARFLE yaz (örn. HUKUKİ SEBEPLER:).\n3. Bölümü mutlaka tam ve doğal bir cümleyle bitir; asla yarıda bırakma. Uzunluğu buna göre planla.';
   }
 
@@ -1888,6 +1880,66 @@ async function ozetDosyadanCikar(input){
   btn.innerHTML = eskiHtml;
 }
 
+// ── EMSAL KARARLAR SAYFASI: gerçek AI web araması ──
+async function emsalSayfaAra(){
+  var q = ((document.getElementById('emsal-sayfa-q')||{}).value||'').trim();
+  var box = document.getElementById('emsal-sayfa-sonuc');
+  if(!box) return;
+  if(!q){ showToast('Aramak istediğin konuyu yaz','err'); return; }
+  var btn = document.getElementById('emsal-sayfa-btn');
+  if(btn) btn.disabled = true;
+  box.innerHTML = '<div style="font-size:12px;color:var(--tx4);padding:14px">Yargıtay kararları web üzerinden aranıyor — 15-30 saniye sürebilir...</div>';
+  try{
+    var resp = await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'ÖNCELİKLE karararama.yargitay.gov.tr ve emsal.uyap.gov.tr (Yargıtay resmi karar arama siteleri) olmak üzere, ayrıca kazanci.com ve hukukmedeniyeti.org sitelerinde şu konuyla ilgili Yargıtay kararlarını ara: "'+q+'". Cevabını SADECE şu JSON formatında ver (öncesinde veya sonrasında hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","link":"kararı bulduğun sayfanın TAM URL adresi — asla uydurma","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.'}]})
+    });
+    var data = await resp.json();
+    if(data.error) throw new Error(data.error.message||'API hatası');
+    var fullText = (data.content||[]).map(function(c){ return c.type==='text' ? c.text : ''; }).join('');
+    var clean = fullText.replace(/```json|```/g,'').trim();
+    var jm = clean.match(/\{[\s\S]*\}/);
+    if(!jm) throw new Error('Sonuç ayrıştırılamadı');
+    var parsed;
+    try{ parsed = JSON.parse(jm[0]); }
+    catch(_pe){
+      var ham=jm[0], son=ham.lastIndexOf('}',ham.length-2), ku=null;
+      while(son>0){
+        try{ ku=JSON.parse(ham.slice(0,son+1)+']}'); break; }catch(__){ }
+        try{ ku=JSON.parse(ham.slice(0,son+1)+'}]}'); break; }catch(__){ }
+        son=ham.lastIndexOf('}',son-1);
+      }
+      if(!ku) throw new Error('Sonuç ayrıştırılamadı');
+      parsed = ku;
+    }
+    var ks = (parsed && parsed.kararlar) || [];
+    window._emsalSayfaSonuc = ks;
+    if(!ks.length){
+      box.innerHTML = '<div class="srcitem" style="background:var(--rdd);border-color:rgba(226,75,74,.15)"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-alert-triangle" style="color:var(--rd);font-size:16px"></i><div style="font-size:12px;color:var(--rd)">Bu konuda doğrulanmış emsal karar bulunamadı. Farklı anahtar kelimelerle tekrar dene.</div></div></div>';
+      return;
+    }
+    box.innerHTML = ks.map(function(k,i){
+      return '<div class="srcitem"><div style="display:flex;justify-content:space-between;gap:10px"><div style="flex:1;min-width:0"><div class="srcnum">'+escHtml(k.no||'')+(k.tarih?' · '+escHtml(k.tarih):'')+'</div><div class="srctit" style="font-size:13px;margin:4px 0">'+escHtml(k.baslik||'')+'</div><div style="font-size:11.5px;color:var(--tx3);line-height:1.5">'+escHtml(k.ozet||'')+'</div></div><div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0"><button class="btns" style="height:24px;font-size:10px;white-space:nowrap" onclick="emsalSayfaIncele('+i+')"><i class="ti ti-external-link" style="font-size:10px"></i>İncele</button><button class="btns" style="height:24px;font-size:10px;white-space:nowrap" onclick="emsalSayfaKopyala('+i+')"><i class="ti ti-copy" style="font-size:10px"></i>Kopyala</button></div></div></div>';
+    }).join('');
+  }catch(e){
+    box.innerHTML = '<div class="srcitem" style="background:var(--rdd);border-color:rgba(226,75,74,.15)"><div style="font-size:12px;color:var(--rd)">Arama başarısız: '+escHtml(e.message||'bilinmeyen hata')+' — tekrar dene.</div></div>';
+  }
+  if(btn) btn.disabled = false;
+}
+function emsalSayfaIncele(i){
+  var k = (window._emsalSayfaSonuc||[])[i]; if(!k) return;
+  var url = k.link && /^https?:\/\//.test(k.link) ? k.link : 'https://karararama.yargitay.gov.tr/#arama:'+encodeURIComponent(k.no||'');
+  window.open(url,'_blank','noopener');
+}
+function emsalSayfaKopyala(i){
+  var k = (window._emsalSayfaSonuc||[])[i]; if(!k) return;
+  var t = (k.no||'')+'\n'+(k.baslik||'')+'\n'+(k.ozet||'')+(k.link?'\n'+k.link:'');
+  if(navigator.clipboard) navigator.clipboard.writeText(t);
+  showToast('Karar künyesi panoya kopyalandı ✓','ok');
+}
+
+// ── EMSAL KARARLAR SAYFASI SONU ──
 async function searchEmsalWeb(){
   var retryBtn=document.getElementById('emsal-retry-btn');
   var loading=document.getElementById('emsal-search-loading');
@@ -2139,6 +2191,9 @@ async function submitModal(){
     }
     movl.classList.remove('open');
     guncelleSayilar();
+    if(tip==='durusma'&&typeof loadTakvim==='function')loadTakvim();
+    if(tip==='gorev'&&typeof loadGorevler==='function')loadGorevler();
+    if(tip==='odeme'&&typeof loadMuhasebe==='function')loadMuhasebe();
   }catch(e){
     console.error('submitModal hata:',e);
     showToast('Hata: '+(e.message||e),'err');
@@ -2332,6 +2387,29 @@ async function loadStajyerGenelbakis(){
 
 async function loadTakvim(){
   if(!sbClient) return;
+  // ── GÜNCEL AY IZGARASI: gerçek tarih + veritabanındaki duruşma günleri ──
+  var grid = document.getElementById('takvim-grid');
+  if(grid){
+    var simdi=new Date(), yil=simdi.getFullYear(), ay=simdi.getMonth();
+    var aylar=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+    var bas=document.getElementById('takvim-ay-baslik'); if(bas)bas.textContent=aylar[ay]+' '+yil;
+    var ayStr=yil+'-'+String(ay+1).padStart(2,'0');
+    var gunler={};
+    try{
+      var g=await sbClient.from('durusmalar').select('tarih').gte('tarih',ayStr+'-01').lte('tarih',ayStr+'-31');
+      (g.data||[]).forEach(function(x){ if(x.tarih) gunler[parseInt(x.tarih.slice(8,10),10)]=1; });
+    }catch(e){}
+    var psub=document.getElementById('takvim-psub');
+    if(psub)psub.textContent=aylar[ay]+' '+yil+' · bu ay '+Object.keys(gunler).length+' duruşma günü';
+    var off=(new Date(yil,ay,1).getDay()+6)%7;
+    var sonGun=new Date(yil,ay+1,0).getDate();
+    var oncekiSon=new Date(yil,ay,0).getDate();
+    var bugun=simdi.getDate();
+    var gh='<div class="cdl">Pt</div><div class="cdl">Sa</div><div class="cdl">Ça</div><div class="cdl">Pe</div><div class="cdl">Cu</div><div class="cdl">Ct</div><div class="cdl">Pz</div>';
+    for(var i2=off-1;i2>=0;i2--) gh+='<div class="cc mt">'+(oncekiSon-i2)+'</div>';
+    for(var gn=1;gn<=sonGun;gn++){ gh+='<div class="cc'+(gn===bugun?' today':'')+(gunler[gn]?' hb':'')+'">'+gn+'</div>'; }
+    grid.innerHTML=gh;
+  }
   var liste = document.getElementById('takvim-durusma-liste');
   if(liste){
     var {data} = await sbClient.from('durusmalar').select('dosya_adi,mahkeme,tarih,saat').order('tarih',{ascending:true}).limit(10);
@@ -2534,8 +2612,9 @@ async function saveProfilAyarlari(){
   var ad = document.getElementById('profil-ad')?.value.trim();
   var baro = document.getElementById('profil-baro')?.value.trim();
   if(!ad){showToast('Ad Soyad boş olamaz','err');return;}
-  var {error} = await sbClient.from('profiles').update({ad_soyad:ad, baro_no:baro||null}).eq('id',cUser.id);
+  var {data,error} = await sbClient.from('profiles').update({ad_soyad:ad, baro_no:baro||null}).eq('id',cUser.id).select('id');
   if(error){showToast('Güncelleme hatası: '+error.message,'err');return;}
+  if(!data || !data.length){showToast('Kaydedilemedi — Supabase profiles tablosunda güncelleme izni (UPDATE policy) eksik. Bu mesajı Claude\'a ilet.','err');return;}
   // Sidebar güncelle
   cUser.ad = ad;
   cUser.ini = ad.substring(0,2).toUpperCase();
