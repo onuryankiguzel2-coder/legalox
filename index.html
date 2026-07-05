@@ -1260,7 +1260,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v3.8 — 05.07.2026';
+const APP_VERSION='v3.9 — 05.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -2002,7 +2002,7 @@ async function emsalSayfaAra(){
     var resp = await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Web üzerinde şu konuyla ilgili GERÇEK Yargıtay kararlarını ara (kararı aktaran güvenilir hukuk siteleri de kaynak olabilir). Her karar mutlaka gerçek daire + esas/karar numarası içermeli. link alanına: karar karararama.yargitay.gov.tr üzerinde bir sayfada bulunuyorsa o URL adresini yaz; emin değilsen link alanını boş string yap — asla uydurma URL yazma. Konu: "'+q+'". Cevabını SADECE şu JSON formatında ver (öncesinde veya sonrasında hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","link":"kararı bulduğun sayfanın TAM URL adresi — asla uydurma","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.\nMUTLAK KURAL: Cevabında JSON dışında tek bir karakter bile olmasın — açıklama, özür, arama süreci anlatımı YASAK. Hiçbir şey bulamasan bile sadece {"kararlar":[]} yaz.'}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Web üzerinde şu konuyla ilgili GERÇEK Yargıtay kararlarını ara (kararı aktaran güvenilir hukuk siteleri de kaynak olabilir). Her karar mutlaka gerçek daire + esas/karar numarası içermeli. Konu: "'+q+'". Cevabını SADECE şu JSON formatında ver (öncesinde veya sonrasında hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.\nMUTLAK KURAL: Cevabında JSON dışında tek bir karakter bile olmasın — açıklama, özür, arama süreci anlatımı YASAK. Hiçbir şey bulamasan bile sadece {"kararlar":[]} yaz.'}]})
     });
     var data = await resp.json();
     if(data.error) throw new Error(data.error.message||'API hatası');
@@ -2038,8 +2038,9 @@ async function emsalSayfaAra(){
 }
 function emsalSayfaIncele(i){
   var k = (window._emsalSayfaSonuc||[])[i]; if(!k) return;
-  var url = k.link && /^https?:\/\//.test(k.link) ? k.link : 'https://karararama.yargitay.gov.tr/#arama:'+encodeURIComponent(k.no||'');
-  window.open(url,'_blank','noopener');
+  if(navigator.clipboard && k.no) navigator.clipboard.writeText(k.no).catch(function(){});
+  showToast('Karar no panoya kopyalandı — Yargıtay arama sayfasına yapıştırıp aratın','info');
+  window.open('https://karararama.yargitay.gov.tr/', '_blank', 'noopener');
 }
 function emsalSayfaKopyala(i){
   var k = (window._emsalSayfaSonuc||[])[i]; if(!k) return;
@@ -2062,7 +2063,7 @@ async function searchEmsalWeb(){
   loading.style.display='flex';results.innerHTML='';
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nWeb üzerinde bu konuyla ilgili GERÇEK Yargıtay kararlarını ara (kararı aktaran güvenilir hukuk siteleri de kaynak olabilir). Her karar mutlaka gerçek daire + esas/karar numarası içermeli. link alanına: karar karararama.yargitay.gov.tr üzerinde bir sayfada bulunuyorsa o URL adresini yaz; emin değilsen link alanını boş string yap — asla uydurma URL yazma. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","kaynak":"sitenin adı","link":"kararı bulduğun sayfanın TAM URL adresi — arama sonucundaki gerçek linki yaz, asla uydurma","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.\nMUTLAK KURAL: Cevabında JSON dışında tek bir karakter bile olmasın — açıklama, özür, arama süreci anlatımı YASAK. Hiçbir şey bulamasan bile sadece {"kararlar":[]} yaz.'}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nWeb üzerinde bu konuyla ilgili GERÇEK Yargıtay kararlarını ara (kararı aktaran güvenilir hukuk siteleri de kaynak olabilir). Her karar mutlaka gerçek daire + esas/karar numarası içermeli. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.\nMUTLAK KURAL: Cevabında JSON dışında tek bir karakter bile olmasın — açıklama, özür, arama süreci anlatımı YASAK. Hiçbir şey bulamasan bile sadece {"kararlar":[]} yaz.'}]})});
     var data=await resp.json();
     if(data.error)throw new Error(data.error.message||'API hatası');
     var fullText=(data.content||[]).map(function(c){return c.type==='text'?c.text:'';}).join('');
@@ -2107,9 +2108,9 @@ async function searchEmsalWeb(){
 function webEmsalIncele(idx){
   var k = (window._webEmsalResults||[])[idx];
   if(!k) return;
-  var url = k.link && /^https?:\/\//.test(k.link) ? k.link
-          : 'https://karararama.yargitay.gov.tr/#arama:' + encodeURIComponent(k.no||'');
-  window.open(url, '_blank', 'noopener');
+  if(navigator.clipboard && k.no) navigator.clipboard.writeText(k.no).catch(function(){});
+  showToast('Karar no panoya kopyalandı — Yargıtay arama sayfasına yapıştırıp aratın','info');
+  window.open('https://karararama.yargitay.gov.tr/', '_blank', 'noopener');
 }
 
 function addWebEmsalToManual(idx){
