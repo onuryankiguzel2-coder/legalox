@@ -10,10 +10,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LegalOX.ai">
-<link rel="manifest" href="/legalox/manifest.json">
-<link rel="icon" type="image/svg+xml" href="/legalox/icon.svg">
-<link rel="apple-touch-icon" href="/legalox/icon-192.png">
-<link rel="apple-touch-startup-image" href="/legalox/icon-512.png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-startup-image" href="icon-512.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1260,7 +1260,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v3.7 — 04.07.2026';
+const APP_VERSION='v3.8 — 05.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -3478,7 +3478,7 @@ var currentPage='';
 // ── SERVICE WORKER ────────────────────────────────────────────
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('/legalox/sw.js').then(function(reg){
+    navigator.serviceWorker.register('sw.js').then(function(reg){
       console.log('SW kayıtlı:',reg.scope);
       reg.update(); // her açılışta yeni sw.js var mı kontrol et
     }).catch(function(e){

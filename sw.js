@@ -1,6 +1,6 @@
 // LegalOX.ai Service Worker v2 — NETWORK FIRST
 // index.html her zaman önce ağdan çekilir; sadece internet yoksa önbellek kullanılır.
-const CACHE = 'legalox-v2';
+const CACHE = 'legalox-v3';
 
 self.addEventListener('install', e => {
   self.skipWaiting();
@@ -33,7 +33,7 @@ self.addEventListener('fetch', e => {
       return resp;
     }).catch(() =>
       caches.match(e.request).then(cached =>
-        cached || caches.match('/legalox/index.html')
+        cached || caches.match('./index.html')
       )
     )
   );
