@@ -1260,7 +1260,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v4.1 — 07.07.2026';
+const APP_VERSION='v4.2 — 07.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -2480,8 +2480,12 @@ async function loadDosyalar(){
 async function dosyaBozukSil(id){
   if(!confirm('Bu isimsiz/bozuk dosya kaydı kalıcı olarak silinsin mi?')) return;
   try{
-    var r = await sbClient.from('dosyalar').delete().eq('id',id);
+    var r = await sbClient.from('dosyalar').delete().eq('id',id).select();
     if(r.error) throw r.error;
+    if(!r.data || !r.data.length){
+      showToast('Silinemedi — bu kayıt üzerinde yetkin yok (RLS). Supabase SQL Editor\'den elle silinmesi gerekiyor.','err');
+      return;
+    }
     showToast('Kayıt silindi ✓','ok');
     loadDosyalar();
   }catch(e){ showToast('Silinemedi: '+(e.message||''),'err'); }
