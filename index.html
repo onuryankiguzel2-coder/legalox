@@ -1260,7 +1260,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v4.0 — 07.07.2026';
+const APP_VERSION='v4.1 — 07.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1825,26 +1825,15 @@ async function dilekceyiKaydet(){
 
 // Bir müvekkil için dilekçe üretildiğinde, o müvekkile ait "dosyalar" kaydı
 // yoksa otomatik oluşturur (dilekçe üretmek artık her zaman bir dosya açar).
-// İsim eşleşen eski bir kayıt bulunursa ve muvekkil_id boşsa, onu da bağlar.
+// dosyalar tablosunda isim sütunu yok — sadece gerçek bir müvekkil_id varsa çalışır.
 async function dosyaVarsaOlusturYoksa(muvId, muvAd){
-  if(!sbClient || (!muvId && !muvAd)) return;
+  if(!sbClient || !muvId) return;
   try{
-    if(muvId){
-      var r1 = await sbClient.from('dosyalar').select('id').eq('muvekkil_id', muvId).limit(1);
-      if(!r1.error && r1.data && r1.data.length) return;
-    }
-    if(muvAd){
-      var r2 = await sbClient.from('dosyalar').select('id,muvekkil_id').ilike('muvekkil_adi', muvAd).limit(1);
-      if(!r2.error && r2.data && r2.data.length){
-        if(muvId && !r2.data[0].muvekkil_id){
-          await sbClient.from('dosyalar').update({muvekkil_id:muvId}).eq('id', r2.data[0].id);
-          if(typeof loadDosyalar==='function') loadDosyalar();
-        }
-        return;
-      }
-    }
+    var r1 = await sbClient.from('dosyalar').select('id').eq('muvekkil_id', muvId).limit(1);
+    if(!r1.error && r1.data && r1.data.length) return;
     await sbInsert('dosyalar', {
-      kullanici_id: cUser?cUser.id:null, muvekkil_id: muvId||null, muvekkil_adi: muvAd||null,
+      kullanici_id: cUser?cUser.id:null, muvekkil_id: muvId,
+      avukat_id:(cRole==='avukat'&&cUser)?cUser.id:null,
       dava_turu:'Belirtilmedi', durum:'aktif'
     });
     if(typeof loadDosyalar==='function') loadDosyalar();
@@ -1943,13 +1932,26 @@ async function globalAra(){
   panel.innerHTML = '<div style="font-size:11px;color:var(--tx4);padding:10px">Aranıyor...</div>';
   try{
     var mv = await sbClient.from('muvekkililer').select('id,ad_soyad,telefon').ilike('ad_soyad','%'+q+'%').limit(5);
-    var ds = await sbClient.from('dosyalar').select('muvekkil_adi,dava_turu,dosya_no').ilike('muvekkil_adi','%'+q+'%').limit(5);
+    var mvIds = (mv.data||[]).map(function(m){return m.id;});
+    var dsPromises = [ sbClient.from('dosyalar').select('id,muvekkil_id,dava_turu,dosya_no').ilike('dosya_no','%'+q+'%').limit(5) ];
+    if(mvIds.length) dsPromises.push(sbClient.from('dosyalar').select('id,muvekkil_id,dava_turu,dosya_no').in('muvekkil_id',mvIds).limit(5));
+    var dsResults = await Promise.all(dsPromises);
+    var dsMap = {};
+    dsResults.forEach(function(r){ (r.data||[]).forEach(function(d){ dsMap[d.id]=d; }); });
+    var ds = { data: Object.keys(dsMap).map(function(k){return dsMap[k];}).slice(0,5) };
+    var nameMap = {};
+    (mv.data||[]).forEach(function(m){ nameMap[m.id]=m.ad_soyad; });
+    var extraIds = ds.data.map(function(d){return d.muvekkil_id;}).filter(function(id){return id && !nameMap[id];});
+    if(extraIds.length){
+      var extra = await sbClient.from('muvekkililer').select('id,ad_soyad').in('id',extraIds);
+      (extra.data||[]).forEach(function(m){ nameMap[m.id]=m.ad_soyad; });
+    }
     var html = '';
     (mv.data||[]).forEach(function(m){
       html += '<div class="srcitem" style="cursor:pointer;padding:8px 10px;margin:2px 0" onclick="document.getElementById(\'tb-arama-panel\').style.display=\'none\';openMuvDetail(\''+m.id+'\')"><div style="font-size:12px;font-weight:600;color:var(--tx)"><i class="ti ti-user" style="font-size:11px;margin-right:6px;color:var(--ac)"></i>'+escHtml(m.ad_soyad||'')+'</div><div style="font-size:10px;color:var(--tx4);margin-left:19px">Müvekkil'+(m.telefon?' · '+escHtml(m.telefon):'')+'</div></div>';
     });
     (ds.data||[]).forEach(function(dd){
-      html += '<div class="srcitem" style="cursor:pointer;padding:8px 10px;margin:2px 0" onclick="document.getElementById(\'tb-arama-panel\').style.display=\'none\';nav(\'dosyalar\')"><div style="font-size:12px;font-weight:600;color:var(--tx)"><i class="ti ti-folder" style="font-size:11px;margin-right:6px;color:var(--bl)"></i>'+escHtml(dd.muvekkil_adi||'')+(dd.dosya_no?' · '+escHtml(dd.dosya_no):'')+'</div><div style="font-size:10px;color:var(--tx4);margin-left:19px">Dosya'+(dd.dava_turu?' · '+escHtml(dd.dava_turu):'')+'</div></div>';
+      html += '<div class="srcitem" style="cursor:pointer;padding:8px 10px;margin:2px 0" onclick="document.getElementById(\'tb-arama-panel\').style.display=\'none\';nav(\'dosyalar\')"><div style="font-size:12px;font-weight:600;color:var(--tx)"><i class="ti ti-folder" style="font-size:11px;margin-right:6px;color:var(--bl)"></i>'+escHtml(nameMap[dd.muvekkil_id]||'')+(dd.dosya_no?' · '+escHtml(dd.dosya_no):'')+'</div><div style="font-size:10px;color:var(--tx4);margin-left:19px">Dosya'+(dd.dava_turu?' · '+escHtml(dd.dava_turu):'')+'</div></div>';
     });
     panel.innerHTML = html || '<div style="font-size:11px;color:var(--tx4);padding:10px">"'+escHtml(q)+'" için sonuç bulunamadı</div>';
   }catch(e){ panel.innerHTML = '<div style="font-size:11px;color:var(--rd);padding:10px">Arama hatası</div>'; }
@@ -2187,13 +2189,19 @@ async function doldurModalListeler(type){
     if(type==='durusma'||type==='gorev'){
       var sel2=document.getElementById(type==='durusma'?'durusma-dosya':'gorev-dosya');
       if(sel2){
-        var r2=await sbClient.from('dosyalar').select('muvekkil_adi,dosya_no').order('created_at',{ascending:false});
+        var r2=await sbClient.from('dosyalar').select('id,muvekkil_id,dosya_no').order('created_at',{ascending:false});
         var liste2=r2.data||[];
         if(!liste2.length){
           sel2.innerHTML='<option value="">'+(type==='gorev'?'— Dosya yok (opsiyonel) —':'Önce Dosyalar sayfasından dosya ekleyin')+'</option>';
         } else {
+          var idler2=Array.from(new Set(liste2.map(function(d){return d.muvekkil_id;}).filter(Boolean)));
+          var isimHar2={};
+          if(idler2.length){
+            var mr2=await sbClient.from('muvekkililer').select('id,ad_soyad').in('id',idler2);
+            (mr2.data||[]).forEach(function(m){isimHar2[m.id]=m.ad_soyad;});
+          }
           var o2='<option value="">— Dosya seçin'+(type==='gorev'?' (opsiyonel)':'')+' —</option>';
-          liste2.forEach(function(d){var lbl=(d.muvekkil_adi||'')+(d.dosya_no?' · '+d.dosya_no:'');if(lbl)o2+='<option value="'+escHtml(lbl)+'">'+escHtml(lbl)+'</option>';});
+          liste2.forEach(function(d){var adi=isimHar2[d.muvekkil_id]||'(isimsiz)';var lbl=adi+(d.dosya_no?' · '+d.dosya_no:'');o2+='<option value="'+escHtml(lbl)+'">'+escHtml(lbl)+'</option>';});
           sel2.innerHTML=o2;
         }
       }
@@ -2271,7 +2279,8 @@ async function submitModal(){
       var dosyaNo=(document.getElementById('dosya-no')?.value||'').trim();
       if(!muvekkil){showToast('Müvekkil adı zorunludur','err');if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i>Kaydet';}return;}
       var{error}=await sbInsert('dosyalar', {
-        kullanici_id:cUser?.id||null, muvekkil_adi:muvekkil, muvekkil_id:muvekkilId||null,
+        kullanici_id:cUser?.id||null, muvekkil_id:muvekkilId||null,
+        avukat_id:(cRole==='avukat'&&cUser)?cUser.id:null,
         dava_turu:davaTuru, mahkeme:mahkeme||null,
         dosya_no:dosyaNo||null, durum:'aktif'
       });
@@ -2433,18 +2442,33 @@ async function loadDosyalar(){
   var{data,error}=await sbClient.from('dosyalar').select('*').order('created_at',{ascending:false});
   if(yk)yk.style.display='none';
   if(error){showToast('Dosya yükleme hatası: '+error.message,'err');return;}
+  // dosyalar tablosunda isim yok — sadece muvekkil_id/avukat_id (uuid) var.
+  // Adları ayrı sorgularla eşleştiriyoruz (PostgREST embed'e bağımlı kalmadan).
+  var muvIds=Array.from(new Set((data||[]).map(function(d){return d.muvekkil_id;}).filter(Boolean)));
+  var avukatIds=Array.from(new Set((data||[]).map(function(d){return d.avukat_id;}).filter(Boolean)));
+  var muvMap={},avukatMap={};
+  if(muvIds.length){
+    var mr=await sbClient.from('muvekkililer').select('id,ad_soyad').in('id',muvIds);
+    (mr.data||[]).forEach(function(m){muvMap[m.id]=m.ad_soyad;});
+  }
+  if(avukatIds.length){
+    var ar=await sbClient.from('profiles').select('id,ad_soyad').in('id',avukatIds);
+    (ar.data||[]).forEach(function(a){avukatMap[a.id]=a.ad_soyad;});
+  }
   var aktif=(data||[]).filter(function(d){return String(d.durum||'').toLowerCase()==='aktif';}).length;
   if(psub)psub.textContent=(data?data.length:0)+' dosya · '+aktif+' aktif';
   if(!data||!data.length){if(bos)bos.style.display='block';return;}
   if(tw)tw.style.display='table';
   tablo.innerHTML=data.map(function(d){
     var _dr=String(d.durum||'').toLowerCase();var durumBdg=_dr==='aktif'?'ba':_dr==='bekliyor'?'bb':'bk';
-    var bozuk = !d.muvekkil_adi;
+    var muvAdi=muvMap[d.muvekkil_id]||'';
+    var avukatAdi=avukatMap[d.avukat_id]||'';
+    var bozuk=!muvAdi;
     return '<tr'+(bozuk?'':' onclick="nav(\'dosyadetay\')"')+' style="cursor:'+(bozuk?'default':'pointer')+'">'+
-      '<td class="tdp">'+(bozuk?'<span style="color:var(--rd)">— (isimsiz kayıt)</span>':escHtml(d.muvekkil_adi))+'</td>'+
+      '<td class="tdp">'+(bozuk?'<span style="color:var(--rd)">— (isimsiz kayıt)</span>':escHtml(muvAdi))+'</td>'+
       '<td>'+escHtml(d.dava_turu||'—')+'</td>'+
       '<td><span class="bdg '+durumBdg+'"><span class="bdt"></span>'+escHtml(d.durum?d.durum.charAt(0).toUpperCase()+d.durum.slice(1):'—')+'</span></td>'+
-      '<td><span class="mav">—</span>'+escHtml(d.avukat||'—')+'</td>'+
+      '<td><span class="mav">—</span>'+escHtml(avukatAdi||'—')+'</td>'+
       '<td style="font-size:11px;color:var(--tx3)">'+escHtml(d.dosya_no||'—')+'</td>'+
       '<td style="font-size:11px;color:var(--tx3)">'+(d.created_at?d.created_at.substring(0,10):'—')+'</td>'+
       '<td>'+(bozuk?'<button class="btns" style="height:24px;font-size:10px;color:var(--rd)" onclick="event.stopPropagation();dosyaBozukSil(\''+d.id+'\')"><i class="ti ti-trash" style="font-size:10px"></i>Sil</button>':'<div class="ra">Aç <i class="ti ti-arrow-right"></i></div>')+'</td>'+
@@ -2525,12 +2549,18 @@ async function loadStajyerGenelbakis(){
   if(sg) sg.textContent = (gorevler||[]).length;
   if(sb2) sb2.textContent = (gorevler||[]).filter(function(g){return g.durum!=='tamamlandi';}).length;
   // Son dosyalar
-  var {data:dosyalar} = await sbClient.from('dosyalar').select('muvekkil_adi,dava_turu,durum').order('created_at',{ascending:false}).limit(4);
+  var {data:dosyalar} = await sbClient.from('dosyalar').select('muvekkil_id,dava_turu,durum').order('created_at',{ascending:false}).limit(4);
   var dl = document.getElementById('staj-dosya-liste');
   if(dl){
     if(dosyalar && dosyalar.length){
+      var stajIds=Array.from(new Set(dosyalar.map(function(d){return d.muvekkil_id;}).filter(Boolean)));
+      var stajIsim={};
+      if(stajIds.length){
+        var stajMr=await sbClient.from('muvekkililer').select('id,ad_soyad').in('id',stajIds);
+        (stajMr.data||[]).forEach(function(m){stajIsim[m.id]=m.ad_soyad;});
+      }
       dl.innerHTML = dosyalar.map(function(d){
-        return '<div class="drow"><div class="dico ddoc"><i class="ti ti-folder"></i></div><div class="dinf"><div class="dname">'+escHtml(d.muvekkil_adi||'—')+'</div><div class="dmeta">'+escHtml(d.dava_turu||'—')+'</div></div><span class="bdg '+(String(d.durum||'').toLowerCase()==='aktif'?'ba':'bkap')+'">'+escHtml(d.durum?d.durum.charAt(0).toUpperCase()+d.durum.slice(1):'—')+'</span></div>';
+        return '<div class="drow"><div class="dico ddoc"><i class="ti ti-folder"></i></div><div class="dinf"><div class="dname">'+escHtml(stajIsim[d.muvekkil_id]||'—')+'</div><div class="dmeta">'+escHtml(d.dava_turu||'—')+'</div></div><span class="bdg '+(String(d.durum||'').toLowerCase()==='aktif'?'ba':'bkap')+'">'+escHtml(d.durum?d.durum.charAt(0).toUpperCase()+d.durum.slice(1):'—')+'</span></div>';
       }).join('');
     } else {
       dl.innerHTML = '<div style="font-size:11px;color:var(--tx4);text-align:center;padding:12px">Dosya yok</div>';
@@ -3012,9 +3042,9 @@ async function openMuvDetail(id) {
   // Dosyalar
   var dosyaDiv=document.getElementById('mvd-dosya');
   if(dosyaDiv){
-    var {data:dosyalar}=await sbClient.from('dosyalar').select('muvekkil_adi,dosya_no,durum,dava_turu').or('muvekkil_id.eq.'+id+',muvekkil_adi.ilike.'+(m.ad_soyad||''));
+    var {data:dosyalar}=await sbClient.from('dosyalar').select('id,dosya_no,durum,dava_turu').eq('muvekkil_id', id);
     if(dosyalar&&dosyalar.length){
-      dosyaDiv.innerHTML=dosyalar.map(function(f){return '<div class="drow"><div class="dico ddoc"><i class="ti ti-folder"></i></div><div class="dinf"><div class="dname">'+(f.muvekkil_adi||'\u2014')+' \u2014 '+(f.dava_turu||'\u2014')+'</div><div class="dmeta">'+(f.dosya_no||'\u2014')+' \u00b7 '+(f.durum||'\u2014')+'</div></div><button class="btns" style="height:24px;font-size:10px" onclick="closeMuvModal();nav(\'dosyadetay\')">A\u00e7</button></div>';}).join('');
+      dosyaDiv.innerHTML=dosyalar.map(function(f){return '<div class="drow"><div class="dico ddoc"><i class="ti ti-folder"></i></div><div class="dinf"><div class="dname">'+escHtml(m.ad_soyad||'\u2014')+' \u2014 '+escHtml(f.dava_turu||'\u2014')+'</div><div class="dmeta">'+escHtml(f.dosya_no||'\u2014')+' \u00b7 '+escHtml(f.durum||'\u2014')+'</div></div><button class="btns" style="height:24px;font-size:10px" onclick="closeMuvModal();nav(\'dosyadetay\')">A\u00e7</button></div>';}).join('');
     } else {
       dosyaDiv.innerHTML='<div style="font-size:11.5px;color:var(--tx4);padding:8px">Dosya bulunamadı</div>';
     }
