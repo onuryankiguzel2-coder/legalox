@@ -1260,7 +1260,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v3.9 — 05.07.2026';
+const APP_VERSION='v4.0 — 07.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1820,6 +1820,35 @@ async function dilekceyiKaydet(){
   if(r.error){ showToast('Kaydedilemedi: '+(r.error.message||''),'err'); return; }
   showToast('Dilekçe kaydedildi ✓','ok');
   loadKayitliDilekceler();
+  dosyaVarsaOlusturYoksa(muvId, muvAd);
+}
+
+// Bir müvekkil için dilekçe üretildiğinde, o müvekkile ait "dosyalar" kaydı
+// yoksa otomatik oluşturur (dilekçe üretmek artık her zaman bir dosya açar).
+// İsim eşleşen eski bir kayıt bulunursa ve muvekkil_id boşsa, onu da bağlar.
+async function dosyaVarsaOlusturYoksa(muvId, muvAd){
+  if(!sbClient || (!muvId && !muvAd)) return;
+  try{
+    if(muvId){
+      var r1 = await sbClient.from('dosyalar').select('id').eq('muvekkil_id', muvId).limit(1);
+      if(!r1.error && r1.data && r1.data.length) return;
+    }
+    if(muvAd){
+      var r2 = await sbClient.from('dosyalar').select('id,muvekkil_id').ilike('muvekkil_adi', muvAd).limit(1);
+      if(!r2.error && r2.data && r2.data.length){
+        if(muvId && !r2.data[0].muvekkil_id){
+          await sbClient.from('dosyalar').update({muvekkil_id:muvId}).eq('id', r2.data[0].id);
+          if(typeof loadDosyalar==='function') loadDosyalar();
+        }
+        return;
+      }
+    }
+    await sbInsert('dosyalar', {
+      kullanici_id: cUser?cUser.id:null, muvekkil_id: muvId||null, muvekkil_adi: muvAd||null,
+      dava_turu:'Belirtilmedi', durum:'aktif'
+    });
+    if(typeof loadDosyalar==='function') loadDosyalar();
+  }catch(e){ console.warn('dosyaVarsaOlusturYoksa:', e); }
 }
 
 async function loadKayitliDilekceler(){
@@ -2144,13 +2173,13 @@ async function doldurModalListeler(type){
     if(type==='dosya'||type==='odeme'){
       var sel=document.getElementById(type==='dosya'?'dosya-muvekkil':'odeme-muvekkil');
       if(sel){
-        var r=await sbClient.from('muvekkililer').select('ad_soyad').order('ad_soyad',{ascending:true});
+        var r=await sbClient.from('muvekkililer').select('id,ad_soyad').order('ad_soyad',{ascending:true});
         var liste=r.data||[];
         if(!liste.length){
           sel.innerHTML='<option value="">Önce Müvekkiller sayfasından müvekkil ekleyin</option>';
         } else {
           var o='<option value="">— Müvekkil seçin —</option>';
-          liste.forEach(function(m){if(m.ad_soyad)o+='<option>'+escHtml(m.ad_soyad)+'</option>';});
+          liste.forEach(function(m){if(m.ad_soyad)o+='<option value="'+escHtml(m.ad_soyad)+'" data-id="'+m.id+'">'+escHtml(m.ad_soyad)+'</option>';});
           sel.innerHTML=o;
         }
       }
@@ -2234,13 +2263,15 @@ async function submitModal(){
       if(typeof loadMuvekkililer==='function') loadMuvekkililer();
 
     } else if(tip==='dosya'){
-      var muvekkil=(document.getElementById('dosya-muvekkil')?.value||'').trim();
+      var muvSel=document.getElementById('dosya-muvekkil');
+      var muvekkil=(muvSel?.value||'').trim();
+      var muvekkilId=(muvSel&&muvSel.selectedOptions&&muvSel.selectedOptions[0])?(muvSel.selectedOptions[0].getAttribute('data-id')||null):null;
       var davaTuru=document.getElementById('dosya-dava-turu')?.value||'';
       var mahkeme=(document.getElementById('dosya-mahkeme')?.value||'').trim();
       var dosyaNo=(document.getElementById('dosya-no')?.value||'').trim();
       if(!muvekkil){showToast('Müvekkil adı zorunludur','err');if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i>Kaydet';}return;}
       var{error}=await sbInsert('dosyalar', {
-        kullanici_id:cUser?.id||null, muvekkil_adi:muvekkil,
+        kullanici_id:cUser?.id||null, muvekkil_adi:muvekkil, muvekkil_id:muvekkilId||null,
         dava_turu:davaTuru, mahkeme:mahkeme||null,
         dosya_no:dosyaNo||null, durum:'aktif'
       });
@@ -2408,16 +2439,28 @@ async function loadDosyalar(){
   if(tw)tw.style.display='table';
   tablo.innerHTML=data.map(function(d){
     var _dr=String(d.durum||'').toLowerCase();var durumBdg=_dr==='aktif'?'ba':_dr==='bekliyor'?'bb':'bk';
-    return '<tr onclick="nav(\'dosyadetay\')" style="cursor:pointer">'+
-      '<td class="tdp">'+escHtml(d.muvekkil_adi||'—')+'</td>'+
+    var bozuk = !d.muvekkil_adi;
+    return '<tr'+(bozuk?'':' onclick="nav(\'dosyadetay\')"')+' style="cursor:'+(bozuk?'default':'pointer')+'">'+
+      '<td class="tdp">'+(bozuk?'<span style="color:var(--rd)">— (isimsiz kayıt)</span>':escHtml(d.muvekkil_adi))+'</td>'+
       '<td>'+escHtml(d.dava_turu||'—')+'</td>'+
       '<td><span class="bdg '+durumBdg+'"><span class="bdt"></span>'+escHtml(d.durum?d.durum.charAt(0).toUpperCase()+d.durum.slice(1):'—')+'</span></td>'+
       '<td><span class="mav">—</span>'+escHtml(d.avukat||'—')+'</td>'+
       '<td style="font-size:11px;color:var(--tx3)">'+escHtml(d.dosya_no||'—')+'</td>'+
       '<td style="font-size:11px;color:var(--tx3)">'+(d.created_at?d.created_at.substring(0,10):'—')+'</td>'+
-      '<td><div class="ra">Aç <i class="ti ti-arrow-right"></i></div></td>'+
+      '<td>'+(bozuk?'<button class="btns" style="height:24px;font-size:10px;color:var(--rd)" onclick="event.stopPropagation();dosyaBozukSil(\''+d.id+'\')"><i class="ti ti-trash" style="font-size:10px"></i>Sil</button>':'<div class="ra">Aç <i class="ti ti-arrow-right"></i></div>')+'</td>'+
     '</tr>';
   }).join('');
+}
+
+// İsimsiz/yetim dosya kaydını temizlemek için (Dosyalar listesinde "Sil" butonu)
+async function dosyaBozukSil(id){
+  if(!confirm('Bu isimsiz/bozuk dosya kaydı kalıcı olarak silinsin mi?')) return;
+  try{
+    var r = await sbClient.from('dosyalar').delete().eq('id',id);
+    if(r.error) throw r.error;
+    showToast('Kayıt silindi ✓','ok');
+    loadDosyalar();
+  }catch(e){ showToast('Silinemedi: '+(e.message||''),'err'); }
 }
 
 // ── DİNAMİK SAYFA YÜKLEME FONKSİYONLARI ─────────────────────
@@ -2969,7 +3012,7 @@ async function openMuvDetail(id) {
   // Dosyalar
   var dosyaDiv=document.getElementById('mvd-dosya');
   if(dosyaDiv){
-    var {data:dosyalar}=await sbClient.from('dosyalar').select('muvekkil_adi,dosya_no,durum,dava_turu').ilike('muvekkil_adi',m.ad_soyad||'');
+    var {data:dosyalar}=await sbClient.from('dosyalar').select('muvekkil_adi,dosya_no,durum,dava_turu').or('muvekkil_id.eq.'+id+',muvekkil_adi.ilike.'+(m.ad_soyad||''));
     if(dosyalar&&dosyalar.length){
       dosyaDiv.innerHTML=dosyalar.map(function(f){return '<div class="drow"><div class="dico ddoc"><i class="ti ti-folder"></i></div><div class="dinf"><div class="dname">'+(f.muvekkil_adi||'\u2014')+' \u2014 '+(f.dava_turu||'\u2014')+'</div><div class="dmeta">'+(f.dosya_no||'\u2014')+' \u00b7 '+(f.durum||'\u2014')+'</div></div><button class="btns" style="height:24px;font-size:10px" onclick="closeMuvModal();nav(\'dosyadetay\')">A\u00e7</button></div>';}).join('');
     } else {
