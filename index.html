@@ -529,8 +529,8 @@ button{cursor:pointer}
         <div style="font-size:14px;font-weight:700;color:var(--tx)">Starter</div>
         <span class="bdg bk">8 üye</span>
       </div>
-      <div id="ad-starter-fiyat" style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div id="ad-starter-yillik" style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺2.990/yıl · %17 indirim</div>
+      <div id="ad-starter-fiyat" style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺2.990<span style="font-size:12px;font-weight:400;color:var(--tx3)">/yıl</span></div>
+      <div id="ad-starter-yillik" style="font-size:11px;color:var(--tx4);margin-bottom:12px">Sadece yıllık ödeme · aylık karşılığı ~₺249</div>
       <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>1 avukat hesabı</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>50 jeton/ay</div>
@@ -545,8 +545,8 @@ button{cursor:pointer}
         <div style="font-size:14px;font-weight:700;color:var(--ac)">Pro</div>
         <span class="bdg ba">12 üye</span>
       </div>
-      <div id="ad-pro-fiyat" style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺599<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div id="ad-pro-yillik" style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺5.990/yıl · %17 indirim</div>
+      <div id="ad-pro-fiyat" style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺5.990<span style="font-size:12px;font-weight:400;color:var(--tx3)">/yıl</span></div>
+      <div id="ad-pro-yillik" style="font-size:11px;color:var(--tx4);margin-bottom:12px">Sadece yıllık ödeme · aylık karşılığı ~₺499</div>
       <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>3 avukat hesabı</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>200 jeton/ay</div>
@@ -560,10 +560,10 @@ button{cursor:pointer}
         <div style="font-size:14px;font-weight:700;color:var(--tx)">Enterprise</div>
         <span class="bdg bb">4 üye</span>
       </div>
-      <div id="ad-enterprise-fiyat" style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺1.299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div id="ad-enterprise-yillik" style="font-size:11px;color:var(--tx4);margin-bottom:12px">₺12.990/yıl · %17 indirim</div>
+      <div id="ad-enterprise-fiyat" style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:4px">₺12.990<span style="font-size:12px;font-weight:400;color:var(--tx3)">/yıl</span></div>
+      <div id="ad-enterprise-yillik" style="font-size:11px;color:var(--tx4);margin-bottom:12px">Sadece yıllık ödeme · aylık karşılığı ~₺1.083</div>
       <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
-        <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Sınırsız avukat</div>
+        <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px" id="ad-enterprise-avukat-bullet"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>1 avukat hesabı</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Sınırsız jeton</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Öncelikli destek</div>
         <div style="font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>Özel entegrasyon</div>
@@ -669,6 +669,11 @@ button{cursor:pointer}
     <div class="kcard"><div class="kln" style="background:var(--am)"></div><div class="klbl">Deneme Üyesi</div><div class="kval" id="gelir-deneme-uye">—</div><div class="km">ücretsiz deneme</div></div>
     <div class="kcard"><div class="kln" style="background:var(--pu)"></div><div class="klbl">Bekleyen Onay</div><div class="kval" id="gelir-bekleyen-uye">—</div><div class="km">onay bekliyor</div></div>
   </div>
+  <div class="card" style="margin-bottom:14px" id="odeme-onay-kart">
+    <div class="card-hd"><span class="card-title">Onay Bekleyen Ödemeler</span></div>
+    <table class="tbl"><thead><tr><th style="width:26%">Kullanıcı</th><th style="width:16%">Paket</th><th style="width:16%">Tutar</th><th style="width:16%">Tarih</th><th style="width:26%">İşlem</th></tr></thead>
+    <tbody id="odeme-onay-tablo"><tr><td colspan="5" style="text-align:center;color:var(--tx4);padding:16px;font-size:11.5px">Yükleniyor...</td></tr></tbody></table>
+  </div>
   <div class="two-col" style="margin-bottom:14px">
     <div class="card">
       <div class="card-hd"><span class="card-title">Paket Dağılımı</span></div>
@@ -701,12 +706,13 @@ button{cursor:pointer}
     <!-- Starter -->
     <div class="card" style="margin-bottom:0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="font-size:15px;font-weight:700;color:var(--tx)">Starter</div><span class="badge b-kesif">8 üye</span></div>
-      <div id="pk-starter-goster" style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div id="pk-starter-goster-yillik" style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">₺2.990/yıl · %17 indirim</div>
+      <div id="pk-starter-goster" style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺2.990<span style="font-size:12px;font-weight:400;color:var(--tx3)">/yıl</span></div>
+      <div id="pk-starter-goster-yillik" style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">Sadece yıllık ödeme · aylık karşılığı ~₺249</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Avukat hesabı</span><input id="pk-starter-avukat" style="width:50px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="1"></div>
-        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Jeton/ay</span><input id="pk-starter-jeton" style="width:50px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="50"></div>
-        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Aylık fiyat (₺)</span><input id="pk-starter-aylik" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="299"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Jeton/ay</span><input id="pk-starter-jeton" oninput="dilekceEstGuncelle('starter')" style="width:50px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="50"></div>
+        <div style="text-align:right;font-size:10px;color:var(--ac)" id="pk-starter-dilekce-est">≈ 5 dilekçe/ay</div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Aylık karşılık (₺, sadece hesaplama)</span><input id="pk-starter-aylik" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="249"></div>
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Yıllık fiyat (₺)</span><input id="pk-starter-yillik" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="2990"></div>
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Ekip üyesi</span><select id="pk-starter-ekip" style="background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;outline:none"><option value="0">Yok</option><option value="1">1</option><option value="3">3</option></select></div>
       </div>
@@ -716,12 +722,13 @@ button{cursor:pointer}
     <div class="card" style="margin-bottom:0;border-color:var(--accent-border);position:relative;overflow:visible">
       <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0A0A0A;font-size:9px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap">EN POPÜLER</div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="font-size:15px;font-weight:700;color:var(--accent)">Pro</div><span class="badge b-aktif">12 üye</span></div>
-      <div id="pk-pro-goster" style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺599<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div id="pk-pro-goster-yillik" style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">₺5.990/yıl · %17 indirim</div>
+      <div id="pk-pro-goster" style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺5.990<span style="font-size:12px;font-weight:400;color:var(--tx3)">/yıl</span></div>
+      <div id="pk-pro-goster-yillik" style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">Sadece yıllık ödeme · aylık karşılığı ~₺499</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Avukat hesabı</span><input id="pk-pro-avukat" style="width:50px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="3"></div>
-        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Jeton/ay</span><input id="pk-pro-jeton" style="width:50px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="200"></div>
-        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Aylık fiyat (₺)</span><input id="pk-pro-aylik" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="599"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Jeton/ay</span><input id="pk-pro-jeton" oninput="dilekceEstGuncelle('pro')" style="width:50px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="200"></div>
+        <div style="text-align:right;font-size:10px;color:var(--ac)" id="pk-pro-dilekce-est">≈ 20 dilekçe/ay</div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Aylık karşılık (₺, sadece hesaplama)</span><input id="pk-pro-aylik" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="499"></div>
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Yıllık fiyat (₺)</span><input id="pk-pro-yillik" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="5990"></div>
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Ekip üyesi</span><select id="pk-pro-ekip" style="background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;outline:none"><option value="0">Yok</option><option value="1">1</option><option value="3" selected>3</option></select></div>
       </div>
@@ -730,17 +737,25 @@ button{cursor:pointer}
     <!-- Enterprise -->
     <div class="card" style="margin-bottom:0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="font-size:15px;font-weight:700;color:var(--tx)">Enterprise</div><span class="badge b-bekle">4 üye</span></div>
-      <div id="pk-enterprise-goster" style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺1.299<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span></div>
-      <div id="pk-enterprise-goster-yillik" style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">₺12.990/yıl · %17 indirim</div>
+      <div id="pk-enterprise-goster" style="font-size:26px;font-weight:700;color:var(--tx);margin-bottom:2px">₺12.990<span style="font-size:12px;font-weight:400;color:var(--tx3)">/yıl</span></div>
+      <div id="pk-enterprise-goster-yillik" style="font-size:10.5px;color:var(--tx4);margin-bottom:14px">Sadece yıllık ödeme · aylık karşılığı ~₺1.083</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
-        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Avukat hesabı</span><input id="pk-enterprise-avukat" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="Sınırsız"></div>
-        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Jeton/ay</span><input id="pk-enterprise-jeton" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="Sınırsız"></div>
-        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Aylık fiyat (₺)</span><input id="pk-enterprise-aylik" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="1299"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Avukat hesabı</span><input id="pk-enterprise-avukat" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="1"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Jeton/ay</span><input id="pk-enterprise-jeton" oninput="dilekceEstGuncelle('enterprise')" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="Sınırsız"></div>
+        <div style="text-align:right;font-size:10px;color:var(--ac)" id="pk-enterprise-dilekce-est">Sınırsız dilekçe</div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Aylık karşılık (₺, sadece hesaplama)</span><input id="pk-enterprise-aylik" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="1083"></div>
         <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Yıllık fiyat (₺)</span><input id="pk-enterprise-yillik" style="width:70px;background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;text-align:center;outline:none" value="12990"></div>
-        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Ekip üyesi</span><select id="pk-enterprise-ekip" style="background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;outline:none"><option value="sinirsiz" selected>Sınırsız</option></select></div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--tx3)">Ekip üyesi</span><select id="pk-enterprise-ekip" style="background:var(--sf2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;color:var(--tx);font-size:11px;outline:none"><option value="0">Yok</option><option value="1">1</option><option value="3">3</option><option value="sinirsiz" selected>Sınırsız</option></select></div>
       </div>
       <button class="btn-primary" style="width:100%;justify-content:center;height:32px;font-size:11.5px" onclick="savePaket('enterprise',this)"><i class="ti ti-check"></i>Kaydet</button>
     </div>
+  </div>
+  <!-- Ödeme / Banka Bilgileri -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><span class="card-title">Ödeme / Banka Bilgileri</span></div>
+    <div style="font-size:11px;color:var(--tx4);margin-bottom:8px">Paket seçimi ekranında kullanıcıya gösterilecek IBAN/banka bilgisi. Boş bırakırsan kullanıcıya "iletişime geçin" mesajı gösterilir.</div>
+    <textarea id="odeme-bilgisi-alan" class="fi" style="width:100%;height:80px;resize:none" placeholder="Örn: Banka: Ziraat Bankası&#10;Hesap Adı: LegalOX Yazılım Ltd. Şti.&#10;IBAN: TR00 0000 0000 0000 0000 0000 00"></textarea>
+    <button class="btn-primary" style="height:32px;font-size:11.5px;margin-top:10px" onclick="saveOdemeBilgisi(this)"><i class="ti ti-check"></i>Kaydet</button>
   </div>
   <!-- Jeton Ayarı -->
   <div class="card" style="background:rgba(139,92,246,.06);border-color:rgba(139,92,246,.2)">
@@ -1119,6 +1134,28 @@ button{cursor:pointer}
   </div>
 </div>
 
+<!-- PAKETİM & ÖDEME -->
+<div class="page" id="page-paketim">
+  <div class="phdr"><div><div class="ptitle">Paketim & Ödeme</div><div class="psub">Paketini yönet, yıllık ödeme bildir</div></div></div>
+
+  <div id="pkm-bekliyor-banner" style="display:none;margin-bottom:14px" class="card"></div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><span class="card-title">Mevcut Durumun</span></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px" id="pkm-durum-grid">
+      <div class="kcard"><div class="klbl">Paket</div><div class="kval" id="pkm-paket" style="font-size:18px">—</div></div>
+      <div class="kcard"><div class="klbl">Hesap Durumu</div><div class="kval" id="pkm-durum" style="font-size:18px">—</div></div>
+      <div class="kcard"><div class="klbl">Jeton</div><div class="kval" id="pkm-jeton" style="font-size:18px">—</div></div>
+      <div class="kcard"><div class="klbl">≈ Dilekçe Hakkı</div><div class="kval" id="pkm-dilekce-hakki" style="font-size:18px">—</div></div>
+    </div>
+  </div>
+
+  <div style="font-size:12.5px;font-weight:600;margin-bottom:10px;color:var(--tx)">Paket Seç — Yıllık Ödeme</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="pkm-kart-grid">
+    <div style="text-align:center;padding:30px;color:var(--tx4);font-size:12px;grid-column:1/-1">Yükleniyor...</div>
+  </div>
+</div>
+
 <!-- REHBER -->
 <div class="page" id="page-rehber">
   <div class="phdr"><div><div class="ptitle">Rehber</div><div class="psub">Rolüne göre LegalOX.ai nasıl kullanılır?</div></div></div>
@@ -1260,7 +1297,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v4.2 — 07.07.2026';
+const APP_VERSION='v4.3 — 08.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1307,6 +1344,8 @@ var NAVCFG={
     {p:'emsal',i:'ti-gavel',l:'Emsal Kararlar'},
     {div:1},{sec:'Ekip'},
     {p:'ekibim',i:'ti-users-group',l:'Ekibim'},
+    {div:1},{sec:'Abonelik'},
+    {p:'paketim',i:'ti-crown',l:'Paketim & Ödeme'},
     {div:1},
     {p:'rehber',i:'ti-help-circle',l:'Rehber'},
     {p:'ayarlar',i:'ti-settings',l:'Ayarlar'}
@@ -1332,7 +1371,7 @@ var NAVCFG={
     {p:'ayarlar',i:'ti-settings',l:'Ayarlar'}
   ]
 };
-var PTITLES={'admin-uyeler':'üyeler','admin-gelir':'ödemeler & gelir','admin-paket':'paket yönetimi','admin-ayarlar':'sistem ayarları','genelbakis':'genel bakış','sekreter-genelbakis':'genel bakış','stajyer-genelbakis':'genel bakış','admin':'yönetici paneli','muvekkililer':'müvekkiller','dosyalar':'dosyalar','dosyadetay':'dosya detay','takvim':'duruşmalar','gorevler':'görevler','muhasebe':'muhasebe','dilekce':'dilekçe üretici','emsal':'emsal kararlar','ekibim':'ekibim','rehber':'rehber','ayarlar':'ayarlar'};
+var PTITLES={'admin-uyeler':'üyeler','admin-gelir':'ödemeler & gelir','admin-paket':'paket yönetimi','admin-ayarlar':'sistem ayarları','genelbakis':'genel bakış','sekreter-genelbakis':'genel bakış','stajyer-genelbakis':'genel bakış','admin':'yönetici paneli','muvekkililer':'müvekkiller','dosyalar':'dosyalar','dosyadetay':'dosya detay','takvim':'duruşmalar','gorevler':'görevler','muhasebe':'muhasebe','dilekce':'dilekçe üretici','emsal':'emsal kararlar','ekibim':'ekibim','paketim':'paketim & ödeme','rehber':'rehber','ayarlar':'ayarlar'};
 const PBTN={'genelbakis':'Yeni Dosya','sekreter-genelbakis':'Yeni Müvekkil','stajyer-genelbakis':'','admin':'Avukat Ekle','muvekkililer':'Yeni Müvekkil','dosyalar':'Yeni Dosya','dosyadetay':'Dilekçe Üret','takvim':'Duruşma Ekle','gorevler':'Görev Ekle','muhasebe':'Ödeme Ekle','dilekce':'AI ile Üret','emsal':'Ara','ekibim':'Ekip Üyesi Ekle','rehber':'','ayarlar':'Kaydet'};
 // Rehber verisi GUIDE_DATA'da
 
@@ -1491,7 +1530,7 @@ function nav2(p){
     'muvekkililer':'Yeni Müvekkil','dosyalar':'Yeni Dosya','dosyadetay':'Dilekçe Üret',
     'takvim':'Duruşma Ekle','gorevler':'Görev Ekle','muhasebe':'Ödeme Ekle',
     'dilekce':'AI ile Üret','emsal':'Ara','ekibim':'Ekip Üyesi Ekle',
-    'rehber':'','ayarlar':'Kaydet'
+    'paketim':'','rehber':'','ayarlar':'Kaydet'
   };
   var tbbtext=document.getElementById('tbbtext');
   if(tbbtext) tbbtext.textContent=btnMap[p]||'Yeni';
@@ -1522,13 +1561,14 @@ function nav2(p){
   if(p==='ekibim') loadEkibim();
   if(p==='dilekce') loadDileckeMuvekkilList();
   if(p==='ayarlar') loadProfilAyarlari();
+  if(p==='paketim') loadPaketimSayfasi();
   // Mobil bottom nav aktif state
   var mobileMap={
     'genelbakis':'home','sekreter-genelbakis':'home','stajyer-genelbakis':'home','admin':'home',
     'dosyalar':'files','dosyadetay':'files','muvekkililer':'files',
     'dilekce':'ai','emsal':'ai','admin-paket':'ai',
     'takvim':'calendar','gorevler':'calendar','admin-gelir':'calendar',
-    'muhasebe':'menu','ekibim':'menu','rehber':'menu','ayarlar':'menu',
+    'muhasebe':'menu','ekibim':'menu','rehber':'menu','ayarlar':'menu','paketim':'menu',
     'admin-uyeler':'home','admin-ayarlar':'menu'
   };
   document.querySelectorAll('.mobile-nav-item').forEach(function(el){el.classList.remove('act');});
@@ -1560,6 +1600,7 @@ function tbAction(){
   if(id==='admin-uyeler'){davetLinkiKopyala();return;}
   if(id==='admin-gelir'){showToast('Rapor indirme yakında','info');return;}
   if(id==='admin-paket'){return;}  // paket kartlarında zaten Kaydet butonu var
+  if(id==='paketim'){return;}  // paket seçimi kartlardaki butonla yapılıyor
   if(id==='admin-ayarlar'){saveSupabase();return;}
   if(id==='rehber'||id==='stajyer-genelbakis'||id==='admin') return;
   var modalType=mm[id];
@@ -2364,7 +2405,7 @@ async function savePaket(tip, btn) {
   var yillik = document.getElementById('pk-'+tip+'-yillik')?.value;
   var jeton = document.getElementById('pk-'+tip+'-jeton')?.value;
   var avukat = document.getElementById('pk-'+tip+'-avukat')?.value;
-  if (!aylik || !yillik) { showToast('Fiyat alanları boş olamaz', 'err'); return; }
+  if (!yillik) { showToast('Yıllık fiyat boş olamaz', 'err'); return; }
   if (btn) { btn.disabled = true; btn.textContent = 'Kaydediliyor...'; }
   var paketData = { tip:tip, aylik:parseFloat(aylik)||0, yillik:parseFloat(yillik)||0, jeton:jeton, avukat:avukat, guncelleme: new Date().toISOString() };
   localStorage.setItem('legalox_paket_'+tip, JSON.stringify(paketData));
@@ -2374,27 +2415,246 @@ async function savePaket(tip, btn) {
   }
   if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-check"></i>Kaydet'; }
   updatePaketGosterim(tip, aylik, yillik);
+  dilekceEstGuncelle(tip);
+  if(tip==='enterprise'){
+    var bl=document.getElementById('ad-enterprise-avukat-bullet');
+    if(bl){
+      var avNum=parseInt(avukat);
+      bl.innerHTML='<i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>'+(isNaN(avNum)?escHtml(avukat||'Sınırsız'):avNum)+' avukat hesabı';
+    }
+  }
   showToast(tip.charAt(0).toUpperCase()+tip.slice(1)+' paketi güncellendi ✓', 'ok');
 }
 
 // Paket fiyat göstergelerini (büyük ₺ yazıları) güncelle — hem admin genelbakış hem paket sayfası
+// Paketler artık yalnızca yıllık satılıyor; aylık rakam sadece bilgilendirme amaçlı gösterilir.
 function fmtTL(n){n=parseFloat(n)||0;return '₺'+n.toLocaleString('tr-TR');}
 function updatePaketGosterim(tip, aylik, yillik){
   var ay=parseFloat(aylik)||0, yil=parseFloat(yillik)||0;
-  var pct=ay>0?Math.round((1-yil/(ay*12))*100):0;
-  var ayHtml=fmtTL(ay)+'<span style="font-size:12px;font-weight:400;color:var(--tx3)">/ay</span>';
-  var yilTxt=fmtTL(yil)+'/yıl'+(pct>0&&pct<100?' · %'+pct+' indirim':'');
+  var yilHtml=fmtTL(yil)+'<span style="font-size:12px;font-weight:400;color:var(--tx3)">/yıl</span>';
+  var altYazi='Sadece yıllık ödeme'+(ay>0?' · aylık karşılığı ~'+fmtTL(Math.round(yil/12)):'');
   var el;
-  if(el=document.getElementById('pk-'+tip+'-goster'))el.innerHTML=ayHtml;
-  if(el=document.getElementById('pk-'+tip+'-goster-yillik'))el.textContent=yilTxt;
-  if(el=document.getElementById('ad-'+tip+'-fiyat'))el.innerHTML=ayHtml;
-  if(el=document.getElementById('ad-'+tip+'-yillik'))el.textContent=yilTxt;
+  if(el=document.getElementById('pk-'+tip+'-goster'))el.innerHTML=yilHtml;
+  if(el=document.getElementById('pk-'+tip+'-goster-yillik'))el.textContent=altYazi;
+  if(el=document.getElementById('ad-'+tip+'-fiyat'))el.innerHTML=yilHtml;
+  if(el=document.getElementById('ad-'+tip+'-yillik'))el.textContent=altYazi;
 }
 function refreshPaketGosterimleri(){
   ['starter','pro','enterprise'].forEach(function(tip){
     var s=localStorage.getItem('legalox_paket_'+tip); if(!s)return;
-    try{var d=JSON.parse(s); updatePaketGosterim(tip, d.aylik, d.yillik);}catch(e){}
+    try{
+      var d=JSON.parse(s); updatePaketGosterim(tip, d.aylik, d.yillik);
+      if(tip==='enterprise' && d.avukat){
+        var bl=document.getElementById('ad-enterprise-avukat-bullet');
+        if(bl){
+          var avNum=parseInt(d.avukat);
+          bl.innerHTML='<i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>'+(isNaN(avNum)?escHtml(String(d.avukat)):avNum)+' avukat hesabı';
+        }
+      }
+    }catch(e){}
   });
+}
+
+// ── JETON → DİLEKÇE TAHMİNİ (10 jeton ≈ 1 dilekçe) ─────────────
+var JETON_PER_DILEKCE = 10;
+function dilekceHakkiMetni(jeton){
+  var n=parseInt(jeton);
+  if(isNaN(n)) return 'Sınırsız dilekçe';
+  return '≈ '+Math.floor(n/JETON_PER_DILEKCE)+' dilekçe/ay';
+}
+function dilekceEstGuncelle(tip){
+  var el=document.getElementById('pk-'+tip+'-jeton');
+  var out=document.getElementById('pk-'+tip+'-dilekce-est');
+  if(!el||!out) return;
+  out.textContent = dilekceHakkiMetni(el.value);
+}
+
+// ── PAKET TANIMLARINI OKU (admin'in kaydettiği güncel fiyat/jeton/avukat) ─
+var PAKET_VARSAYILAN = {
+  starter:{ad:'Starter', yillik:2990, jeton:50, avukat:1},
+  pro:{ad:'Pro', yillik:5990, jeton:200, avukat:3},
+  enterprise:{ad:'Enterprise', yillik:12990, jeton:'Sınırsız', avukat:1}
+};
+async function getPaketTanimlari(){
+  var out=JSON.parse(JSON.stringify(PAKET_VARSAYILAN));
+  var kaynaklar=null;
+  if(sbClient){
+    try{
+      var r=await sbClient.from('sistem_ayarlari').select('id,deger').in('id',['paket_starter','paket_pro','paket_enterprise']);
+      if(r.data&&r.data.length) kaynaklar=r.data;
+    }catch(e){}
+  }
+  if(!kaynaklar){
+    kaynaklar=['starter','pro','enterprise'].map(function(tip){
+      var s=localStorage.getItem('legalox_paket_'+tip);
+      return s?{id:'paket_'+tip, deger:s}:null;
+    }).filter(Boolean);
+  }
+  kaynaklar.forEach(function(row){
+    try{
+      var d=JSON.parse(row.deger); var tip=row.id.replace('paket_','');
+      if(!out[tip]) return;
+      if(d.yillik) out[tip].yillik=parseFloat(d.yillik)||out[tip].yillik;
+      if(d.jeton!==undefined && d.jeton!==null && d.jeton!=='') out[tip].jeton=(!isNaN(parseInt(d.jeton)))?parseInt(d.jeton):d.jeton;
+      if(d.avukat!==undefined && d.avukat!==null && d.avukat!=='') out[tip].avukat=d.avukat;
+    }catch(e){}
+  });
+  return out;
+}
+
+// ── ÖDEME / BANKA BİLGİLERİ ─────────────────────────────────
+async function getOdemeBilgisi(){
+  if(!sbClient) return '';
+  try{
+    var r=await sbClient.from('sistem_ayarlari').select('deger').eq('id','odeme_bilgisi').maybeSingle();
+    return (r.data&&r.data.deger)||'';
+  }catch(e){ return ''; }
+}
+async function saveOdemeBilgisi(btn){
+  var val=(document.getElementById('odeme-bilgisi-alan')?.value||'').trim();
+  if(btn){btn.disabled=true;}
+  try{
+    if(sbClient) await sbClient.from('sistem_ayarlari').upsert({id:'odeme_bilgisi', deger:val},{onConflict:'id'});
+    showToast('Ödeme bilgileri kaydedildi ✓','ok');
+  }catch(e){ showToast('Kaydedilemedi: '+(e.message||''),'err'); }
+  if(btn){btn.disabled=false;}
+}
+
+// ── KULLANICI: PAKETİM & ÖDEME SAYFASI ─────────────────────────
+async function loadPaketimSayfasi(){
+  if(!sbClient||!cUser) return;
+  var grid=document.getElementById('pkm-kart-grid');
+  var banner=document.getElementById('pkm-bekliyor-banner');
+  if(banner) banner.style.display='none';
+  var pr=await sbClient.from('profiles').select('paket,durum,jeton_bakiye,jeton_limit').eq('id',cUser.id).maybeSingle();
+  var prof=(pr&&pr.data)||{};
+  var elp;
+  if(elp=document.getElementById('pkm-paket')) elp.textContent=prof.paket?prof.paket.charAt(0).toUpperCase()+prof.paket.slice(1):'—';
+  if(elp=document.getElementById('pkm-durum')) elp.textContent=prof.durum?prof.durum.charAt(0).toUpperCase()+prof.durum.slice(1):'—';
+  if(elp=document.getElementById('pkm-jeton')) elp.textContent=(prof.jeton_bakiye!=null?prof.jeton_bakiye:'—')+'/'+(prof.jeton_limit!=null?prof.jeton_limit:'—');
+  if(elp=document.getElementById('pkm-dilekce-hakki')) elp.textContent=dilekceHakkiMetni(prof.jeton_bakiye);
+
+  var bek=await sbClient.from('odeme_talepleri').select('id,paket,tutar,created_at').eq('kullanici_id',cUser.id).eq('durum','bekliyor').order('created_at',{ascending:false}).limit(1);
+  var bekleyenVar=bek&&bek.data&&bek.data.length;
+  if(bekleyenVar && banner){
+    var b=bek.data[0];
+    banner.style.display='block';
+    banner.innerHTML='<div style="display:flex;align-items:center;gap:10px"><i class="ti ti-clock" style="color:var(--am);font-size:20px"></i><div><div style="font-size:12.5px;font-weight:600;color:var(--tx)">'+escHtml((b.paket||'').charAt(0).toUpperCase()+(b.paket||'').slice(1))+' paketi için ödemen onay bekliyor</div><div style="font-size:11px;color:var(--tx4)">₺'+Number(b.tutar||0).toLocaleString('tr-TR')+' · '+(b.created_at?b.created_at.substring(0,10):'')+' tarihinde gönderildi</div></div></div>';
+  }
+
+  var tanim=await getPaketTanimlari();
+  if(grid){
+    grid.innerHTML=['starter','pro','enterprise'].map(function(tip){
+      var t=tanim[tip];
+      var aktifMi=prof.paket===tip && prof.durum==='aktif';
+      var avukatTxt=isNaN(parseInt(t.avukat))?escHtml(String(t.avukat)):t.avukat;
+      var jetonTxt=isNaN(parseInt(t.jeton))?'Sınırsız jeton':(t.jeton+' jeton/ay');
+      var btnEtiket=aktifMi?'Mevcut Paketin':(bekleyenVar?'Onay Bekleniyor':'Bu Paketi Seç');
+      var btnDisabled=(aktifMi||bekleyenVar)?'disabled':'';
+      var btnSinif=aktifMi?'btns':'btnp';
+      return '<div class="card" style="margin-bottom:0'+(tip==='pro'?';border-color:var(--acb);position:relative;overflow:visible':'')+'">'+
+        (tip==='pro'?'<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--ac);color:#0A0A0A;font-size:9px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap">EN POPÜLER</div>':'')+
+        '<div style="font-size:15px;font-weight:700;color:'+(tip==='pro'?'var(--ac)':'var(--tx)')+';margin-bottom:10px">'+escHtml(t.ad)+'</div>'+
+        '<div style="font-size:24px;font-weight:700;color:var(--tx);margin-bottom:2px">₺'+Number(t.yillik).toLocaleString('tr-TR')+'<span style="font-size:11px;font-weight:400;color:var(--tx3)">/yıl</span></div>'+
+        '<div style="font-size:10.5px;color:var(--tx4);margin-bottom:12px">Sadece yıllık ödeme</div>'+
+        '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px;font-size:11px;color:var(--tx3)">'+
+          '<div><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i> '+avukatTxt+' avukat hesabı</div>'+
+          '<div><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i> '+jetonTxt+'</div>'+
+          '<div><i class="ti ti-check" style="color:var(--ac);font-size:12px"></i> '+dilekceHakkiMetni(t.jeton)+'</div>'+
+        '</div>'+
+        '<button class="'+btnSinif+'" style="width:100%;justify-content:center;height:32px;font-size:11.5px" '+btnDisabled+' onclick="paketOdemeModalAc(\''+tip+'\',\''+escHtml(t.ad)+'\','+Number(t.yillik)+')">'+btnEtiket+'</button>'+
+      '</div>';
+    }).join('');
+  }
+}
+
+// ── PAKET SEÇ → ÖDEME BİLDİR MODALI ────────────────────────────
+async function paketOdemeModalAc(tip, ad, tutar){
+  var od=await getOdemeBilgisi();
+  var mtit=document.getElementById('mtit'), msub=document.getElementById('msub'), mbody=document.getElementById('mbody'), movl=document.getElementById('movl');
+  if(!mtit||!mbody||!movl) return;
+  mtit.textContent=ad+' Paketi — Yıllık Ödeme';
+  msub.textContent='Ödemeni yaptıktan sonra onaya gönder, admin onayı sonrası paketin aktifleşir';
+  var bankaHtml=od?escHtml(od).replace(/\n/g,'<br>'):'<span style="color:var(--am)">Banka/ödeme bilgileri henüz eklenmedi. Lütfen büromuzla iletişime geç.</span>';
+  mbody.innerHTML='<div class="fg"><label class="fl">Seçilen Paket</label><div style="font-size:15px;font-weight:700;color:var(--tx)">'+escHtml(ad)+' · ₺'+Number(tutar).toLocaleString('tr-TR')+'/yıl</div></div>'+
+    '<div class="fg"><label class="fl">Ödeme Bilgileri</label><div style="background:var(--sf2);border:1px solid var(--bd2);border-radius:8px;padding:12px;font-size:12px;line-height:1.8;color:var(--tx2)">'+bankaHtml+'</div></div>'+
+    '<div class="fg"><label class="fl">Not / Dekont No (opsiyonel)</label><textarea class="fi" id="odeme-bildir-not" style="height:60px;resize:none" placeholder="Dekont numarası veya not..."></textarea></div>'+
+    '<button class="btnp" id="odeme-gonder-btn" style="width:100%;justify-content:center;height:38px" onclick="odemeGonder(\''+tip+'\','+Number(tutar)+',this)"><i class="ti ti-send"></i>Ödemeyi Yaptım, Onaya Gönder</button>';
+  movl.setAttribute('data-tip','__odeme__');
+  movl.classList.add('open');
+}
+async function odemeGonder(tip, tutar, btn){
+  if(!sbClient||!cUser){showToast('Bağlantı yok','err');return;}
+  if(btn){btn.disabled=true;btn.innerHTML='Gönderiliyor...';}
+  var not=(document.getElementById('odeme-bildir-not')?.value||'').trim();
+  try{
+    var r=await sbInsert('odeme_talepleri', {kullanici_id:cUser.id, paket:tip, tutar:tutar, not_kullanici:not||null, durum:'bekliyor'});
+    if(r.error) throw r.error;
+    showToast('Ödeme bildirimin alındı — admin onayı bekleniyor ✓','ok');
+    closeModal();
+    loadPaketimSayfasi();
+  }catch(e){
+    showToast('Gönderilemedi: '+(e.message||''),'err');
+    if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i>Ödemeyi Yaptım, Onaya Gönder';}
+  }
+}
+
+// ── ADMIN: ONAY BEKLEYEN ÖDEMELER ──────────────────────────────
+async function loadOnayBekleyenOdemeler(){
+  var tbl=document.getElementById('odeme-onay-tablo');
+  if(!tbl||!sbClient) return;
+  var r=await sbClient.from('odeme_talepleri').select('id,kullanici_id,paket,tutar,created_at').eq('durum','bekliyor').order('created_at',{ascending:true});
+  if(r.error){tbl.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--rd);padding:16px;font-size:11.5px">'+escHtml(r.error.message)+'</td></tr>';return;}
+  var talepler=r.data||[];
+  if(!talepler.length){tbl.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--tx4);padding:16px;font-size:11.5px">Onay bekleyen ödeme yok</td></tr>';return;}
+  var ids=Array.from(new Set(talepler.map(function(t){return t.kullanici_id;}).filter(Boolean)));
+  var isimHar={};
+  if(ids.length){
+    var pr=await sbClient.from('profiles').select('id,ad_soyad,buro_adi,email').in('id',ids);
+    (pr.data||[]).forEach(function(p){isimHar[p.id]=p;});
+  }
+  tbl.innerHTML=talepler.map(function(t){
+    var p=isimHar[t.kullanici_id]||{};
+    var pk=t.paket==='pro'?'ba':t.paket==='enterprise'?'bb':'bkap';
+    return '<tr><td class="tdp"><div>'+escHtml(p.buro_adi||p.ad_soyad||'—')+'</div><div style="font-size:10.5px;color:var(--tx4)">'+escHtml(p.email||'')+'</div></td>'+
+      '<td><span class="bdg '+pk+'">'+escHtml(t.paket||'—')+'</span></td>'+
+      '<td style="font-size:11.5px;font-weight:600;color:var(--tx)">₺'+Number(t.tutar||0).toLocaleString('tr-TR')+'</td>'+
+      '<td style="font-size:11px;color:var(--tx3)">'+(t.created_at?t.created_at.substring(0,10):'—')+'</td>'+
+      '<td style="display:flex;gap:6px"><button class="btn-primary" style="height:26px;font-size:10.5px" onclick="odemeOnayla(\''+t.id+'\',\''+t.kullanici_id+'\',\''+t.paket+'\',this)"><i class="ti ti-check"></i>Onayla</button>'+
+      '<button class="btns" style="height:26px;font-size:10.5px;color:var(--rd)" onclick="odemeReddet(\''+t.id+'\',this)"><i class="ti ti-x"></i>Reddet</button></td></tr>';
+  }).join('');
+}
+async function odemeOnayla(id, kullaniciId, tip, btn){
+  if(!confirm('Bu ödemeyi onaylayıp paketi aktifleştirmek istiyor musun?')) return;
+  if(btn){btn.disabled=true;}
+  try{
+    var tanim=await getPaketTanimlari();
+    var t=tanim[tip]||{};
+    var jetonDeger=isNaN(parseInt(t.jeton))?999999:parseInt(t.jeton);
+    var r1=await sbClient.from('odeme_talepleri').update({durum:'onaylandi', onaylayan_id:cUser?cUser.id:null, onay_tarihi:new Date().toISOString()}).eq('id',id).select();
+    if(r1.error) throw r1.error;
+    var r2=await sbClient.from('profiles').update({paket:tip, durum:'aktif', jeton_bakiye:jetonDeger, jeton_limit:jetonDeger}).eq('id',kullaniciId).select();
+    if(r2.error) throw r2.error;
+    showToast('Ödeme onaylandı, paket aktifleştirildi ✓','ok');
+    loadOnayBekleyenOdemeler();
+    loadAdminGelir();
+  }catch(e){
+    showToast('Onaylanamadı: '+(e.message||''),'err');
+    if(btn){btn.disabled=false;}
+  }
+}
+async function odemeReddet(id, btn){
+  if(!confirm('Bu ödeme talebini reddetmek istiyor musun?')) return;
+  if(btn){btn.disabled=true;}
+  try{
+    var r=await sbClient.from('odeme_talepleri').update({durum:'reddedildi'}).eq('id',id).select();
+    if(r.error) throw r.error;
+    showToast('Ödeme talebi reddedildi','ok');
+    loadOnayBekleyenOdemeler();
+  }catch(e){
+    showToast('İşlem başarısız: '+(e.message||''),'err');
+    if(btn){btn.disabled=false;}
+  }
 }
 
 // ── VERİ YÜKLEME FONKSİYONLARI ────────────────────────────────
@@ -2823,6 +3083,7 @@ async function saveProfilAyarlari(){
 var _gelirData=[];
 async function loadAdminGelir(){
   if(!sbClient)return;
+  loadOnayBekleyenOdemeler();
   var tablo=document.getElementById('gelir-tablo');
   if(tablo)tablo.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--tx4);padding:20px;font-size:11.5px">Yükleniyor...</td></tr>';
   var{data,error}=await sbClient.from('profiles').select('ad_soyad,buro_adi,email,paket,durum,jeton_bakiye,jeton_limit,created_at').order('created_at',{ascending:false});
@@ -2919,6 +3180,13 @@ function araListele(tbodyId, q){
 }
 
 async function loadPaketAyarlari() {
+  if(sbClient){
+    try{
+      var ob=await sbClient.from('sistem_ayarlari').select('deger').eq('id','odeme_bilgisi').maybeSingle();
+      var obEl=document.getElementById('odeme-bilgisi-alan');
+      if(obEl && ob && ob.data && ob.data.deger) obEl.value=ob.data.deger;
+    }catch(e){}
+  }
   if (sbClient) {
     try {
       var {data} = await sbClient.from('sistem_ayarlari').select('id,deger').in('id',['paket_starter','paket_pro','paket_enterprise','deneme']);
@@ -2941,6 +3209,7 @@ async function loadPaketAyarlari() {
             }
           } catch(e) {}
         });
+        ['starter','pro','enterprise'].forEach(dilekceEstGuncelle);
         return;
       }
     } catch(e) {}
@@ -2957,6 +3226,7 @@ async function loadPaketAyarlari() {
       updatePaketGosterim(tip, d.aylik, d.yillik);
     } catch(e) {}
   });
+  ['starter','pro','enterprise'].forEach(dilekceEstGuncelle);
   var deneme=localStorage.getItem('legalox_deneme_ayarlari');
   if(deneme){try{var d=JSON.parse(deneme);var j=document.getElementById('deneme-jeton'),s=document.getElementById('deneme-sure'),sn=document.getElementById('deneme-sonrasi');if(j)j.value=d.jeton;if(s)s.value=d.sure;if(sn&&d.sonrasi)sn.value=d.sonrasi;}catch(e){}}
 }
