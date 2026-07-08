@@ -1297,7 +1297,7 @@ button{cursor:pointer}
 </div>
 
 <script>
-const APP_VERSION='v4.3 — 08.07.2026';
+const APP_VERSION='v4.4 — 08.07.2026';
 console.log('%cLegalOX '+APP_VERSION,'color:#00C48C;font-weight:bold');
 // GLOBAL HATA GÖRÜNÜRLÜĞÜ: herhangi bir JS hatası artık ekranda toast olarak görünür
 window.addEventListener('error',function(e){
@@ -1496,7 +1496,7 @@ async function guncelleSayilar(){
     }catch(e){}
   }
   try{
-    var d = await sbClient.from('durusmalar').select('*',{count:'exact',head:true}).eq('tarih',bugun);
+    var d = await sbClient.from('durusmalar').select('*',{count:'exact',head:true}).gte('tarih',bugun+'T00:00:00+03:00').lte('tarih',bugun+'T23:59:59+03:00');
     var sd = document.getElementById('sek-kpi-durusma'); if(sd)sd.textContent=d.count||0;
   }catch(e){}
   try{
@@ -1953,7 +1953,7 @@ async function bildirimOzet(){
   if(!sbClient){ showToast('Bağlantı yok','err'); return; }
   try{
     var bugun = new Date().toISOString().slice(0,10);
-    var d = await sbClient.from('durusmalar').select('*',{count:'exact',head:true}).eq('tarih',bugun);
+    var d = await sbClient.from('durusmalar').select('*',{count:'exact',head:true}).gte('tarih',bugun+'T00:00:00+03:00').lte('tarih',bugun+'T23:59:59+03:00');
     var g = await sbClient.from('gorevler').select('*',{count:'exact',head:true}).neq('durum','tamamlandi');
     var dc = d.count||0, gc = g.count||0;
     if(!dc && !gc){ showToast('Bugün duruşman yok, bekleyen görevin yok — her şey yolunda ✓','ok'); }
@@ -2242,7 +2242,12 @@ async function doldurModalListeler(type){
             (mr2.data||[]).forEach(function(m){isimHar2[m.id]=m.ad_soyad;});
           }
           var o2='<option value="">— Dosya seçin'+(type==='gorev'?' (opsiyonel)':'')+' —</option>';
-          liste2.forEach(function(d){var adi=isimHar2[d.muvekkil_id]||'(isimsiz)';var lbl=adi+(d.dosya_no?' · '+d.dosya_no:'');o2+='<option value="'+escHtml(lbl)+'">'+escHtml(lbl)+'</option>';});
+          liste2.forEach(function(d){
+            var adi=isimHar2[d.muvekkil_id]||'(isimsiz)';
+            var lbl=adi+(d.dosya_no?' · '+d.dosya_no:'');
+            var val=type==='durusma'?d.id:lbl;
+            o2+='<option value="'+escHtml(val)+'">'+escHtml(lbl)+'</option>';
+          });
           sel2.innerHTML=o2;
         }
       }
@@ -2330,14 +2335,16 @@ async function submitModal(){
       if(typeof loadDosyalar==='function') loadDosyalar();
 
     } else if(tip==='durusma'){
-      var dosya=(document.getElementById('durusma-dosya')?.value||'').trim();
-      var tarih=document.getElementById('durusma-tarih')?.value||'';
-      var saat=document.getElementById('durusma-saat')?.value||'';
+      var dosyaId=(document.getElementById('durusma-dosya')?.value||'').trim();
+      var tarihGun=document.getElementById('durusma-tarih')?.value||'';
+      var saat=document.getElementById('durusma-saat')?.value||'09:30';
       var mahkeme=(document.getElementById('durusma-mahkeme')?.value||'').trim();
-      if(!tarih){showToast('Tarih zorunludur','err');if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i>Kaydet';}return;}
+      if(!tarihGun){showToast('Tarih zorunludur','err');if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i>Kaydet';}return;}
+      var tarihIso=tarihGun+'T'+(saat||'09:30')+':00+03:00';
       var{error}=await sbInsert('durusmalar', {
-        kullanici_id:cUser?.id||null, dosya_adi:dosya||null,
-        tarih:tarih, saat:saat||null, mahkeme:mahkeme||null
+        kullanici_id:cUser?.id||null, dosya_id:dosyaId||null,
+        avukat_id:(cRole==='avukat'&&cUser)?cUser.id:null,
+        tarih:tarihIso, mahkeme:mahkeme||null
       });
       if(error)throw error;
       showToast('Duruşma eklendi ✓','ok');
@@ -2759,12 +2766,15 @@ async function loadGenelbakis(){
   var liste = document.getElementById('gb-durusma-liste');
   if(liste){
     var today = new Date().toISOString().slice(0,10);
-    var {data} = await sbClient.from('durusmalar').select('dosya_adi,mahkeme,tarih,saat').gte('tarih', today).order('tarih',{ascending:true}).limit(5);
+    var todayIso = today+'T00:00:00+03:00';
+    var {data} = await sbClient.from('durusmalar').select('id,dosya_id,mahkeme,tarih').gte('tarih', todayIso).order('tarih',{ascending:true}).limit(5);
     if(data && data.length){
+      await durusmaAdlariEkle(data);
       var colors = ['var(--ac)','var(--bl)','var(--am)','var(--pu)','var(--rd)'];
       liste.innerHTML = data.map(function(d,i){
-        var tarihStr = d.tarih === today ? 'Bugün '+(d.saat||'') : d.tarih+(d.saat?' '+d.saat:'');
-        return '<div class="hrow"><div class="hdot" style="background:'+colors[i%5]+'"></div><div class="hinfo"><div class="hname">'+escHtml(d.dosya_adi||'—')+'</div><div class="hsub">'+escHtml(d.mahkeme||'—')+'</div></div><div class="htime">'+escHtml(tarihStr)+'</div></div>';
+        var gunStr=durusmaGunStr(d.tarih), saatStr=durusmaSaat(d.tarih);
+        var tarihStr = gunStr === today ? 'Bugün '+saatStr : gunStr+(saatStr?' '+saatStr:'');
+        return '<div class="hrow"><div class="hdot" style="background:'+colors[i%5]+'"></div><div class="hinfo"><div class="hname">'+escHtml(d._etiket||'—')+'</div><div class="hsub">'+escHtml(d.mahkeme||'—')+'</div></div><div class="htime">'+escHtml(tarihStr)+'</div></div>';
       }).join('');
     } else {
       liste.innerHTML = '<div style="font-size:11px;color:var(--tx4);text-align:center;padding:8px">Yaklaşan duruşma yok</div>';
@@ -2777,11 +2787,13 @@ async function loadSekretGenelbakis(){
   var liste = document.getElementById('sek-durusma-liste');
   if(liste){
     var today = new Date().toISOString().slice(0,10);
-    var {data} = await sbClient.from('durusmalar').select('dosya_adi,mahkeme,saat').eq('tarih', today).order('saat',{ascending:true}).limit(4);
+    var baslangic=today+'T00:00:00+03:00', bitis=today+'T23:59:59+03:00';
+    var {data} = await sbClient.from('durusmalar').select('id,dosya_id,mahkeme,tarih').gte('tarih',baslangic).lte('tarih',bitis).order('tarih',{ascending:true}).limit(4);
     if(data && data.length){
+      await durusmaAdlariEkle(data);
       var colors = ['var(--ac)','var(--bl)','var(--am)','var(--pu)'];
       liste.innerHTML = data.map(function(d,i){
-        return '<div class="hrow"><div class="hdot" style="background:'+colors[i%4]+'"></div><div class="hinfo"><div class="hname">'+escHtml(d.dosya_adi||'—')+'</div><div class="hsub">'+escHtml(d.mahkeme||'—')+'</div></div><div class="htime">'+escHtml(d.saat||'')+'</div></div>';
+        return '<div class="hrow"><div class="hdot" style="background:'+colors[i%4]+'"></div><div class="hinfo"><div class="hname">'+escHtml(d._etiket||'—')+'</div><div class="hsub">'+escHtml(d.mahkeme||'—')+'</div></div><div class="htime">'+durusmaSaat(d.tarih)+'</div></div>';
       }).join('');
     } else {
       liste.innerHTML = '<div style="font-size:11px;color:var(--tx4);text-align:center;padding:8px">Bugün duruşma yok</div>';
@@ -2832,6 +2844,38 @@ async function loadStajyerGenelbakis(){
   }
 }
 
+// ── DURUŞMA GÖSTERİM YARDIMCILARI ──────────────────────────────
+// durusmalar.tarih artık tarih+saat birleşik (timestamptz); dosya_adi/saat sütunu yok, dosya_id (FK) var.
+function durusmaSaat(tarihStr){
+  if(!tarihStr) return '';
+  var d=new Date(tarihStr); if(isNaN(d)) return '';
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+function durusmaGunStr(tarihStr){
+  if(!tarihStr) return '';
+  var d=new Date(tarihStr); if(isNaN(d)) return '';
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+// durusma satırlarına dosya_id üzerinden müvekkil adı + dosya no etiketi ekler
+async function durusmaAdlariEkle(rows){
+  rows = rows||[];
+  var dosyaIds=Array.from(new Set(rows.map(function(r){return r.dosya_id;}).filter(Boolean)));
+  if(!dosyaIds.length){ rows.forEach(function(r){r._etiket='—';}); return rows; }
+  var dr=await sbClient.from('dosyalar').select('id,muvekkil_id,dosya_no').in('id',dosyaIds);
+  var dosyaMap={}; (dr.data||[]).forEach(function(d){dosyaMap[d.id]=d;});
+  var muvIds=Array.from(new Set(Object.keys(dosyaMap).map(function(k){return dosyaMap[k].muvekkil_id;}).filter(Boolean)));
+  var muvMap={};
+  if(muvIds.length){
+    var mr=await sbClient.from('muvekkililer').select('id,ad_soyad').in('id',muvIds);
+    (mr.data||[]).forEach(function(m){muvMap[m.id]=m.ad_soyad;});
+  }
+  rows.forEach(function(r){
+    var d=dosyaMap[r.dosya_id];
+    r._etiket = d ? (muvMap[d.muvekkil_id]||'(isimsiz dosya)')+(d.dosya_no?' · '+d.dosya_no:'') : (r.dosya_id?'(dosya silinmiş)':'—');
+  });
+  return rows;
+}
+
 async function loadTakvim(){
   if(!sbClient) return;
   // ── GÜNCEL AY IZGARASI: gerçek tarih + veritabanındaki duruşma günleri ──
@@ -2854,26 +2898,49 @@ async function loadTakvim(){
     var bugun=simdi.getDate();
     var gh='<div class="cdl">Pt</div><div class="cdl">Sa</div><div class="cdl">Ça</div><div class="cdl">Pe</div><div class="cdl">Cu</div><div class="cdl">Ct</div><div class="cdl">Pz</div>';
     for(var i2=off-1;i2>=0;i2--) gh+='<div class="cc mt">'+(oncekiSon-i2)+'</div>';
-    for(var gn=1;gn<=sonGun;gn++){ gh+='<div class="cc'+(gn===bugun?' today':'')+(gunler[gn]?' hb':'')+'">'+gn+'</div>'; }
+    for(var gn=1;gn<=sonGun;gn++){
+      var gunTarihi=ayStr+'-'+String(gn).padStart(2,'0');
+      gh+='<div class="cc'+(gn===bugun?' today':'')+(gunler[gn]?' hb':'')+'"'+(gunler[gn]?' style="cursor:pointer" onclick="gunDetayGoster(\''+gunTarihi+'\')"':'')+'>'+gn+'</div>';
+    }
     grid.innerHTML=gh;
   }
   var liste = document.getElementById('takvim-durusma-liste');
   if(liste){
-    var {data} = await sbClient.from('durusmalar').select('dosya_adi,mahkeme,tarih,saat').order('tarih',{ascending:true}).limit(10);
+    var {data} = await sbClient.from('durusmalar').select('id,dosya_id,mahkeme,tarih').order('tarih',{ascending:true}).limit(10);
     if(data && data.length){
+      await durusmaAdlariEkle(data);
       var today = new Date().toISOString().slice(0,10);
       var colors = ['var(--ac)','var(--bl)','var(--am)','var(--pu)','var(--rd)'];
       liste.innerHTML = data.map(function(d,i){
-        var gecti = d.tarih < today;
-        var bugun = d.tarih === today;
-        var renk = gecti ? 'var(--tx3)' : bugun ? 'var(--rd)' : colors[i%5];
-        var tarihStr = bugun ? 'Bugün '+(d.saat||'') : d.tarih+(d.saat?' '+d.saat:'');
-        return '<div class="hrow"><div class="hdot" style="background:'+renk+'"></div><div class="hinfo"><div class="hname">'+escHtml(d.dosya_adi||'—')+'</div><div class="hsub">'+escHtml(d.mahkeme||'—')+'</div></div><div class="htime" style="color:'+(bugun?'var(--rd)':'')+'">'+escHtml(tarihStr)+'</div></div>';
+        var gunStr=durusmaGunStr(d.tarih);
+        var gecti = gunStr < today;
+        var bugunMu = gunStr === today;
+        var saatStr = durusmaSaat(d.tarih);
+        var renk = gecti ? 'var(--tx3)' : bugunMu ? 'var(--rd)' : colors[i%5];
+        var tarihStr = bugunMu ? 'Bugün '+saatStr : gunStr+(saatStr?' '+saatStr:'');
+        return '<div class="hrow"><div class="hdot" style="background:'+renk+'"></div><div class="hinfo"><div class="hname">'+escHtml(d._etiket||'—')+'</div><div class="hsub">'+escHtml(d.mahkeme||'—')+'</div></div><div class="htime" style="color:'+(bugunMu?'var(--rd)':'')+'">'+escHtml(tarihStr)+'</div></div>';
       }).join('');
     } else {
       liste.innerHTML = '<div style="font-size:11px;color:var(--tx4);text-align:center;padding:12px">Henüz duruşma eklenmedi</div>';
     }
   }
+}
+
+// Takvimde işaretli bir güne tıklayınca o günün duruşmalarını göster
+async function gunDetayGoster(gunTarihi){
+  if(!sbClient) return;
+  var baslangic=gunTarihi+'T00:00:00+03:00', bitis=gunTarihi+'T23:59:59+03:00';
+  var {data} = await sbClient.from('durusmalar').select('id,dosya_id,mahkeme,tarih,notlar').gte('tarih',baslangic).lte('tarih',bitis).order('tarih',{ascending:true});
+  await durusmaAdlariEkle(data||[]);
+  var mtit=document.getElementById('mtit'), msub=document.getElementById('msub'), mbody=document.getElementById('mbody'), movl=document.getElementById('movl');
+  if(!mtit||!mbody||!movl) return;
+  mtit.textContent=gunTarihi+' Duruşmaları';
+  msub.textContent=(data&&data.length)?data.length+' duruşma':'Bu gün için duruşma bulunamadı';
+  mbody.innerHTML=(data&&data.length)?data.map(function(d){
+    return '<div class="drow"><div class="dico ddoc"><i class="ti ti-gavel"></i></div><div class="dinf"><div class="dname">'+escHtml(d._etiket||'—')+'</div><div class="dmeta">'+durusmaSaat(d.tarih)+' · '+escHtml(d.mahkeme||'—')+(d.notlar?' · '+escHtml(d.notlar):'')+'</div></div></div>';
+  }).join('') : '<div style="text-align:center;color:var(--tx4);font-size:12px;padding:20px">Bu gün için duruşma yok</div>';
+  movl.setAttribute('data-tip','__gundetay__');
+  movl.classList.add('open');
 }
 
 async function loadGorevler(){
