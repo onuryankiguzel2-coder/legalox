@@ -1076,6 +1076,8 @@ button{cursor:pointer}
               <button class="btnp" style="height:26px;font-size:11px" onclick="dilekceyiKaydet()"><i class="ti ti-device-floppy" style="font-size:11px"></i>Kaydet</button>
             </div>
           </div>
+          <div id="denetim-loading" style="display:none;align-items:center;gap:8px;padding:10px 12px;margin-bottom:10px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm)"><div class="spinner" style="width:14px;height:14px;border-width:2px"></div><span style="font-size:11.5px;color:var(--tx3)">Usul denetimi yapılıyor — arabuluculuk şartı, görev/yetki, zamanaşımı ve madde atıfları güncel mevzuattan kontrol ediliyor...</span></div>
+          <div id="denetim-raporu" style="display:none;padding:12px;margin-bottom:10px;background:rgba(255,180,0,.06);border:1px solid rgba(255,180,0,.25);border-radius:var(--rsm)"></div>
           <textarea id="final-petition-text" class="ptta" style="min-height:400px;font-size:12px;line-height:1.8"></textarea>
           <!-- WEB EMSAL ARAMA -->
           <div id="emsal-search-section" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)">
@@ -1760,9 +1762,9 @@ async function writeSection(num){
   loading.style.display='flex';textArea.style.display='none';actions.style.display='none';
 
   var prompts={
-    1:'Sen 20 yıllık deneyimli bir Türk hukukçususun. Aşağıdaki '+tip+' için GİRİŞ VE OLAY ÖRGÜSÜ bölümünü yaz.\n\nBilgiler:\nMahkeme: '+(mahkeme||'[Mahkeme]')+'\nDavacı: '+(davaci||'[Davacı]')+'\nDavalı: '+(davali||'[Davalı]')+'\nVekil: '+(avukat||'[Avukat]')+'\nOlay: '+ozet+'\n'+emsalMetni+stilMetni+'\n\nBu bölümde:\n1. Resmi mahkeme başlığı: MAHKEME ADI\u2019NA başlığı, ardından DAVACI, VEKİLİ, DAVALI, KONU satırları\n2. "AÇIKLAMALAR:" başlığı altında kronolojik ve ÇOK DETAYLI olay anlatımı\n3. Her olayı tarih, yer, kişi bilgisiyle anlat\n4. Müvekkili güçlü destekleyen argümanlar öne çıkar\n5. Hukuki terminoloji kullan\n6. Minimum 500 kelime — kısa şablon dilekçe değil, gerçek ve ikna edici bir anlatım yaz\n7. Paragraflar numaralı olsun',
+    1:'Sen 20 yıllık deneyimli bir Türk hukukçususun. Aşağıdaki '+tip+' için GİRİŞ VE OLAY ÖRGÜSÜ bölümünü yaz.\n\nBilgiler:\nMahkeme: '+(mahkeme||'[Mahkeme]')+'\nDavacı: '+(davaci||'[Davacı]')+'\nDavalı: '+(davali||'[Davalı]')+'\nVekil: '+(avukat||'[Avukat]')+'\nOlay: '+ozet+'\n'+emsalMetni+stilMetni+'\n\nBu bölümde:\n1. Resmi mahkeme başlığı: MAHKEME ADI\u2019NA başlığı, ardından DAVACI, VEKİLİ, DAVALI, KONU satırları\n2. "AÇIKLAMALAR:" başlığı altında kronolojik ve ÇOK DETAYLI olay anlatımı\n3. Her olayı tarih, yer, kişi bilgisiyle anlat\n4. Müvekkili güçlü destekleyen argümanlar öne çıkar\n5. Hukuki terminoloji kullan\n6. Minimum 500 kelime — kısa şablon dilekçe değil, gerçek ve ikna edici bir anlatım yaz\n7. Paragraflar numaralı olsun\n8. KONU satırında dava türünü doğru nitelendir: olayda önceden başlatılmış icra takibi ve buna itiraz yoksa ASLA "itirazın iptali" yazma',
 
-    2:'Sen 20 yıllık deneyimli bir Türk hukukçususun. Bu '+tip+' için HUKUKİ DAYANAK VE GEREKÇE bölümünü yaz.\n\nDava: '+davaci+' vs '+davali+'\nKonu: '+ozet+'\n'+emsalMetni+stilMetni+'\n\nBu bölümde:\n1. "HUKUKİ SEBEPLER:" başlığı\n2. Davayla ilgili tüm kanun maddelerini numaralarıyla yaz (TMK, HMK, TBK, İş K., TTK vb.)\n3. Her maddenin bu davaya neden uygulandığını açıkla\n4. Yargıtay içtihadına şöyle atıf yap: "Yargıtay [Daire] yerleşik içtihadı uyarınca..." (numara uydurma, eğer avukat emsal eklediyse onu kullan)\n5. Avukat emsal eklediyse bunları öne çıkar\n6. Güçlü, ikna edici hukuki argüman — minimum 300 kelime',
+    2:'Sen 20 yıllık deneyimli bir Türk hukukçususun. Bu '+tip+' için HUKUKİ DAYANAK VE GEREKÇE bölümünü yaz.\n\nDava: '+davaci+' vs '+davali+'\nKonu: '+ozet+'\n'+emsalMetni+stilMetni+'\n\nBu bölümde:\n1. "HUKUKİ SEBEPLER:" başlığı\n2. Davayla ilgili tüm kanun maddelerini numaralarıyla yaz (TMK, HMK, TBK, İş K., TTK vb.)\n3. Her maddenin bu davaya neden uygulandığını açıkla\n4. Yargıtay içtihadına şöyle atıf yap: "Yargıtay [Daire] yerleşik içtihadı uyarınca..." (numara uydurma, eğer avukat emsal eklediyse onu kullan)\n5. Avukat emsal eklediyse bunları öne çıkar\n6. Güçlü, ikna edici hukuki argüman — minimum 300 kelime\n7. SADECE HUKUKİ SEBEPLER bölümünü yaz: SONUÇ VE TALEP, usul uyarısı veya başka bölüm yazma',
 
     3:'Sen 20 yıllık deneyimli bir Türk hukukçususun. Bu '+tip+' için SONUÇ VE TALEP bölümünü yaz.\n\nDavacı: '+davaci+'\nDavalı: '+davali+'\nVekil: '+avukat+'\n'+(tutar?'Talep: '+tutar:'')+'\n'+stilMetni+'\n\nBu bölümde:\n1. "SONUÇ VE TALEP:" başlığı\n2. Tüm talepler büyük harfle ve madde madde\n3. Yargılama giderleri ve vekalet ücreti\n4. "Saygılarımla arz ederim." kapanışı\n5. Tarih ve avukat imza bloğu\n6. Net, kararlı, kesin bir ton'
   };
@@ -1770,7 +1772,7 @@ async function writeSection(num){
   var _dilekceTipi=window.selectedPetitionType||'Dava Dilekçesi';
   for(var pk in prompts){
     prompts[pk]='BAĞLAM — DİLEKÇE TÜRÜ: '+_dilekceTipi+(_davaTuru?' | DAVA TÜRÜ/KONUSU: '+_davaTuru:'')+'\n\n'+prompts[pk];
-    prompts[pk]+='\n\nKESİN KURALLAR:\n1. Eksik veya bilinmeyen bilgi için ASLA "...." veya nokta nokta boşluk kullanma. Elindeki bilgileri (isim, T.C. no, adres, baro sicil no) aynen yaz; gerçekten bilinmeyen bir alan varsa o satırı tamamen atla veya [AVUKAT DOLDURACAK] şeklinde belirt.\n2. Markdown biçimlendirme KULLANMA: **, ##, ###, * gibi işaretler yasak. Düz metin yaz; başlıkları BÜYÜK HARFLE yaz (örn. HUKUKİ SEBEPLER:).\n3. Bölümü mutlaka tam ve doğal bir cümleyle bitir; asla yarıda bırakma. Uzunluğu buna göre planla.';
+    prompts[pk]+='\n\nKESİN KURALLAR:\n1. Eksik veya bilinmeyen bilgi için ASLA "...." veya nokta nokta boşluk kullanma. Elindeki bilgileri (isim, T.C. no, adres, baro sicil no) aynen yaz; gerçekten bilinmeyen bir alan varsa o satırı tamamen atla veya [AVUKAT DOLDURACAK] şeklinde belirt.\n2. Markdown biçimlendirme KULLANMA: **, ##, ###, * gibi işaretler yasak. Düz metin yaz; başlıkları BÜYÜK HARFLE yaz (örn. HUKUKİ SEBEPLER:).\n3. Bölümü mutlaka tam ve doğal bir cümleyle bitir; asla yarıda bırakma. Uzunluğu buna göre planla.\n4. Dilekçe metni dışında HİÇBİR içerik yazma: usul uyarısı, "avukata not", parantez içi açıklama YASAK — bu notlar ayrı bir denetim adımında üretilecektir. Sen yalnızca mahkemeye sunulacak metni yaz.';
   }
 
   try{
@@ -1807,13 +1809,38 @@ function approveSection(num){
   else{updateStepIndicator(4);buildFinalPetition();}
 }
 
-function buildFinalPetition(){
+async function buildFinalPetition(){
   var final=document.getElementById('pet-section-final');
   final.style.display='block';
   var txt=[petSections[1],petSections[2],petSections[3]].filter(Boolean).join('\n\n');
-  document.getElementById('final-petition-text').value=txt;
-  showToast('Dilekçe tamamlandı \u2713 — emsal kararlar aranıyor...','ok');
+  var ta=document.getElementById('final-petition-text');
+  ta.value=txt;
   final.scrollIntoView({behavior:'smooth',block:'start'});
+
+  // ── USUL DENETİMİ: birleşik metin web destekli denetlenir ve düzeltilir ──
+  var dl=document.getElementById('denetim-loading'),dr=document.getElementById('denetim-raporu');
+  if(dl)dl.style.display='flex';
+  if(dr){dr.style.display='none';dr.innerHTML='';}
+  try{
+    var davaTuru=(document.getElementById('pet-davaturu')||{}).value||'';
+    var dPrompt='Sen usul denetimi yapan kıdemli bir Türk hukukçususun. Aşağıdaki dilekçe taslağını denetle ve düzeltilmiş halini üret.\n\nDİLEKÇE TÜRÜ: '+(window.selectedPetitionType||'Dava Dilekçesi')+(davaTuru?' | DAVA KONUSU: '+davaTuru:'')+'\n\nDENETİM LİSTESİ:\n1. Dava şartı arabuluculuk: bu uyuşmazlık türünde zorunlu arabuluculuk var mı? 7445 sayılı Kanun sonrası güncel durumu web aramasıyla DOĞRULA, ezberden yazma. Zorunluysa bunu uyarıların İLK maddesi yap.\n2. Görevli ve yetkili mahkeme doğru mu?\n3. Zamanaşımı / hak düşürücü süre nitelendirmesi doğru mu?\n4. Kanun maddesi atıfları doğru mu? Şüphelendiğin atfı web aramasıyla doğrula, doğrulayamadığını uyarılarda belirt.\n5. KONU satırı dava türünü doğru nitelendiriyor mu? İcra takibi ve itiraz yoksa "itirazın iptali" ifadesi ÇIKARILMALI.\n6. Metne karışmış usul uyarısı, "avukata not" blokları veya tekrarlanan bölümler varsa dilekçeden ÇIKAR — dilekçe yalnızca mahkemeye sunulacak metni içermeli.\n7. Faiz talebinde başlangıç tarihi (temerrüt) net mi?\n\nÇIKTI FORMATI (kesinlikle bu yapı, markdown yok):\n===UYARILAR===\n(Avukatın dava açmadan önce dikkat etmesi gereken hususlar, her satır "- " ile başlasın. Sorun yoksa "- Usul yönünden engel tespit edilmedi." yaz.)\n===DILEKCE===\n(Dilekçenin düzeltilmiş TAM metni. Kısaltma ve özetleme yapma; sorunsuz kısımları aynen koru.)\n\nDİLEKÇE TASLAĞI:\n'+txt;
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:await aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:8000,messages:[{role:'user',content:dPrompt}],tools:[{type:'web_search_20250305',name:'web_search',max_uses:4}]})});
+    var data=await resp.json();
+    var fullTxt=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n');
+    var parts=fullTxt.split('===DILEKCE===');
+    var uyari=(parts[0]||'').replace('===UYARILAR===','').trim();
+    var duzeltilmis=(parts[1]||'').trim();
+    // Emniyet: düzeltilmiş metin şüpheli derecede kısaysa (kesilme/format hatası) orijinali koru
+    if(duzeltilmis&&duzeltilmis.length>txt.length*0.5){ta.value=duzeltilmis;}
+    if(dr&&uyari){
+      dr.innerHTML='<div style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--am);margin-bottom:6px"><i class="ti ti-shield-check" style="font-size:13px"></i>Usul Denetim Raporu — dava açmadan önce kontrol edin</div><div style="font-size:11.5px;line-height:1.7;color:var(--tx2);white-space:pre-wrap">'+uyari.replace(/</g,'&lt;')+'</div>';
+      dr.style.display='block';
+    }
+    showToast('Usul denetimi tamamlandı \u2713','ok');
+  }catch(e){
+    showToast('Denetim yapılamadı, taslak denetimsiz gösteriliyor: '+e.message,'err');
+  }
+  if(dl)dl.style.display='none';
   // Otomatik emsal arama
   setTimeout(function(){searchEmsalWeb();},600);
 }
