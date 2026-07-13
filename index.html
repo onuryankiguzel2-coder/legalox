@@ -603,13 +603,7 @@ button{cursor:pointer}
 
   <!-- AYARLAR BÖLÜMÜ -->
   <div style="font-size:11.5px;font-weight:600;margin:16px 0 8px;color:var(--tx)">Sistem Ayarları</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
-    <div class="card" style="margin-bottom:0">
-      <div class="chd"><span class="ct">Supabase Bağlantısı</span></div>
-      <div style="margin-bottom:10px"><div style="font-size:9px;color:var(--tx4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px">Project URL</div><input class="fi" id="sb-url" style="font-size:11.5px;height:32px" placeholder="https://xxxx.supabase.co"></div>
-      <div style="margin-bottom:12px"><div style="font-size:9px;color:var(--tx4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px">Anon Key</div><input class="fi" id="sb-key" type="password" style="font-size:11.5px;height:32px" placeholder="eyJhbGci..."></div>
-      <button class="btnp" style="height:28px;font-size:11px" onclick="saveSupabase()"><i class="ti ti-plug"></i>Bağlan</button>
-    </div>
+  <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:14px">
     <div class="card" style="margin-bottom:0">
       <div class="chd"><span class="ct">Domain & Yayın</span></div>
       <div class="s-row" style="padding:8px 0;border-bottom:1px solid #0D0D0D"><div style="font-size:11.5px;color:var(--tx2)">GitHub Pages</div><span style="font-size:11px;color:var(--ac)">kullanici.github.io/legalox</span></div>
@@ -771,13 +765,7 @@ button{cursor:pointer}
 
 <!-- ADMIN: SİSTEM AYARLARI -->
 <div class="page" id="page-admin-ayarlar">
-  <div class="phdr"><div><div class="ptitle">Sistem Ayarları</div><div class="psub">Supabase, domain ve bildirim konfigürasyonu</div></div></div>
-  <div class="settings-section">
-    <div class="settings-title">Supabase Bağlantısı</div>
-    <div class="s-row"><div><div class="s-key">Project URL</div><div class="s-desc">Supabase Dashboard → Settings → API</div></div><input class="form-input" id="sb-url" style="width:280px;height:32px;font-size:12px" placeholder="https://xxxx.supabase.co"></div>
-    <div class="s-row"><div><div class="s-key">Anon Key</div><div class="s-desc">public anon key</div></div><input class="form-input" id="sb-key" type="password" style="width:280px;height:32px;font-size:12px" placeholder="eyJhbGci..."></div>
-    <div style="margin-top:12px;display:flex;gap:8px"><button class="btn-primary" style="height:30px;font-size:11.5px" onclick="saveSupabase()"><i class="ti ti-plug"></i>Bağlan & Test Et</button><button class="btn-secondary" style="height:30px;font-size:11.5px" onclick="showToast('Bağlantı test ediliyor...','info')"><i class="ti ti-wifi"></i>Test Et</button></div>
-  </div>
+  <div class="phdr"><div><div class="ptitle">Sistem Ayarları</div><div class="psub">Domain ve bildirim konfigürasyonu</div></div></div>
   <div class="settings-section">
     <div class="settings-title">Domain & Yayın</div>
     <div class="s-row"><div class="s-key">GitHub Pages URL</div><span style="font-size:12px;color:var(--accent)">kullanici.github.io/legalox</span></div>
@@ -1226,7 +1214,7 @@ button{cursor:pointer}
   </div>
   <div class="ssec">
     <div class="stit">Şifre Değiştir</div>
-    <div class="srow"><div class="skey">Mevcut Şifre</div><input class="fi" type="password" style="width:200px;height:30px;font-size:12px" placeholder="••••••••"></div>
+    <div class="srow"><div class="skey">Mevcut Şifre</div><input class="fi" id="sifre-mevcut" type="password" style="width:200px;height:30px;font-size:12px" placeholder="••••••••"></div>
     <div class="srow"><div class="skey">Yeni Şifre</div><input class="fi" id="sifre-yeni" type="password" style="width:200px;height:30px;font-size:12px" placeholder="En az 6 karakter"></div>
     <div style="margin-top:12px"><button class="btnp" onclick="sifreGuncelle(this)"><i class="ti ti-lock"></i>Güncelle</button></div>
   </div>
@@ -1386,7 +1374,13 @@ var MODALS={
   ekipuye:{t:'Ekip Üyesi Ekle',s:'Kendi ekibine sekreter veya stajyer ekle',b:`<div class="fg"><label class="fl">Ad Soyad</label><input class="fi" placeholder="Adı Soyadı"></div><div class="fg"><label class="fl">E-posta</label><input class="fi" type="email" placeholder="kisi@mail.com"></div><div class="fg"><label class="fl">Rol</label><select class="fi"><option>Sekreter</option><option>Stajyer</option></select></div><div style="background:var(--bld);border:1px solid rgba(55,138,221,.15);border-radius:var(--rsm);padding:10px 12px;font-size:11.5px;color:var(--bl);margin-top:4px"><i class="ti ti-info-circle" style="margin-right:5px"></i>Bu kişi sadece senin dosyalarına erişebilir.</div>`},
   yenipaket:{t:'Yeni Paket Oluştur',s:'Abonelik planı tanımlayın',b:`<div class="fg"><label class="fl">Paket Adı</label><input class="fi" placeholder="Örn: Pro Plus"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fg"><label class="fl">Aylık Fiyat (₺)</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">Jeton Limiti</label><input class="fi" type="number" placeholder="200"></div></div><div class="fg"><label class="fl">Açıklama</label><textarea class="fi" style="height:60px;resize:none" placeholder="Paket özellikleri..."></textarea></div>`}
 };
-function initSB(){try{if(SB_URL!=='YOUR_SUPABASE_URL')sbClient=supabase.createClient(SB_URL,SB_KEY)}catch(e){}}
+function initSB(){try{if(SB_URL!=='YOUR_SUPABASE_URL')sbClient=supabase.createClient(SB_URL,SB_KEY)}catch(e){console.error('Supabase init hatası:',e)}}
+// AI çağrıları için: giriş yapmış kullanıcının JWT'sini kullan (anon key sadece yedek)
+async function aiHeaders(){
+  var tok=SB_KEY;
+  try{ var s=await sbClient.auth.getSession(); if(s&&s.data&&s.data.session)tok=s.data.session.access_token; }catch(e){}
+  return {'Content-Type':'application/json','Authorization':'Bearer '+tok,'apikey':SB_KEY};
+}
 async function doLogin(){
   const email=document.getElementById('lemail').value.trim();
   const pw=document.getElementById('lpw').value;
@@ -1534,7 +1528,7 @@ function nav2(p){
   };
   var tbbtext=document.getElementById('tbbtext');
   if(tbbtext) tbbtext.textContent=btnMap[p]||'Yeni';
-  if(p==='rehber') showG(cRole==='admin'?'avukat':cRole);
+  if(p==='rehber') showGuide(cRole==='admin'?'avukat':cRole);
   if(p==='admin-uyeler') loadAdminUyeler();
   if(p==='admin-paket') loadPaketAyarlari();
   if(p==='dilekce'){
@@ -1601,7 +1595,7 @@ function tbAction(){
   if(id==='admin-gelir'){showToast('Rapor indirme yakında','info');return;}
   if(id==='admin-paket'){return;}  // paket kartlarında zaten Kaydet butonu var
   if(id==='paketim'){return;}  // paket seçimi kartlardaki butonla yapılıyor
-  if(id==='admin-ayarlar'){saveSupabase();return;}
+  if(id==='admin-ayarlar'){showToast('Ayarlar kaydedildi ✓','ok');return;}
   if(id==='rehber'||id==='stajyer-genelbakis'||id==='admin') return;
   var modalType=mm[id];
   if(modalType) openModal(modalType);
@@ -1628,30 +1622,6 @@ function selPType(el,tip){
 
 // ── MÜVEKKİL SEÇİMİ ────────────────────────────────────────
 var selectedMuvekkil=null;
-var checkIds=['check-AY','check-MA','check-CH'];
-
-function selectMuvekkil(el,ad,davaTuru,mahkeme,davali,avukat,ozet){
-  // Seçim görünümü
-  document.querySelectorAll('.muv-item').forEach(function(m){
-    m.style.background='var(--sf2)';m.style.borderColor='var(--bd)';
-  });
-  checkIds.forEach(function(id){var c=document.getElementById(id);if(c)c.style.color='transparent';});
-  el.style.background='var(--acd)';el.style.borderColor='var(--acb)';
-  // Hangi check işareti
-  var ini=ad.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
-  var checkId='check-'+ini;
-  var chk=document.getElementById(checkId);
-  if(chk)chk.style.color='var(--ac)';
-  // Alanları doldur
-  document.getElementById('pet-mahkeme').value=mahkeme||'';
-  document.getElementById('pet-davaci').value=ad||'';
-  document.getElementById('pet-davali').value=davali||'';
-  document.getElementById('pet-avukat').value=avukat||'';
-  document.getElementById('pet-ozet').value=ozet||'';
-  selectedMuvekkil={ad,davaTuru,mahkeme,davali,avukat,ozet};
-  showToast(ad+' seçildi','ok');
-}
-
 // ── STİL PROFİLİ ───────────────────────────────────────────
 var styleProfile=localStorage.getItem('legalox_style_profile')||'';
 (function initStyleBadge(){
@@ -1691,7 +1661,7 @@ async function analyzeStyleFiles(files){
     }
     if(!bloklar.length){analyzing.style.display='none';showToast('Okunabilir dosya yok — PDF veya TXT yükleyin','err');return;}
     bloklar.push({type:'text',text:'Yukarıdaki Türk hukuk dilekçelerini analiz et ve avukatın yazım üslubunu çıkar. Cümle yapısı, resmiyet seviyesi, paragraf düzeni, sıkça kullandığı ifadeler, hitap biçimi, sonuç bölümü kalıplarını incele. Kısa ve net bir üslup profili yaz (maks. 150 kelime). Sadece profili yaz, başka açıklama ekleme.'});
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:bloklar}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:await aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:bloklar}]})});
     var data=await resp.json();
     if(data.error)throw new Error(data.error.message||'API hatası');
     var text=(data.content||[]).map(function(c){return c.type==='text'?c.text:'';}).join('').trim();
@@ -1804,7 +1774,7 @@ async function writeSection(num){
   }
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompts[num]}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:await aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompts[num]}]})});
     var data=await resp.json();
     var text=data.content[0].text;
     petSections[num]=text;
@@ -1920,13 +1890,21 @@ async function dilekceSil(i){
 
 // ── GERÇEK ŞİFRE DEĞİŞTİRME ──
 async function sifreGuncelle(btn){
+  var mevcut = (document.getElementById('sifre-mevcut')||{}).value||'';
   var yeni = (document.getElementById('sifre-yeni')||{}).value||'';
+  if(!mevcut){ showToast('Mevcut şifreni gir','err'); return; }
   if(yeni.length < 6){ showToast('Yeni şifre en az 6 karakter olmalı','err'); return; }
   if(btn){ btn.disabled=true; }
   try{
+    var ur = await sbClient.auth.getUser();
+    var mail = ur&&ur.data&&ur.data.user ? ur.data.user.email : null;
+    if(!mail) throw new Error('Oturum bulunamadı');
+    var dr = await sbClient.auth.signInWithPassword({ email: mail, password: mevcut });
+    if(dr.error) throw new Error('Mevcut şifre yanlış');
     var r = await sbClient.auth.updateUser({ password: yeni });
     if(r.error) throw r.error;
     document.getElementById('sifre-yeni').value='';
+    var _sm=document.getElementById('sifre-mevcut'); if(_sm)_sm.value='';
     showToast('Şifre güncellendi ✓ — bir sonraki girişte yeni şifreni kullan','ok');
   }catch(e){ showToast('Şifre güncellenemedi: '+(e.message||''),'err'); }
   if(btn){ btn.disabled=false; }
@@ -2044,7 +2022,7 @@ async function ozetDosyadanCikar(input){
       : { type:'image', source:{ type:'base64', media_type:f.type, data:b64 } };
     var resp = await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},
+      headers:await aiHeaders(),
       body:JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1200, messages:[{ role:'user', content:[ blok, { type:'text', text:'Bu belge, müvekkilin avukatına gönderdiği dava ile ilgili bir belgedir. İncele ve dava dilekçesinin OLAY ÖZETİ bölümünde kullanılmak üzere bir özet çıkar: ne olmuş, taraflar kim, önemli tarihler, tutarlar ve talepler neler. Türkçe, sade ve net yaz, 150-250 kelime. Sadece özeti yaz, başka hiçbir açıklama ekleme.' } ] }] })
     });
     var data = await resp.json();
@@ -2073,7 +2051,7 @@ async function emsalSayfaAra(){
   try{
     var resp = await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},
+      headers:await aiHeaders(),
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Web üzerinde şu konuyla ilgili GERÇEK Yargıtay kararlarını ara (kararı aktaran güvenilir hukuk siteleri de kaynak olabilir). Her karar mutlaka gerçek daire + esas/karar numarası içermeli. Konu: "'+q+'". Cevabını SADECE şu JSON formatında ver (öncesinde veya sonrasında hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.\nMUTLAK KURAL: Cevabında JSON dışında tek bir karakter bile olmasın — açıklama, özür, arama süreci anlatımı YASAK. Hiçbir şey bulamasan bile sadece {"kararlar":[]} yaz.'}]})
     });
     var data = await resp.json();
@@ -2135,7 +2113,7 @@ async function searchEmsalWeb(){
   loading.style.display='flex';results.innerHTML='';
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nWeb üzerinde bu konuyla ilgili GERÇEK Yargıtay kararlarını ara (kararı aktaran güvenilir hukuk siteleri de kaynak olabilir). Her karar mutlaka gerçek daire + esas/karar numarası içermeli. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.\nMUTLAK KURAL: Cevabında JSON dışında tek bir karakter bile olmasın — açıklama, özür, arama süreci anlatımı YASAK. Hiçbir şey bulamasan bile sadece {"kararlar":[]} yaz.'}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:await aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nWeb üzerinde bu konuyla ilgili GERÇEK Yargıtay kararlarını ara (kararı aktaran güvenilir hukuk siteleri de kaynak olabilir). Her karar mutlaka gerçek daire + esas/karar numarası içermeli. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.\nMUTLAK KURAL: Cevabında JSON dışında tek bir karakter bile olmasın — açıklama, özür, arama süreci anlatımı YASAK. Hiçbir şey bulamasan bile sadece {"kararlar":[]} yaz.'}]})});
     var data=await resp.json();
     if(data.error)throw new Error(data.error.message||'API hatası');
     var fullText=(data.content||[]).map(function(c){return c.type==='text'?c.text:'';}).join('');
@@ -2191,12 +2169,6 @@ function addWebEmsalToManual(idx){
   manualEmsaller.push({no:k.no,baslik:k.baslik,ozet:k.ozet});
   renderManualEmsaller();
   showToast(k.no+' eklendi \u2713','ok');
-}
-function buildGuide(){
-  // Mevcut kullanıcı rolüne göre uygun rehberi göster
-  const roleMap = {avukat:'avukat', sekreter:'sekreter', stajyer:'stajyer', admin:'admin'};
-  const guideRole = roleMap[cRole] || 'avukat';
-  showGuide(guideRole);
 }
 function openModal(type){
   const c=MODALS[type];if(!c)return;
@@ -2299,6 +2271,22 @@ async function submitModal(){
   if(btn){btn.disabled=true;btn.textContent='Kaydediliyor...';}
 
   try{
+    if(tip==='uye-duzenle'){
+      var _uid=movl.getAttribute('data-uid');
+      var _ad=((document.getElementById('ud-ad')||{}).value||'').trim();
+      var _rol=(document.getElementById('ud-rol')||{}).value||'sekreter';
+      if(!_ad){showToast('Ad Soyad zorunludur','err');}
+      else{
+        var _r=await sbClient.from('profiles').update({ad_soyad:_ad,rol:_rol}).eq('id',_uid).select('id');
+        if(_r.error)throw _r.error;
+        if(!_r.data||!_r.data.length)throw new Error('güncelleme izni yok');
+        showToast('Üye güncellendi ✓','ok');
+        closeModal();
+        loadEkibim();
+      }
+      if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i>Kaydet';}
+      return;
+    }
     if(tip==='muvekkil'){
       var inputs=document.querySelectorAll('#mbody input, #mbody textarea, #mbody select');
       var ad=inputs[0]?.value.trim();
@@ -2398,13 +2386,6 @@ async function submitModal(){
   }
   if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i>Kaydet';}
 }
-function saveSupabase(){
-  const url=document.getElementById('sb-url')?.value;
-  const key=document.getElementById('sb-key')?.value;
-  if(url&&key&&url!=='YOUR_SUPABASE_URL'){try{sbClient=supabase.createClient(url,key);showToast('Supabase bağlantısı başarılı!','ok');}catch(e){showToast('Bağlantı hatası','err');}}
-  else showToast('URL ve Key giriniz','err');
-}
-
 // ── PAKET KAYDET ────────────────────────────────────────────
 // ── PAKET KAYDET ────────────────────────────────────────────
 async function savePaket(tip, btn) {
@@ -2416,9 +2397,14 @@ async function savePaket(tip, btn) {
   if (btn) { btn.disabled = true; btn.textContent = 'Kaydediliyor...'; }
   var paketData = { tip:tip, aylik:parseFloat(aylik)||0, yillik:parseFloat(yillik)||0, jeton:jeton, avukat:avukat, guncelleme: new Date().toISOString() };
   localStorage.setItem('legalox_paket_'+tip, JSON.stringify(paketData));
+  var dbHata=null;
   if (sbClient) {
-    try { await sbClient.from('sistem_ayarlari').upsert({ id:'paket_'+tip, deger: JSON.stringify(paketData) }, {onConflict:'id'}); } catch(e) {}
-    try { await sbClient.from('paketler').upsert({ id:tip, tip:tip, aylik_fiyat:parseFloat(aylik)||0, yillik_fiyat:parseFloat(yillik)||0, jeton_limit:parseInt(jeton)||0, avukat_limit:avukat, guncelleme:new Date().toISOString() }, {onConflict:'id'}); } catch(e) {}
+    try {
+      var r1 = await sbClient.from('sistem_ayarlari').upsert({ id:'paket_'+tip, deger: JSON.stringify(paketData) }, {onConflict:'id'});
+      if(r1.error) dbHata=r1.error;
+      var r2 = await sbClient.from('paketler').upsert({ id:tip, tip:tip, aylik_fiyat:parseFloat(aylik)||0, yillik_fiyat:parseFloat(yillik)||0, jeton_limit:parseInt(jeton)||0, avukat_limit:avukat, guncelleme:new Date().toISOString() });
+      if(r2.error) dbHata=r2.error;
+    } catch(e) { dbHata=e; }
   }
   if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-check"></i>Kaydet'; }
   updatePaketGosterim(tip, aylik, yillik);
@@ -2430,7 +2416,8 @@ async function savePaket(tip, btn) {
       bl.innerHTML='<i class="ti ti-check" style="color:var(--ac);font-size:12px"></i>'+(isNaN(avNum)?escHtml(avukat||'Sınırsız'):avNum)+' avukat hesabı';
     }
   }
-  showToast(tip.charAt(0).toUpperCase()+tip.slice(1)+' paketi güncellendi ✓', 'ok');
+  if(dbHata) showToast('Paket yerelde kaydedildi ama veritabanına yazılamadı: '+(dbHata.message||''),'err');
+  else showToast(tip.charAt(0).toUpperCase()+tip.slice(1)+' paketi güncellendi ✓', 'ok');
 }
 
 // Paket fiyat göstergelerini (büyük ₺ yazıları) güncelle — hem admin genelbakış hem paket sayfası
@@ -3041,10 +3028,36 @@ async function loadMuhasebe(){
       '<td style="font-size:12px;font-weight:600;color:var(--ac)">₺'+(k.tutar||0).toLocaleString('tr-TR')+'</td>'+
       '<td style="font-size:11px;color:var(--tx3)">'+(k.tarih||'—')+'</td>'+
       '<td><span class="bdg '+durumCls+'">'+durumAd+'</span></td>'+
-      '<td><button class="btns" style="height:24px;font-size:10px" onclick="showToast(\'Kayıt silindi\',\'ok\')">Sil</button></td></tr>';
+      '<td><button class="btns" style="height:24px;font-size:10px" onclick="muhasebeSil(\''+k.id+'\')">Sil</button></td></tr>';
   }).join('');
 }
 
+function uyeDuzenle(id){
+  var u=(window._ekipCache||[]).find(function(x){return x.id===id;});
+  if(!u){showToast('Üye bulunamadı','err');return;}
+  var movl=document.getElementById('movl');
+  document.getElementById('mtit').textContent='Üye Düzenle';
+  document.getElementById('msub').textContent=u.email||'';
+  document.getElementById('mbody').innerHTML=
+    '<div class="fg"><label class="fl">Ad Soyad</label><input class="fi" id="ud-ad" value="'+escHtml(u.ad_soyad||'')+'"></div>'+
+    '<div class="fg"><label class="fl">Rol</label><select class="fi" id="ud-rol">'+
+      '<option value="sekreter"'+(u.rol==='sekreter'?' selected':'')+'>Sekreter</option>'+
+      '<option value="stajyer"'+(u.rol==='stajyer'?' selected':'')+'>Stajyer</option>'+
+    '</select></div>';
+  movl.setAttribute('data-tip','uye-duzenle');
+  movl.setAttribute('data-uid',id);
+  movl.classList.add('open');
+}
+async function muhasebeSil(id){
+  if(!confirm('Bu ödeme kaydı kalıcı olarak silinsin mi?'))return;
+  try{
+    var r=await sbClient.from('muhasebe').delete().eq('id',id).select('id');
+    if(r.error)throw r.error;
+    if(!r.data||!r.data.length)throw new Error('silme izni yok');
+    showToast('Kayıt silindi ✓','ok');
+    loadMuhasebe();
+  }catch(e){showToast('Silinemedi: '+(e.message||''),'err');}
+}
 async function loadEkibim(){
   if(!sbClient || !cUser) return;
   var yk = document.getElementById('ekip-yukleniyor');
@@ -3060,6 +3073,7 @@ async function loadEkibim(){
   if(yk) yk.style.display='none';
   if(error){showToast('Ekip yükleme hatası','err');return;}
   var ekip = data||[];
+  window._ekipCache = ekip;
   if(!ekip.length){if(bos)bos.style.display='block';return;}
   if(tw) tw.style.display='table';
   tablo.innerHTML = ekip.map(function(u){
@@ -3069,7 +3083,7 @@ async function loadEkibim(){
     return '<tr><td class="tdp"><span class="mav">'+ini+'</span>'+escHtml(u.ad_soyad||'—')+'</td>'+
       '<td style="font-size:11px;color:var(--tx3)">'+escHtml(u.email||'—')+'</td>'+
       '<td><span class="bdg '+rolCls+'">'+rolAd+'</span></td>'+
-      '<td><button class="btns" style="height:24px;font-size:10px" onclick="showToast(\'Yakında\',\'info\')">Düzenle</button></td></tr>';
+      '<td><button class="btns" style="height:24px;font-size:10px" onclick="uyeDuzenle(\''+u.id+'\')">Düzenle</button></td></tr>';
   }).join('');
 }
 
