@@ -1825,28 +1825,34 @@ async function buildFinalPetition(){
   if(dr){dr.style.display='none';dr.innerHTML='';}
   try{
     var davaTuru=(document.getElementById('pet-davaturu')||{}).value||'';
-    var dPrompt='Sen usul denetimi yapan kıdemli bir Türk hukukçususun. Aşağıdaki dilekçe taslağını denetle. Bugünün tarihi: '+new Date().toLocaleDateString('tr-TR')+'.\n\nDİLEKÇE TÜRÜ: '+(window.selectedPetitionType||'Dava Dilekçesi')+(davaTuru?' | DAVA KONUSU: '+davaTuru:'')+'\n\nDENETİM LİSTESİ:\n1. Dava şartı arabuluculuk: bu uyuşmazlık türünde zorunlu mu? Yalnızca bu soru için 1 web araması yaparak 7445 sayılı Kanun sonrası güncel durumu doğrula. Zorunluysa uyarıların İLK maddesi bu olsun.\n2. Görevli/yetkili mahkeme doğru mu?\n3. Zamanaşımı / hak düşürücü süre nitelendirmesi doğru mu?\n4. Kanun maddesi atıfları doğru mu? (Örn. dürüstlük kuralı TMK m.2\'dir, TBK m.2 değil.) Yanlış atıfları DÜZELTMELER bölümüne yaz.\n5. İç tutarlılık: faiz başlangıç tarihi gövde ile SONUÇ VE TALEP arasında çelişiyor mu? Tarih/yıl hataları var mı?\n6. KONU satırı dava türünü doğru nitelendiriyor mu?\n7. Metne karışmış usul notu/tekrar blokları var mı?\n\nÇIKTI FORMATI (kesinlikle bu yapı, markdown yok, başka hiçbir şey yazma):\n===UYARILAR===\n(Avukatın dava açmadan önce bilmesi gerekenler, her satır "- " ile. Sorun yoksa "- Usul yönünden engel tespit edilmedi.")\n===DUZELTMELER===\nESKİ: (dilekçedeki birebir hatalı ifade, kısa tut)\nYENİ: (düzeltilmiş hali)\n---\n(Her düzeltme bu üçlü blokla. En fazla 8 düzeltme, yalnızca gerçekten hatalı yerler. Düzeltme yoksa bu bölümü boş bırak.)\n\nDİLEKÇE TASLAĞI:\n'+txt;
+    var dPrompt='Sen usul denetimi yapan kıdemli bir Türk hukukçususun. Aşağıdaki dilekçe taslağını denetle. Bugünün tarihi: '+new Date().toLocaleDateString('tr-TR')+'.\n\nDİLEKÇE TÜRÜ: '+(window.selectedPetitionType||'Dava Dilekçesi')+(davaTuru?' | DAVA KONUSU: '+davaTuru:'')+'\n\nDENETİM LİSTESİ:\n1. Dava şartı arabuluculuk: bu uyuşmazlık türünde zorunlu mu? Yalnızca bu soru için 1 web araması yaparak 7445 sayılı Kanun sonrası güncel durumu doğrula. Zorunluysa uyarıların İLK maddesi bu olsun.\n2. Görevli/yetkili mahkeme doğru mu?\n3. Zamanaşımı / hak düşürücü süre nitelendirmesi doğru mu?\n4. Kanun maddesi atıfları doğru mu? (Örn. dürüstlük kuralı TMK m.2\'dir, TBK m.2 değil.) Yanlış atıfları DÜZELTMELER bölümüne yaz.\n5. İç tutarlılık: faiz başlangıç tarihi gövde ile SONUÇ VE TALEP arasında çelişiyor mu? Tarih/yıl hataları var mı?\n6. KONU satırı dava türünü doğru nitelendiriyor mu?\n7. Metne karışmış usul notu/tekrar blokları var mı?\n\nÇIKTI FORMATI (kesinlikle bu yapı, markdown yok, başka hiçbir şey yazma):\n===UYARILAR===\n(Avukatın dava açmadan önce bilmesi gerekenler, her satır "- " ile. Sorun yoksa "- Usul yönünden engel tespit edilmedi.")\n===DUZELTMELER===\nESKİ: (dilekçedeki birebir hatalı ifade, kısa tut)\nYENİ: (dilekçeye girecek NİHAİ TEMİZ metin — mahkemeye sunulacak cümlenin kendisi. Açıklama, değerlendirme, gerekçe, "Not:", parantez içi yorum KESİNLİKLE YASAK; gerekçeni UYARILAR bölümünde anlat. Hatalı bir atıf çıkarılacaksa YENİ alanına o cümlenin atıfsız/doğru atıflı temiz halini yaz. Temiz bir cümleyle düzeltemiyorsan bu bölüme hiç koyma, yalnızca UYARILAR bölümünde belirt.)\n---\n(Her düzeltme bu üçlü blokla. En fazla 8 düzeltme, yalnızca gerçekten hatalı yerler. Düzeltme yoksa bu bölümü boş bırak.)\n\nDİLEKÇE TASLAĞI:\n'+txt;
     var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:await aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2500,messages:[{role:'user',content:dPrompt}],tools:[{type:'web_search_20250305',name:'web_search',max_uses:2}]})});
     var data=await resp.json();
     if(data.error)throw new Error(typeof data.error==='string'?data.error:(data.error.message||'API hatası'));
     var fullTxt=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n');
     var uyariBlok=(fullTxt.split('===DUZELTMELER===')[0]||'').replace('===UYARILAR===','').trim();
     var duzBlok=(fullTxt.split('===DUZELTMELER===')[1]||'').trim();
-    var uygulanan=0,uygulanamayan=[];
+    var uygulanan=[],uygulanamayan=[];
+    // Güvenlik filtresi: denetçi yorumu/meta dil içeren "düzeltmeler" metne otomatik girmez
+    var metaRe=/\b(Not:|dilekçe|madde metni|hatalıdır|hatalı kullanılmış|olmalıdır|çıkarılmalıdır|yazılmalıdır|esas alınmalıdır|nitelendiril|değerlendiril|uygulanabilir olmakla|ilgisi bulunmamaktadır|atıf (hatası|hatalı|yanlış))/i;
     if(duzBlok){
       duzBlok.split('---').forEach(function(blok){
         var m=blok.match(/ESKİ:\s*([\s\S]*?)\nYENİ:\s*([\s\S]*)/);
         if(!m)return;
         var eski=m[1].trim(),yeni=m[2].trim();
         if(!eski)return;
-        if(ta.value.indexOf(eski)!==-1){ta.value=ta.value.replace(eski,yeni);uygulanan++;}
-        else if(yeni){uygulanamayan.push(eski+' → '+yeni);}
+        if(metaRe.test(yeni)||ta.value.indexOf(eski)===-1){
+          if(yeni)uygulanamayan.push(eski+' → '+yeni);
+        }else{
+          ta.value=ta.value.replace(eski,yeni);
+          uygulanan.push((eski.length>90?eski.slice(0,90)+'…':eski)+' → '+(yeni.length>90?yeni.slice(0,90)+'…':yeni));
+        }
       });
     }
     if(dr){
       var rapor='';
       if(uyariBlok)rapor+=uyariBlok;
-      if(uygulanan)rapor+='\n\n✓ '+uygulanan+' düzeltme metne otomatik uygulandı.';
+      if(uygulanan.length)rapor+='\n\n✓ Metne otomatik uygulanan düzeltmeler ('+uygulanan.length+'):\n- '+uygulanan.join('\n- ');
       if(uygulanamayan.length)rapor+='\n\nElle kontrol edilmesi gereken düzeltmeler:\n- '+uygulanamayan.join('\n- ');
       if(rapor.trim()){
         dr.innerHTML='<div style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--am);margin-bottom:6px"><i class="ti ti-shield-check" style="font-size:13px"></i>Usul Denetim Raporu — dava açmadan önce kontrol edin</div><div style="font-size:11.5px;line-height:1.7;color:var(--tx2);white-space:pre-wrap">'+rapor.trim().replace(/</g,'&lt;')+'</div>';
