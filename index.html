@@ -1772,7 +1772,7 @@ async function writeSection(num){
   var _dilekceTipi=window.selectedPetitionType||'Dava Dilekçesi';
   for(var pk in prompts){
     prompts[pk]='BAĞLAM — DİLEKÇE TÜRÜ: '+_dilekceTipi+(_davaTuru?' | DAVA TÜRÜ/KONUSU: '+_davaTuru:'')+'\n\n'+prompts[pk];
-    prompts[pk]+='\n\nKESİN KURALLAR:\n1. Eksik veya bilinmeyen bilgi için ASLA "...." veya nokta nokta boşluk kullanma. Elindeki bilgileri (isim, T.C. no, adres, baro sicil no) aynen yaz; gerçekten bilinmeyen bir alan varsa o satırı tamamen atla veya [AVUKAT DOLDURACAK] şeklinde belirt.\n2. Markdown biçimlendirme KULLANMA: **, ##, ###, * gibi işaretler yasak. Düz metin yaz; başlıkları BÜYÜK HARFLE yaz (örn. HUKUKİ SEBEPLER:).\n3. Bölümü mutlaka tam ve doğal bir cümleyle bitir; asla yarıda bırakma. Uzunluğu buna göre planla.\n4. Dilekçe metni dışında HİÇBİR içerik yazma: usul uyarısı, "avukata not", parantez içi açıklama YASAK — bu notlar ayrı bir denetim adımında üretilecektir. Sen yalnızca mahkemeye sunulacak metni yaz.';
+    prompts[pk]+='\n\nKESİN KURALLAR:\n1. Eksik veya bilinmeyen bilgi için ASLA "...." veya nokta nokta boşluk kullanma. Elindeki bilgileri (isim, T.C. no, adres, baro sicil no) aynen yaz; gerçekten bilinmeyen bir alan varsa o satırı tamamen atla veya [AVUKAT DOLDURACAK] şeklinde belirt.\n2. Markdown biçimlendirme KULLANMA: **, ##, ###, * gibi işaretler yasak. Düz metin yaz; başlıkları BÜYÜK HARFLE yaz (örn. HUKUKİ SEBEPLER:).\n3. Bölümü mutlaka tam ve doğal bir cümleyle bitir; asla yarıda bırakma. Uzunluğu buna göre planla.\n4. Dilekçe metni dışında HİÇBİR içerik yazma: usul uyarısı, "avukata not", parantez içi açıklama YASAK — bu notlar ayrı bir denetim adımında üretilecektir. Sen yalnızca mahkemeye sunulacak metni yaz.\n5. Bugünün tarihi: '+new Date().toLocaleDateString('tr-TR')+'. Tarih yazarken bunu esas al; olay özetinde yıl belirtilmemişse ("bu yıl", "geçen ay" gibi) bu tarihe göre hesapla, ASLA tahmini yıl uydurma.';
   }
 
   try{
@@ -1816,33 +1816,49 @@ async function buildFinalPetition(){
   var ta=document.getElementById('final-petition-text');
   ta.value=txt;
   final.scrollIntoView({behavior:'smooth',block:'start'});
+  // Emsal araması denetimi BEKLEMEDEN paralel başlar
+  setTimeout(function(){searchEmsalWeb();},300);
 
-  // ── USUL DENETİMİ: birleşik metin web destekli denetlenir ve düzeltilir ──
+  // ── USUL DENETİMİ: hedefli düzeltme (tam metin yeniden üretilmez — maliyet ~%80 düşük) ──
   var dl=document.getElementById('denetim-loading'),dr=document.getElementById('denetim-raporu');
   if(dl)dl.style.display='flex';
   if(dr){dr.style.display='none';dr.innerHTML='';}
   try{
     var davaTuru=(document.getElementById('pet-davaturu')||{}).value||'';
-    var dPrompt='Sen usul denetimi yapan kıdemli bir Türk hukukçususun. Aşağıdaki dilekçe taslağını denetle ve düzeltilmiş halini üret.\n\nDİLEKÇE TÜRÜ: '+(window.selectedPetitionType||'Dava Dilekçesi')+(davaTuru?' | DAVA KONUSU: '+davaTuru:'')+'\n\nDENETİM LİSTESİ:\n1. Dava şartı arabuluculuk: bu uyuşmazlık türünde zorunlu arabuluculuk var mı? 7445 sayılı Kanun sonrası güncel durumu web aramasıyla DOĞRULA, ezberden yazma. Zorunluysa bunu uyarıların İLK maddesi yap.\n2. Görevli ve yetkili mahkeme doğru mu?\n3. Zamanaşımı / hak düşürücü süre nitelendirmesi doğru mu?\n4. Kanun maddesi atıfları doğru mu? Şüphelendiğin atfı web aramasıyla doğrula, doğrulayamadığını uyarılarda belirt.\n5. KONU satırı dava türünü doğru nitelendiriyor mu? İcra takibi ve itiraz yoksa "itirazın iptali" ifadesi ÇIKARILMALI.\n6. Metne karışmış usul uyarısı, "avukata not" blokları veya tekrarlanan bölümler varsa dilekçeden ÇIKAR — dilekçe yalnızca mahkemeye sunulacak metni içermeli.\n7. Faiz talebinde başlangıç tarihi (temerrüt) net mi?\n\nÇIKTI FORMATI (kesinlikle bu yapı, markdown yok):\n===UYARILAR===\n(Avukatın dava açmadan önce dikkat etmesi gereken hususlar, her satır "- " ile başlasın. Sorun yoksa "- Usul yönünden engel tespit edilmedi." yaz.)\n===DILEKCE===\n(Dilekçenin düzeltilmiş TAM metni. Kısaltma ve özetleme yapma; sorunsuz kısımları aynen koru.)\n\nDİLEKÇE TASLAĞI:\n'+txt;
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:await aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:8000,messages:[{role:'user',content:dPrompt}],tools:[{type:'web_search_20250305',name:'web_search',max_uses:4}]})});
+    var dPrompt='Sen usul denetimi yapan kıdemli bir Türk hukukçususun. Aşağıdaki dilekçe taslağını denetle. Bugünün tarihi: '+new Date().toLocaleDateString('tr-TR')+'.\n\nDİLEKÇE TÜRÜ: '+(window.selectedPetitionType||'Dava Dilekçesi')+(davaTuru?' | DAVA KONUSU: '+davaTuru:'')+'\n\nDENETİM LİSTESİ:\n1. Dava şartı arabuluculuk: bu uyuşmazlık türünde zorunlu mu? Yalnızca bu soru için 1 web araması yaparak 7445 sayılı Kanun sonrası güncel durumu doğrula. Zorunluysa uyarıların İLK maddesi bu olsun.\n2. Görevli/yetkili mahkeme doğru mu?\n3. Zamanaşımı / hak düşürücü süre nitelendirmesi doğru mu?\n4. Kanun maddesi atıfları doğru mu? (Örn. dürüstlük kuralı TMK m.2\'dir, TBK m.2 değil.) Yanlış atıfları DÜZELTMELER bölümüne yaz.\n5. İç tutarlılık: faiz başlangıç tarihi gövde ile SONUÇ VE TALEP arasında çelişiyor mu? Tarih/yıl hataları var mı?\n6. KONU satırı dava türünü doğru nitelendiriyor mu?\n7. Metne karışmış usul notu/tekrar blokları var mı?\n\nÇIKTI FORMATI (kesinlikle bu yapı, markdown yok, başka hiçbir şey yazma):\n===UYARILAR===\n(Avukatın dava açmadan önce bilmesi gerekenler, her satır "- " ile. Sorun yoksa "- Usul yönünden engel tespit edilmedi.")\n===DUZELTMELER===\nESKİ: (dilekçedeki birebir hatalı ifade, kısa tut)\nYENİ: (düzeltilmiş hali)\n---\n(Her düzeltme bu üçlü blokla. En fazla 8 düzeltme, yalnızca gerçekten hatalı yerler. Düzeltme yoksa bu bölümü boş bırak.)\n\nDİLEKÇE TASLAĞI:\n'+txt;
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:await aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2500,messages:[{role:'user',content:dPrompt}],tools:[{type:'web_search_20250305',name:'web_search',max_uses:2}]})});
     var data=await resp.json();
+    if(data.error)throw new Error(typeof data.error==='string'?data.error:(data.error.message||'API hatası'));
     var fullTxt=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n');
-    var parts=fullTxt.split('===DILEKCE===');
-    var uyari=(parts[0]||'').replace('===UYARILAR===','').trim();
-    var duzeltilmis=(parts[1]||'').trim();
-    // Emniyet: düzeltilmiş metin şüpheli derecede kısaysa (kesilme/format hatası) orijinali koru
-    if(duzeltilmis&&duzeltilmis.length>txt.length*0.5){ta.value=duzeltilmis;}
-    if(dr&&uyari){
-      dr.innerHTML='<div style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--am);margin-bottom:6px"><i class="ti ti-shield-check" style="font-size:13px"></i>Usul Denetim Raporu — dava açmadan önce kontrol edin</div><div style="font-size:11.5px;line-height:1.7;color:var(--tx2);white-space:pre-wrap">'+uyari.replace(/</g,'&lt;')+'</div>';
-      dr.style.display='block';
+    var uyariBlok=(fullTxt.split('===DUZELTMELER===')[0]||'').replace('===UYARILAR===','').trim();
+    var duzBlok=(fullTxt.split('===DUZELTMELER===')[1]||'').trim();
+    var uygulanan=0,uygulanamayan=[];
+    if(duzBlok){
+      duzBlok.split('---').forEach(function(blok){
+        var m=blok.match(/ESKİ:\s*([\s\S]*?)\nYENİ:\s*([\s\S]*)/);
+        if(!m)return;
+        var eski=m[1].trim(),yeni=m[2].trim();
+        if(!eski)return;
+        if(ta.value.indexOf(eski)!==-1){ta.value=ta.value.replace(eski,yeni);uygulanan++;}
+        else if(yeni){uygulanamayan.push(eski+' → '+yeni);}
+      });
+    }
+    if(dr){
+      var rapor='';
+      if(uyariBlok)rapor+=uyariBlok;
+      if(uygulanan)rapor+='\n\n✓ '+uygulanan+' düzeltme metne otomatik uygulandı.';
+      if(uygulanamayan.length)rapor+='\n\nElle kontrol edilmesi gereken düzeltmeler:\n- '+uygulanamayan.join('\n- ');
+      if(rapor.trim()){
+        dr.innerHTML='<div style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--am);margin-bottom:6px"><i class="ti ti-shield-check" style="font-size:13px"></i>Usul Denetim Raporu — dava açmadan önce kontrol edin</div><div style="font-size:11.5px;line-height:1.7;color:var(--tx2);white-space:pre-wrap">'+rapor.trim().replace(/</g,'&lt;')+'</div>';
+        dr.style.display='block';
+      }
     }
     showToast('Usul denetimi tamamlandı \u2713','ok');
   }catch(e){
-    showToast('Denetim yapılamadı, taslak denetimsiz gösteriliyor: '+e.message,'err');
+    console.error('Usul denetimi hatası:',e);
+    if(dr){dr.innerHTML='<div style="font-size:11.5px;color:var(--rd)">Usul denetimi tamamlanamadı ('+String(e.message||e).replace(/</g,'&lt;')+') — dilekçeyi denetimsiz kabul etmeyin, usul yönünden elle kontrol edin.</div>';dr.style.display='block';}
   }
   if(dl)dl.style.display='none';
-  // Otomatik emsal arama
-  setTimeout(function(){searchEmsalWeb();},600);
 }
 
 // Üretilen dilekçeyi emsalleriyle birlikte veritabanına kaydet
@@ -2079,7 +2095,7 @@ async function emsalSayfaAra(){
     var resp = await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{
       method:'POST',
       headers:await aiHeaders(),
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Web üzerinde şu konuyla ilgili GERÇEK Yargıtay kararlarını ara (kararı aktaran güvenilir hukuk siteleri de kaynak olabilir). Her karar mutlaka gerçek daire + esas/karar numarası içermeli. Konu: "'+q+'". Cevabını SADECE şu JSON formatında ver (öncesinde veya sonrasında hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.\nMUTLAK KURAL: Cevabında JSON dışında tek bir karakter bile olmasın — açıklama, özür, arama süreci anlatımı YASAK. Hiçbir şey bulamasan bile sadece {"kararlar":[]} yaz.'}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search',max_uses:2}],messages:[{role:'user',content:'Web üzerinde şu konuyla ilgili GERÇEK Yargıtay kararlarını ara (kararı aktaran güvenilir hukuk siteleri de kaynak olabilir). Her karar mutlaka gerçek daire + esas/karar numarası içermeli. Konu: "'+q+'". Cevabını SADECE şu JSON formatında ver (öncesinde veya sonrasında hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.\nMUTLAK KURAL: Cevabında JSON dışında tek bir karakter bile olmasın — açıklama, özür, arama süreci anlatımı YASAK. Hiçbir şey bulamasan bile sadece {"kararlar":[]} yaz.'}]})
     });
     var data = await resp.json();
     if(data.error) throw new Error(data.error.message||'API hatası');
@@ -2140,7 +2156,7 @@ async function searchEmsalWeb(){
   loading.style.display='flex';results.innerHTML='';
 
   try{
-    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:await aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nWeb üzerinde bu konuyla ilgili GERÇEK Yargıtay kararlarını ara (kararı aktaran güvenilir hukuk siteleri de kaynak olabilir). Her karar mutlaka gerçek daire + esas/karar numarası içermeli. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.\nMUTLAK KURAL: Cevabında JSON dışında tek bir karakter bile olmasın — açıklama, özür, arama süreci anlatımı YASAK. Hiçbir şey bulamasan bile sadece {"kararlar":[]} yaz.'}]})});
+    var resp=await fetch('https://licrpxhhwmesjexvwuov.supabase.co/functions/v1/hyper-endpoint',{method:'POST',headers:await aiHeaders(),body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,tools:[{type:'web_search_20250305',name:'web_search',max_uses:2}],messages:[{role:'user',content:'Türk hukuku emsal karar araması yap. Dava türü: '+tip+'. Taraflar: '+davaci+' vs '+davali+'. Dava konusu: '+ozet+'\n\nWeb üzerinde bu konuyla ilgili GERÇEK Yargıtay kararlarını ara (kararı aktaran güvenilir hukuk siteleri de kaynak olabilir). Her karar mutlaka gerçek daire + esas/karar numarası içermeli. Bulduğun GERÇEK kararları şu JSON formatında döndür (sadece JSON, hiçbir açıklama ekleme):\n{"kararlar":[{"no":"Yargıtay X. HD — YYYY/NNNNN E.","baslik":"karar konusu","ozet":"kısa hukuki özet","tarih":"karar tarihi"}]}\nBulamazsan: {"kararlar":[]}\nMaksimum 3 karar. JSON kısa ve eksiksiz olsun — asla yarıda kesme. Numara uydurma — sadece gerçek bulduklarını yaz.\nMUTLAK KURAL: Cevabında JSON dışında tek bir karakter bile olmasın — açıklama, özür, arama süreci anlatımı YASAK. Hiçbir şey bulamasan bile sadece {"kararlar":[]} yaz.'}]})});
     var data=await resp.json();
     if(data.error)throw new Error(data.error.message||'API hatası');
     var fullText=(data.content||[]).map(function(c){return c.type==='text'?c.text:'';}).join('');
